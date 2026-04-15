@@ -9,11 +9,20 @@ Author professional HTML presentations as static files. One theme file = one
 look. One layout file = one page type. One animation class = one entry effect.
 All pages share a token-based design system in `assets/base.css`.
 
-Tell the user this skill gives them:
-- **36 themes** (`assets/themes/*.css`) — 24 v1 + 12 v2 (cyberpunk-neon, y2k-chrome, retro-tv, japanese-minimal, vaporwave, midcentury, corporate-clean, academic-paper, news-broadcast, pitch-deck-vc, magazine-bold, engineering-whiteprint)
-- **14 full-deck templates** (`templates/full-decks/<name>/`) — complete multi-slide decks with scoped `.tpl-<name>` CSS. 8 extracted from real-world decks, 6 generic scenario scaffolds (pitch-deck, product-launch, tech-sharing, weekly-report, xhs-post 3:4, course-module).
-- **30 layouts** (`templates/single-page/*.html`) with realistic demo data
-- **25 named CSS animations** (`assets/animations/animations.css`) via `data-anim`
+## Install
+
+```bash
+npx skills add https://github.com/lewislulu/html-ppt-skill
+```
+
+One command, no build. Pure static HTML/CSS/JS with only CDN webfonts.
+
+## What the skill gives you
+
+- **36 themes** (`assets/themes/*.css`) — minimal-white, editorial-serif, soft-pastel, sharp-mono, arctic-cool, sunset-warm, catppuccin-latte/mocha, dracula, tokyo-night, nord, solarized-light, gruvbox-dark, rose-pine, neo-brutalism, glassmorphism, bauhaus, swiss-grid, terminal-green, xiaohongshu-white, rainbow-gradient, aurora, blueprint, memphis-pop, cyberpunk-neon, y2k-chrome, retro-tv, japanese-minimal, vaporwave, midcentury, corporate-clean, academic-paper, news-broadcast, pitch-deck-vc, magazine-bold, engineering-whiteprint
+- **14 full-deck templates** (`templates/full-decks/<name>/`) — complete multi-slide decks with scoped `.tpl-<name>` CSS. 8 extracted from real-world decks (xhs-white-editorial, graphify-dark-graph, knowledge-arch-blueprint, hermes-cyber-terminal, obsidian-claude-gradient, testing-safety-alert, xhs-pastel-card, dir-key-nav-minimal), 6 scenario scaffolds (pitch-deck, product-launch, tech-sharing, weekly-report, xhs-post 3:4, course-module)
+- **31 layouts** (`templates/single-page/*.html`) with realistic demo data
+- **27 CSS animations** (`assets/animations/animations.css`) via `data-anim`
 - **20 canvas FX animations** (`assets/animations/fx/*.js`) via `data-fx` — particle-burst, confetti-cannon, firework, starfield, matrix-rain, knowledge-graph (force-directed), neural-net (pulses), constellation, orbit-ring, galaxy-swirl, word-cascade, letter-explode, chain-react, magnetic-field, data-stream, gradient-blob, sparkle-trail, shockwave, typewriter-multi, counter-explosion
 - **Keyboard runtime** (`assets/runtime.js`) — arrows, T (theme), A (anim), F/S/O
 - **FX runtime** (`assets/animations/fx-runtime.js`) — auto-inits `[data-fx]` on slide enter, cleans up on leave
@@ -24,6 +33,38 @@ Tell the user this skill gives them:
 
 Use when the user asks for any kind of slide-based output or wants to turn
 text/notes into a presentable deck. Prefer this over building from scratch.
+
+## Before you author anything — ALWAYS ask or recommend
+
+**Do not start writing slides until you understand three things.** Either ask
+the user directly, or — if they already handed you rich content — propose a
+tasteful default and confirm.
+
+1. **Content & audience.** What's the deck about, how many slides, who's
+   watching (engineers / execs / 小红书读者 / 学生 / VC)?
+2. **Style / theme.** Which of the 36 themes fits? If unsure, recommend 2-3
+   candidates based on tone:
+   - Business / investor pitch → `pitch-deck-vc`, `corporate-clean`, `swiss-grid`
+   - Tech sharing / engineering → `tokyo-night`, `dracula`, `catppuccin-mocha`,
+     `terminal-green`, `blueprint`
+   - 小红书图文 → `xiaohongshu-white`, `soft-pastel`, `rainbow-gradient`,
+     `magazine-bold`
+   - Academic / report → `academic-paper`, `editorial-serif`, `minimal-white`
+   - Edgy / cyber / launch → `cyberpunk-neon`, `vaporwave`, `y2k-chrome`,
+     `neo-brutalism`
+3. **Starting point.** One of the 14 full-deck templates, or scratch? Point
+   to the closest `templates/full-decks/<name>/` and ask if it fits. If the
+   user's content suggests something obvious (e.g. "我要做产品发布会" →
+   `product-launch`), propose it confidently instead of asking blindly.
+
+A good opening message looks like:
+
+> 我可以给你做这份 PPT！先确认三件事：
+> 1. 大致内容 / 页数 / 观众是谁？
+> 2. 风格偏好？我建议从这 3 个主题里选一个：`tokyo-night`（技术分享默认好看）、`xiaohongshu-white`（小红书风）、`corporate-clean`（正式汇报）。
+> 3. 要不要用我现成的 `tech-sharing` 全 deck 模板打底？
+
+Only after those are clear, scaffold the deck and start writing.
 
 ## Quick start
 
@@ -49,7 +90,7 @@ text/notes into a presentable deck. Prefer this over building from scratch.
    `examples/my-talk/` as a starting point. Each folder is self-contained with
    scoped CSS. Catalog in [references/full-decks.md](references/full-decks.md)
    and gallery at `templates/full-decks-index.html`.
-5. **Render to PNG.**
+6. **Render to PNG.**
    ```bash
    ./scripts/render.sh templates/theme-showcase.html       # one shot
    ./scripts/render.sh examples/my-talk/index.html 12      # 12 slides
@@ -83,8 +124,8 @@ Chinese + English deck, and how to export.
 ## Catalogs (load when needed)
 
 - [references/themes.md](references/themes.md) — all 36 themes with when-to-use.
-- [references/layouts.md](references/layouts.md) — all 30 layout types.
-- [references/animations.md](references/animations.md) — 25 CSS + 20 canvas FX animations.
+- [references/layouts.md](references/layouts.md) — all 31 layout types.
+- [references/animations.md](references/animations.md) — 27 CSS + 20 canvas FX animations.
 - [references/full-decks.md](references/full-decks.md) — all 14 full-deck templates.
 - [references/authoring-guide.md](references/authoring-guide.md) — full workflow.
 
@@ -100,17 +141,17 @@ html-ppt/
 │   ├── runtime.js           (keyboard + presenter + overview + theme cycle)
 │   ├── themes/*.css         (36 token overrides, one per theme)
 │   └── animations/
-│       ├── animations.css   (25 named CSS entry animations)
+│       ├── animations.css   (27 named CSS entry animations)
 │       ├── fx-runtime.js    (auto-init [data-fx] on slide enter)
 │       └── fx/*.js          (20 canvas FX modules: particles/graph/fireworks…)
 ├── templates/
 │   ├── deck.html                  (minimal 6-slide starter)
 │   ├── theme-showcase.html        (36 slides, iframe-isolated per theme)
-│   ├── layout-showcase.html       (iframe tour of all 30 layouts)
+│   ├── layout-showcase.html       (iframe tour of all 31 layouts)
 │   ├── animation-showcase.html    (20 FX + 27 CSS animation slides)
 │   ├── full-decks-index.html      (gallery of all 14 full-deck templates)
 │   ├── full-decks/<name>/         (14 scoped multi-slide deck templates)
-│   └── single-page/*.html         (30 layout files with demo data)
+│   └── single-page/*.html         (31 layout files with demo data)
 ├── scripts/
 │   ├── new-deck.sh                (scaffold a deck from deck.html)
 │   └── render.sh                  (headless Chrome → PNG)
