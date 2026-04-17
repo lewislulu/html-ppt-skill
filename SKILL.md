@@ -20,11 +20,11 @@ One command, no build. Pure static HTML/CSS/JS with only CDN webfonts.
 ## What the skill gives you
 
 - **36 themes** (`assets/themes/*.css`) — minimal-white, editorial-serif, soft-pastel, sharp-mono, arctic-cool, sunset-warm, catppuccin-latte/mocha, dracula, tokyo-night, nord, solarized-light, gruvbox-dark, rose-pine, neo-brutalism, glassmorphism, bauhaus, swiss-grid, terminal-green, xiaohongshu-white, rainbow-gradient, aurora, blueprint, memphis-pop, cyberpunk-neon, y2k-chrome, retro-tv, japanese-minimal, vaporwave, midcentury, corporate-clean, academic-paper, news-broadcast, pitch-deck-vc, magazine-bold, engineering-whiteprint
-- **14 full-deck templates** (`templates/full-decks/<name>/`) — complete multi-slide decks with scoped `.tpl-<name>` CSS. 8 extracted from real-world decks (xhs-white-editorial, graphify-dark-graph, knowledge-arch-blueprint, hermes-cyber-terminal, obsidian-claude-gradient, testing-safety-alert, xhs-pastel-card, dir-key-nav-minimal), 6 scenario scaffolds (pitch-deck, product-launch, tech-sharing, weekly-report, xhs-post 3:4, course-module)
+- **15 full-deck templates** (`templates/full-decks/<name>/`) — complete multi-slide decks with scoped `.tpl-<name>` CSS. 8 extracted from real-world decks (xhs-white-editorial, graphify-dark-graph, knowledge-arch-blueprint, hermes-cyber-terminal, obsidian-claude-gradient, testing-safety-alert, xhs-pastel-card, dir-key-nav-minimal), 7 scenario scaffolds (pitch-deck, product-launch, tech-sharing, weekly-report, xhs-post 3:4, course-module, **presenter-mode-reveal** — 演讲者模式专用)
 - **31 layouts** (`templates/single-page/*.html`) with realistic demo data
 - **27 CSS animations** (`assets/animations/animations.css`) via `data-anim`
 - **20 canvas FX animations** (`assets/animations/fx/*.js`) via `data-fx` — particle-burst, confetti-cannon, firework, starfield, matrix-rain, knowledge-graph (force-directed), neural-net (pulses), constellation, orbit-ring, galaxy-swirl, word-cascade, letter-explode, chain-react, magnetic-field, data-stream, gradient-blob, sparkle-trail, shockwave, typewriter-multi, counter-explosion
-- **Keyboard runtime** (`assets/runtime.js`) — arrows, T (theme), A (anim), F/S/O
+- **Keyboard runtime** (`assets/runtime.js`) — arrows, T (theme), A (anim), F/O, **S (presenter view: current + next + large speaker script + timer)**, N (legacy notes drawer), R (reset timer)
 - **FX runtime** (`assets/animations/fx-runtime.js`) — auto-inits `[data-fx]` on slide enter, cleans up on leave
 - **Showcase decks** for themes / layouts / animations / full-decks gallery
 - **Headless Chrome render script** for PNG export
@@ -33,6 +33,19 @@ One command, no build. Pure static HTML/CSS/JS with only CDN webfonts.
 
 Use when the user asks for any kind of slide-based output or wants to turn
 text/notes into a presentable deck. Prefer this over building from scratch.
+
+### 🎤 Presenter Mode (演讲者模式 + 逐字稿)
+
+If the user mentions any of: **演讲 / 分享 / 讲稿 / 逐字稿 / speaker notes / presenter view / 演讲者视图 / 提词器**, or says things like "我要去给团队讲 xxx", "要做一场技术分享", "怕讲不流畅", "想要一份带逐字稿的 PPT" — **use the `presenter-mode-reveal` full-deck template** and write 150–300 words of 逐字稿 in each slide's `<aside class="notes">`.
+
+See [references/presenter-mode.md](references/presenter-mode.md) for the full authoring guide including the 3 rules of speaker script writing:
+1. **不是讲稿，是提示信号** — 加粗核心词 + 过渡句独立成段
+2. **每页 150–300 字** — 2–3 分钟/页的节奏
+3. **用口语，不用书面语** — "因此"→"所以"，"该方案"→"这个方案"
+
+All full-deck templates technically support the S key presenter view (it's built into `runtime.js`), but only `presenter-mode-reveal` is designed from the ground up around the feature with proper example 逐字稿 on every slide.
+
+Keyboard in presenter mode: `S` toggle · `T` cycle theme · `← →` navigate · `R` reset timer · `Esc` close.
 
 ## Before you author anything — ALWAYS ask or recommend
 
@@ -132,7 +145,8 @@ Chinese + English deck, and how to export.
 - [references/themes.md](references/themes.md) — all 36 themes with when-to-use.
 - [references/layouts.md](references/layouts.md) — all 31 layout types.
 - [references/animations.md](references/animations.md) — 27 CSS + 20 canvas FX animations.
-- [references/full-decks.md](references/full-decks.md) — all 14 full-deck templates.
+- [references/full-decks.md](references/full-decks.md) — all 15 full-deck templates.
+- [references/presenter-mode.md](references/presenter-mode.md) — **演讲者模式 + 逐字稿编写指南（技术分享/演讲必看）**.
 - [references/authoring-guide.md](references/authoring-guide.md) — full workflow.
 
 ## File structure
@@ -180,11 +194,14 @@ capture, runtime.js exposes `#/N` deep-links, and render.sh iterates 1..N.
 ```
 ←  →  Space  PgUp  PgDn  Home  End    navigate
 F                                       fullscreen
-S                                       speaker notes overlay
+S                                       presenter view (current + next + script + timer)
+N                                       quick notes drawer (bottom, legacy)
+R                                       reset timer (only in presenter view)
 O                                       slide overview grid
 T                                       cycle themes (reads data-themes attr)
 A                                       cycle demo animation on current slide
 #/N in URL                              deep-link to slide N
+Esc                                     close all overlays
 ```
 
 ## License & author

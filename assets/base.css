@@ -131,6 +131,47 @@ h4,.h4{font-size:22px;line-height:1.3;font-weight:600;margin:0 0 8px}
 .overview .thumb .n{position:absolute;top:8px;left:10px;font-weight:700;font-size:14px;color:var(--text-3)}
 .overview .thumb .t{position:absolute;bottom:10px;left:14px;right:14px;font-weight:600;color:var(--text-1)}
 
+/* ================= PRESENTER VIEW ================= */
+/* Split-view presenter mode: current slide + next preview + speaker script + timer.
+ * Toggle with S key. Hides the audience deck, shows this view only to presenter. */
+.presenter-view{position:fixed;inset:0;z-index:80;display:none;
+  background:#0a0e1a;color:#e6edf3;font-family:var(--font-sans);
+  grid-template-columns:1.35fr 1fr;gap:20px;padding:20px}
+.presenter-view.open{display:grid}
+body.presenter-mode .deck,
+body.presenter-mode .progress-bar,
+body.presenter-mode .deck-header,
+body.presenter-mode .deck-footer,
+body.presenter-mode .notes-overlay{display:none!important}
+.pv-label{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8b949e;
+  margin-bottom:8px;font-weight:600}
+.pv-main{display:flex;flex-direction:column;min-height:0}
+.pv-stage{flex:1;background:var(--bg,#0d1117);border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;overflow:hidden;position:relative}
+.pv-stage .slide{position:absolute;inset:0;transform:none!important;opacity:1!important;
+  width:100%;height:100%}
+.pv-side{display:flex;flex-direction:column;gap:14px;min-height:0}
+.pv-next{flex:0 0 30%;display:flex;flex-direction:column;min-height:0}
+.pv-next-stage{border:1px solid rgba(255,255,255,.06);border-radius:10px;opacity:.85}
+.pv-next .pv-end{display:flex;align-items:center;justify-content:center;height:100%;
+  font-size:18px;color:#8b949e;letter-spacing:.12em}
+.pv-notes{flex:1;display:flex;flex-direction:column;min-height:0;
+  background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);
+  border-radius:12px;padding:16px 20px}
+.pv-notes-body{flex:1;overflow:auto;font-size:18px;line-height:1.75;color:#d0d7de;
+  padding-right:6px;font-family:var(--font-sans)}
+.pv-notes-body p{margin:0 0 .8em 0}
+.pv-notes-body strong{color:#f0883e}
+.pv-notes-body em{color:#58a6ff;font-style:normal}
+.pv-empty{color:#484f58;font-style:italic}
+.pv-bar{display:flex;align-items:center;gap:16px;padding:10px 14px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;font-size:13px;color:#8b949e}
+.pv-timer{font-family:var(--font-mono,monospace);font-size:22px;font-weight:700;color:#3fb950;
+  letter-spacing:.04em}
+.pv-count{font-weight:600;color:#e6edf3}
+.pv-hint{margin-left:auto;font-size:11px;color:#6e7681;letter-spacing:.08em}
+
 /* ================= UTILITY ================= */
 .hidden{display:none!important}
 .nowrap{white-space:nowrap}

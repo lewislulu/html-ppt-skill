@@ -4,7 +4,8 @@
  * Features:
  *   ← → / space / PgUp PgDn / Home End  navigation
  *   F  fullscreen
- *   S  speaker notes overlay
+ *   S  presenter mode (split view: current + next + notes + timer)
+ *   N  quick notes overlay (bottom drawer, legacy)
  *   O  slide overview grid
  *   T  cycle themes (reads data-themes on <html> or <body>)
  *   A  cycle demo animation on current slide
@@ -76,9 +77,11 @@
       barFill.style.width = ((n+1)/total*100)+'%';
       const numEl = document.querySelector('.slide-number');
       if (numEl) { numEl.setAttribute('data-current', n+1); numEl.setAttribute('data-total', total); }
-      // notes
-      const note = slides[n].querySelector('.notes');
+      // notes (bottom overlay, legacy N key)
+      const note = slides[n].querySelector('.notes, aside.notes, .speaker-notes');
       notes.innerHTML = note ? note.innerHTML : '';
+      // presenter view live update
+      renderPresenter(n);
       // hash
       if (location.hash !== '#/'+(n+1)) history.replaceState(null,'','#/'+(n+1));
       // re-trigger entry animations
@@ -106,6 +109,98 @@
 
     function toggleNotes(force){ notes.classList.toggle('open', force!==undefined?force:!notes.classList.contains('open')); }
     function toggleOverview(force){ overview.classList.toggle('open', force!==undefined?force:!overview.classList.contains('open')); }
+
+    // ========== PRESENTER MODE ==========
+    // Split view: current slide (left) + next slide thumb + large speaker notes + timer
+    let presenter = document.querySelector('.presenter-view');
+    if (!presenter) {
+      presenter = document.createElement('div');
+      presenter.className = 'presenter-view';
+      presenter.innerHTML = ''
+        + '<div class="pv-main">'
+        +   '<div class="pv-label">CURRENT</div>'
+        +   '<div class="pv-stage" id="pv-stage"></div>'
+        + '</div>'
+        + '<div class="pv-side">'
+        +   '<div class="pv-next">'
+        +     '<div class="pv-label">NEXT</div>'
+        +     '<div class="pv-stage pv-next-stage" id="pv-next"></div>'
+        +   '</div>'
+        +   '<div class="pv-notes">'
+        +     '<div class="pv-label">SPEAKER SCRIPT · 逐字稿</div>'
+        +     '<div class="pv-notes-body" id="pv-notes-body"></div>'
+        +   '</div>'
+        +   '<div class="pv-bar">'
+        +     '<div class="pv-timer" id="pv-timer">00:00</div>'
+        +     '<div class="pv-count" id="pv-count">1 / ' + total + '</div>'
+        +     '<div class="pv-hint">S 退出 · ← → 翻页 · R 重置计时</div>'
+        +   '</div>'
+        + '</div>';
+      document.body.appendChild(presenter);
+    }
+    const pvStage = presenter.querySelector('#pv-stage');
+    const pvNext  = presenter.querySelector('#pv-next');
+    const pvBody  = presenter.querySelector('#pv-notes-body');
+    const pvTimer = presenter.querySelector('#pv-timer');
+    const pvCount = presenter.querySelector('#pv-count');
+
+    let timerStart = 0, timerHandle = null;
+    function fmtTime(ms){
+      const s = Math.floor(ms/1000);
+      const mm = String(Math.floor(s/60)).padStart(2,'0');
+      const ss = String(s%60).padStart(2,'0');
+      return mm + ':' + ss;
+    }
+    function startTimer(){
+      if (timerHandle) return;
+      timerStart = Date.now();
+      timerHandle = setInterval(() => {
+        pvTimer.textContent = fmtTime(Date.now() - timerStart);
+      }, 1000);
+    }
+    function stopTimer(){ if (timerHandle) { clearInterval(timerHandle); timerHandle = null; } }
+    function resetTimer(){ timerStart = Date.now(); pvTimer.textContent = '00:00'; }
+
+    function renderPresenter(n){
+      if (!presenter.classList.contains('open')) return;
+      // Clone current + next slides for mini display
+      pvStage.innerHTML = '';
+      pvNext.innerHTML = '';
+      const curClone = slides[n].cloneNode(true);
+      curClone.style.position = 'relative';
+      curClone.style.opacity = '1';
+      curClone.style.transform = 'none';
+      curClone.classList.add('is-active');
+      pvStage.appendChild(curClone);
+
+      if (n + 1 < total) {
+        const nxtClone = slides[n+1].cloneNode(true);
+        nxtClone.style.position = 'relative';
+        nxtClone.style.opacity = '1';
+        nxtClone.style.transform = 'none';
+        nxtClone.classList.add('is-active');
+        pvNext.appendChild(nxtClone);
+      } else {
+        pvNext.innerHTML = '<div class="pv-end">— END —</div>';
+      }
+
+      // Notes
+      const note = slides[n].querySelector('.notes, aside.notes, .speaker-notes');
+      pvBody.innerHTML = note ? note.innerHTML : '<span class="pv-empty">（这一页还没有逐字稿）</span>';
+      pvCount.textContent = (n+1) + ' / ' + total;
+    }
+
+    function togglePresenter(force){
+      const willOpen = force !== undefined ? force : !presenter.classList.contains('open');
+      presenter.classList.toggle('open', willOpen);
+      document.body.classList.toggle('presenter-mode', willOpen);
+      if (willOpen) {
+        startTimer();
+        renderPresenter(idx);
+      } else {
+        stopTimer();
+      }
+    }
     function fullscreen(){ const el=document.documentElement;
       if (!document.fullscreenElement) el.requestFullscreen&&el.requestFullscreen();
       else document.exitFullscreen&&document.exitFullscreen();
@@ -157,11 +252,13 @@
         case 'Home': go(0); break;
         case 'End': go(total-1); break;
         case 'f': case 'F': fullscreen(); break;
-        case 's': case 'S': toggleNotes(); break;
+        case 's': case 'S': togglePresenter(); break;
+        case 'n': case 'N': toggleNotes(); break;
+        case 'r': case 'R': if (presenter.classList.contains('open')) resetTimer(); break;
         case 'o': case 'O': toggleOverview(); break;
         case 't': case 'T': cycleTheme(); break;
         case 'a': case 'A': cycleAnim(); break;
-        case 'Escape': toggleOverview(false); toggleNotes(false); break;
+        case 'Escape': toggleOverview(false); toggleNotes(false); togglePresenter(false); break;
       }
     });
 
