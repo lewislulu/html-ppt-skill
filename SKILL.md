@@ -24,7 +24,7 @@ One command, no build. Pure static HTML/CSS/JS with only CDN webfonts.
 - **31 layouts** (`templates/single-page/*.html`) with realistic demo data
 - **27 CSS animations** (`assets/animations/animations.css`) via `data-anim`
 - **20 canvas FX animations** (`assets/animations/fx/*.js`) via `data-fx` — particle-burst, confetti-cannon, firework, starfield, matrix-rain, knowledge-graph (force-directed), neural-net (pulses), constellation, orbit-ring, galaxy-swirl, word-cascade, letter-explode, chain-react, magnetic-field, data-stream, gradient-blob, sparkle-trail, shockwave, typewriter-multi, counter-explosion
-- **Keyboard runtime** (`assets/runtime.js`) — arrows, T (theme), A (anim), F/O, **S (presenter view: current + next + large speaker script + timer)**, N (legacy notes drawer), R (reset timer)
+- **Keyboard runtime** (`assets/runtime.js`) — arrows, T (theme), A (anim), F/O, **S (presenter mode: magnetic-card popup with CURRENT / NEXT / SCRIPT / TIMER cards)**, N (notes drawer), R (reset timer in presenter)
 - **FX runtime** (`assets/animations/fx-runtime.js`) — auto-inits `[data-fx]` on slide enter, cleans up on leave
 - **Showcase decks** for themes / layouts / animations / full-decks gallery
 - **Headless Chrome render script** for PNG export
@@ -43,7 +43,17 @@ See [references/presenter-mode.md](references/presenter-mode.md) for the full au
 2. **每页 150–300 字** — 2–3 分钟/页的节奏
 3. **用口语，不用书面语** — "因此"→"所以"，"该方案"→"这个方案"
 
-All full-deck templates support the S key presenter view (it's built into `runtime.js`). **S opens a separate popup window** — the original page stays as the audience view, and the popup shows current/next slide (CSS scale at 1920×1080 design resolution, pixel-perfect) + large speaker script + timer. The two windows sync navigation via BroadcastChannel.
+All full-deck templates support the S key presenter mode (it's built into `runtime.js`). **S opens a new popup window with 4 magnetic cards**:
+- 🔵 **CURRENT** — pixel-perfect iframe preview of the current slide
+- 🟣 **NEXT** — pixel-perfect iframe preview of the next slide
+- 🟠 **SPEAKER SCRIPT** — large-font 逐字稿 (scrollable)
+- 🟢 **TIMER** — elapsed time + slide counter + prev/next/reset buttons
+
+Each card is **draggable by its header** and **resizable by the bottom-right corner handle**. Card positions/sizes persist to `localStorage` per deck. A "Reset layout" button restores the default arrangement.
+
+**Why the previews are pixel-perfect**: each preview is an `<iframe>` that loads the actual deck HTML with a `?preview=N` query param; `runtime.js` detects this and renders only slide N with no chrome. So the preview uses the **same CSS, theme, fonts, and viewport as the audience view** — colors and layout are guaranteed identical.
+
+**Smooth navigation**: on slide change, the presenter window sends `postMessage({type:'preview-goto', idx:N})` to each iframe. The iframe just toggles `.is-active` between slides — **no reload, no flicker**. The two windows also stay in sync via `BroadcastChannel`.
 
 Only `presenter-mode-reveal` is designed from the ground up around the feature with proper example 逐字稿 on every slide.
 
@@ -197,9 +207,10 @@ capture, runtime.js exposes `#/N` deep-links, and render.sh iterates 1..N.
 ```
 ←  →  Space  PgUp  PgDn  Home  End    navigate
 F                                       fullscreen
-S                                       open presenter window (new popup: current + next + script + timer)
+S                                       open presenter window (magnetic cards: current/next/script/timer)
 N                                       quick notes drawer (bottom overlay)
 R                                       reset timer (in presenter window)
+?preview=N                              URL param — force preview-only mode (single slide, no chrome)
 O                                       slide overview grid
 T                                       cycle themes (reads data-themes attr)
 A                                       cycle demo animation on current slide

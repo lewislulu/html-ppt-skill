@@ -48,23 +48,33 @@
 
     /* ===== Preview-only mode: show one slide, hide everything else ===== */
     if (isPreviewMode) {
-      slides.forEach((s, i) => {
-        s.classList.toggle('is-active', i === previewOnlyIdx);
-        if (i !== previewOnlyIdx) {
-          s.style.display = 'none';
-        } else {
-          s.style.opacity = '1';
-          s.style.transform = 'none';
-          s.style.pointerEvents = 'auto';
-        }
-      });
+      function showSlide(i) {
+        slides.forEach((s, j) => {
+          const active = (j === i);
+          s.classList.toggle('is-active', active);
+          s.style.display = active ? '' : 'none';
+          if (active) {
+            s.style.opacity = '1';
+            s.style.transform = 'none';
+            s.style.pointerEvents = 'auto';
+          }
+        });
+      }
+      showSlide(previewOnlyIdx);
       /* Hide chrome that the presenter shouldn't see in preview */
       const hideSel = '.progress-bar, .notes-overlay, .overview, .notes, aside.notes, .speaker-notes';
       document.querySelectorAll(hideSel).forEach(el => { el.style.display = 'none'; });
-      /* Also add a data attr so templates can style preview mode if needed */
       document.documentElement.setAttribute('data-preview', '1');
       document.body.setAttribute('data-preview', '1');
-      /* Don't register key handlers, don't start broadcast channel, don't auto-hash */
+      /* Listen for postMessage from parent presenter window to switch slides
+       * WITHOUT reloading — this eliminates flicker during navigation. */
+      window.addEventListener('message', function(e) {
+        if (!e.data || e.data.type !== 'preview-goto') return;
+        const n = parseInt(e.data.idx, 10);
+        if (n >= 0 && n < slides.length) showSlide(n);
+      });
+      /* Signal to parent that preview iframe is ready */
+      try { window.parent && window.parent.postMessage({ type: 'preview-ready' }, '*'); } catch(e) {}
       return;
     }
 
@@ -596,22 +606,49 @@
     });
   });
 
-  /* ===== Update content ===== */
+  /* ===== Preview iframe ready tracking =====
+   * Each iframe loads the deck ONCE with ?preview=1 on init. Subsequent
+   * slide changes are sent via postMessage('preview-goto') so the iframe
+   * just toggles visibility of a different .slide — no reload, no flicker.
+   */
+  var iframeReady = { cur: false, nxt: false };
+  window.addEventListener('message', function(e) {
+    if (!e.data || e.data.type !== 'preview-ready') return;
+    if (e.source === iframeCur.contentWindow) {
+      iframeReady.cur = true;
+      postPreviewGoto(iframeCur, idx);
+      rescaleIframe(iframeCur);
+    } else if (e.source === iframeNxt.contentWindow) {
+      iframeReady.nxt = true;
+      postPreviewGoto(iframeNxt, idx + 1 < total ? idx + 1 : idx);
+      rescaleIframe(iframeNxt);
+    }
+  });
+
+  function postPreviewGoto(iframe, n) {
+    try {
+      iframe.contentWindow.postMessage({ type: 'preview-goto', idx: n }, '*');
+    } catch(e) {}
+  }
+
+  /* ===== Update content =====
+   * Smooth (no-reload) navigation: send postMessage to iframes instead of
+   * resetting src. Iframes stay loaded, just switch visible .slide.
+   */
   function update(n) {
     n = Math.max(0, Math.min(total - 1, n));
     idx = n;
 
-    /* Current preview iframe */
-    var curUrl = deckUrl + '?preview=' + (n + 1) + '&_ts=' + Date.now();
-    iframeCur.src = curUrl;
+    /* Current preview — postMessage (smooth) */
+    if (iframeReady.cur) postPreviewGoto(iframeCur, n);
     curMeta.textContent = (n + 1) + '/' + total;
 
-    /* Next preview iframe */
+    /* Next preview */
     if (n + 1 < total) {
       iframeNxt.style.display = '';
       var endEl = document.querySelector('#card-nxt .preview-end');
       if (endEl) endEl.remove();
-      iframeNxt.src = deckUrl + '?preview=' + (n + 2) + '&_ts=' + Date.now();
+      if (iframeReady.nxt) postPreviewGoto(iframeNxt, n + 1);
       nxtMeta.textContent = (n + 2) + '/' + total;
     } else {
       iframeNxt.style.display = 'none';
@@ -631,9 +668,6 @@
 
     /* Timer count */
     timerCount.textContent = (n + 1) + ' / ' + total;
-
-    /* Re-fit after src change */
-    setTimeout(rescaleAll, 200);
   }
 
   /* ===== Timer ===== */
@@ -685,9 +719,19 @@
   iframeCur.addEventListener('load', function(){ rescaleIframe(iframeCur); });
   iframeNxt.addEventListener('load', function(){ rescaleIframe(iframeNxt); });
 
-  /* ===== Init ===== */
+  /* ===== Init =====
+   * Load each iframe ONCE with the deck file. After they post
+   * 'preview-ready', all subsequent navigation is via postMessage
+   * (smooth, no reload, no flicker).
+   */
   applyLayout(readLayout());
-  update(idx);
+  iframeCur.src = deckUrl + '?preview=' + (idx + 1);
+  if (idx + 1 < total) iframeNxt.src = deckUrl + '?preview=' + (idx + 2);
+  /* Initialize notes/timer/count without touching iframes */
+  notesBody.innerHTML = slideMeta[idx].notes || '<span class="empty">（这一页还没有逐字稿）</span>';
+  curMeta.textContent = (idx + 1) + '/' + total;
+  nxtMeta.textContent = (idx + 2) + '/' + total;
+  timerCount.textContent = (idx + 1) + ' / ' + total;
 })();
 </` + `script>
 </body></html>`;

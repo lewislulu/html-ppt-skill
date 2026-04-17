@@ -1,6 +1,6 @@
 # presenter-mode-reveal · 演讲者模式模板
 
-一份专为**带逐字稿的技术分享**设计的 full-deck 模板。核心卖点是真正可用的**演讲者视图 (Presenter View)**：当前页 + 下页预览 + 大字号逐字稿 + 计时器，全部集成在 `runtime.js` 里，零依赖。
+一份专为**带逐字稿的技术分享**设计的 full-deck 模板。核心卖点是真正可用的**磁吸卡片式演讲者视图**：当前页 iframe 预览 + 下页 iframe 预览 + 大字号逐字稿 + 计时器，4 个卡片可任意拖拽/缩放，全部集成在 `runtime.js` 里，零依赖。
 
 ## 使用场景
 
@@ -77,6 +77,23 @@ presenter-mode-reveal/
 - **换主题**：改 `data-themes` 列表，或直接改 `<link id="theme-link" href="...">`
 - **改样式**：只动 `style.css`，不要碰根目录的 `assets/base.css`
 - **加动效**：在元素上加 `data-anim="fade-up"` 等（参考 `references/animations.md`）
+
+## 演讲者窗口的 4 个卡片
+
+按 `S` 后弹出的窗口里有：
+
+- 🔵 **CURRENT** — 当前页 iframe 预览（加载 `?preview=N` 模式，像素级完美，与观众端同 CSS/主题/字体）
+- 🟣 **NEXT** — 下一页预览，帮助准备过渡
+- 🟠 **SPEAKER SCRIPT** — 大字号逐字稿，可滚动
+- 🟢 **TIMER** — 经过时间 + 页码 + Prev/Next/Reset 按钮
+
+卡片操作：
+- **拖卡片头**（彩色圆点 + 标题的顶部条）→ 移动卡片
+- **拖卡片右下角** → 调整大小
+- 位置 + 尺寸自动存 localStorage，下次打开恢复
+- 底部 "重置布局" 按钮可恢复默认卡片排列
+
+翻页丝滑：iframe 只加载一次，后续翻页通过 `postMessage` 切换内部 slide，**不重新加载不闪烁**。两窗口通过 `BroadcastChannel` 双向同步。
 
 ## 注意事项
 
