@@ -181,6 +181,34 @@ else:
 # Remove any remaining data-theme-base attribute (no longer needed)
 html = re.sub(r'\s*data-theme-base="[^"]*"', '', html)
 
+
+# Inline local images as base64 data URIs
+deck_dir = os.path.dirname(abs_path)
+img_pat = re.compile(r'(src)=(["\'])((?!(?:https?:|data:))[^"\']+\.(?:png|jpg|jpeg|gif|svg|webp))\2', re.IGNORECASE)
+inlined_count = 0
+def inline_image(m):
+    global inlined_count
+    attr, quote, src = m.group(1), m.group(2), m.group(3)
+    img_path = os.path.normpath(os.path.join(deck_dir, src))
+    if not os.path.isfile(img_path):
+        print(f"  Warning: image not found: {img_path}", file=sys.stderr)
+        return m.group(0)
+    try:
+        with open(img_path, "rb") as f:
+            b64 = base64.b64encode(f.read()).decode("ascii")
+    except OSError as e:
+        print(f"  Warning: cannot read image {img_path}: {e}", file=sys.stderr)
+        return m.group(0)
+    ext = os.path.splitext(src)[1].lower().lstrip(".")
+    mime_map = {"png":"image/png","jpg":"image/jpeg","jpeg":"image/jpeg","gif":"image/gif","svg":"image/svg+xml","webp":"image/webp"}
+    mime = mime_map.get(ext, "application/octet-stream")
+    inlined_count += 1
+    print(f"  Inlined image: {os.path.basename(src)} ({len(b64)//1024} KB)")
+    return f'{attr}={quote}data:{mime};base64,{b64}{quote}'
+html = img_pat.sub(inline_image, html)
+if inlined_count:
+    print(f"  Total images inlined: {inlined_count}")
+
 try:
     with open(out_path, "w") as f:
         f.write(html)

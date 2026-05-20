@@ -1,0 +1,29 @@
+/* paper-presentation — 学术论文演示 · 亮色 · 衬线字体 · 直角 · 无动画 */
+.tpl-paper-presentation {
+  /* Inherits from theme (recommended: academic-paper) */
+  --pp-callout-bg: var(--grad-soft, #f5f3ea);
+  --pp-code-bg:    var(--surface-2, #f5f3ea);
+  --pp-code-border: var(--border, rgba(20,20,20,.14));
+}
+/* comparison table */
+.tpl-paper-presentation .table-cmp{width:100%;border-collapse:collapse;font-size:17px;margin-top:10px;font-variant-numeric:tabular-nums}
+.tpl-paper-presentation .table-cmp th{text-align:left;padding:10px 14px;border-bottom:2px solid var(--text-1);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.tpl-paper-presentation .table-cmp td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-1)}
+.tpl-paper-presentation .table-cmp .hi{color:var(--accent);font-weight:700}
+.tpl-paper-presentation .table-cmp tr.row-hi{background:var(--grad-soft)}
+/* code block — light background, theme-aware syntax */
+.tpl-paper-presentation .code-sm{font-family:var(--font-mono);font-size:14px;line-height:1.8;background:var(--pp-code-bg);color:var(--text-1);padding:22px 26px;border:1px solid var(--pp-code-border);overflow:auto;white-space:pre}
+.tpl-paper-presentation .code-sm .c1{color:var(--text-3);font-style:italic}
+.tpl-paper-presentation .code-sm .kw{color:var(--accent);font-weight:600}
+.tpl-paper-presentation .code-sm .fn{color:var(--accent-2)}
+.tpl-paper-presentation .code-sm .st{color:var(--good, #1a5a2a)}
+.tpl-paper-presentation .code-sm .hl{color:var(--accent-3)}
+/* big stat number */
+.tpl-paper-presentation .num-stat{font-family:'Playfair Display',Georgia,serif;font-size:52px;font-weight:900;color:var(--accent);line-height:1}
+/* framed image */
+.tpl-paper-presentation .img-framed{border:1px solid var(--border-strong);max-width:100%;display:block}
+.tpl-paper-presentation .img-caption{font-size:12px;color:var(--text-3);margin-top:6px;text-align:center}
+/* callout box */
+.tpl-paper-presentation .callout{background:var(--pp-callout-bg);border-left:3px solid var(--accent);padding:16px 20px;font-size:15px;line-height:1.65;color:var(--text-1)}
+/* tag row */
+.tpl-paper-presentation .tag-row{display:flex;gap:10px;flex-wrap:wrap}

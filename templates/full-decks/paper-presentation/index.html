@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ART 的实用同步技术</title>
+<link rel="stylesheet" href="../../../assets/fonts.css">
+<link rel="stylesheet" href="../../../assets/base.css">
+<link rel="stylesheet" id="theme-link" href="../../../assets/themes/academic-paper.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="tpl-paper-presentation" data-theme="academic-paper" data-themes="academic-paper,editorial-serif,minimal-white,engineering-whiteprint,corporate-clean" data-theme-base="../../../assets/themes/">
+<div class="deck">
+
+  <!-- 1. 封面 -->
+  <section class="slide is-active">
+    <div class="kicker">DaMoN'16 · Technische Universität München</div>
+    <h1 class="h1">ART 的<span style="color:var(--accent)">实用</span><br>同步技术</h1>
+    <p class="lede" style="margin-top:16px;font-size:22px">乐观锁耦合 (OLC) 与读优化写互斥 (ROWEX)<br>—— 两个用少量锁实现高扩展性的同步协议</p>
+    <div class="row" style="margin-top:28px;gap:14px">
+      <div style="width:48px;height:48px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:20px">VL</div>
+      <div><b style="display:block;font-size:18px">V. Leis, F. Scheibner, A. Kemper, T. Neumann</b><span class="dim2" style="font-size:13px;font-family:var(--font-mono)">{leis,scheibnf,kemper,neumann}@in.tum.de</span></div>
+    </div>
+    <div class="deck-footer"><span class="mono">#concurrency #database #ART #synchronization</span><span class="slide-number" data-current="1" data-total="11"></span></div>
+  </section>
+
+  <!-- 2. 背景与动机 -->
+  <section class="slide">
+    <div class="kicker">背景 · 动机</div>
+    <h2 class="h2">细粒度锁<span style="color:var(--accent)">不扩展</span></h2>
+    <div class="grid g2" style="margin-top:24px">
+      <div>
+        <div class="card card-accent" style="margin-bottom:14px">
+          <h4>旧时代的方案</h4>
+          <p class="dim" style="font-size:17px">磁盘 I/O 主导执行时间，锁持有时间极短。细粒度锁足够好用。</p>
+        </div>
+        <div class="card card-accent" style="margin-bottom:14px">
+          <h4>现代硬件的现实</h4>
+          <p class="dim" style="font-size:17px">24+ 核 / 插槽，数据全在内存。每次获取读锁都会<b>写入缓存行</b> → 所有核心的缓存副本失效 → 大量无意义的缓存缺失。</p>
+        </div>
+        <div class="card card-accent">
+          <h4>已有方案的困境</h4>
+          <p class="dim" style="font-size:17px"><b style="color:var(--text-1)">无锁</b>：扩展性最好，极难实现。 <b style="color:var(--text-1)">HTM</b>：需要特殊硬件。中间地带在哪里？</p>
+        </div>
+      </div>
+      <div>
+        <img class="img-framed" src="../assets/fig-art-practical-synchronization-p1-1.png" alt="同步范式全景">
+        <p class="img-caption">▲ 图 1：同步范式全景 —— 从细粒度锁到无锁，本文提出两个中间方案</p>
+        <div class="callout" style="margin-top:18px;font-size:16px"><b>核心主张：</b>锁本身不是问题。频繁<b>写入共享缓存行</b>才是真正的瓶颈。</div>
+      </div>
+    </div>
+    <div class="deck-footer"><span>背景 · 动机</span><span class="slide-number" data-current="2" data-total="11"></span></div>
+  </section>
+
+  <!-- 3. ART 简介 -->
+  <section class="slide">
+    <div class="kicker">背景 · ART</div>
+    <h2 class="h2">自适应基数树：<span style="color:var(--accent)">高性能</span>，难同步</h2>
+    <div class="grid g2" style="margin-top:24px">
+      <div>
+        <img class="img-framed" src="../assets/fig-art-practical-synchronization-p2-1.png" alt="ART 内部结构">
+        <p class="img-caption">▲ 图 2：ART 的四种节点类型与头部结构</p>
+      </div>
+      <div>
+        <div class="card card-accent" style="margin-bottom:14px">
+          <h4>自适应节点类型</h4>
+          <p class="dim" style="font-size:17px">四种节点：<b style="color:var(--text-1)">Node4 → Node16 → Node48 → Node256</b>，随条目增长自动升级。Node4 存 3 条目后再插入 2 个 → 升级为 Node16。</p>
+        </div>
+        <div class="card card-accent" style="margin-bottom:14px">
+          <h4>路径压缩</h4>
+          <p class="dim" style="font-size:17px">合并只有单子节点的路径，在节点头部存<b style="color:var(--text-1)">前缀字节</b>。大幅降低树高，对长字符串尤其有效。</p>
+        </div>
+        <div class="card card-accent" style="margin-bottom:14px">
+          <h4>关键性质</h4>
+          <p class="dim" style="font-size:17px">ART 无重平衡操作。插入 / 删除最多影响 <b style="color:var(--text-1)">2 个节点</b>（目标节点 + 父节点），比 B 树更适合锁耦合。</p>
+        </div>
+        <div class="tag-row">
+          <span class="pill">HyPer 默认索引</span>
+          <span class="pill">保序（vs 哈希表）</span>
+          <span class="pill">Pointer Tagging</span>
+        </div>
+      </div>
+    </div>
+    <div class="deck-footer"><span>背景 · ART</span><span class="slide-number" data-current="3" data-total="11"></span></div>
+  </section>
+
+  <!-- 4. OLC 协议 -->
+  <section class="slide">
+    <div class="kicker">协议一 · 乐观锁耦合</div>
+    <h2 class="h2">用<span style="color:var(--accent)">版本号</span>代替读锁</h2>
+    <div class="grid g2" style="margin-top:24px;align-items:start">
+      <div>
+        <p class="lede" style="font-size:19px;margin-bottom:14px">核心思想：读者<b style="color:var(--text-1)">不获取物理锁</b>。快照版本号 → 乐观读 → 验证版本号未变。变了就重试。</p>
+        <div class="code-sm">
+<span class="c1">// 乐观锁 = 锁标志位 + 版本计数器（同一原子变量）</span>
+<span class="kw">struct</span> <span class="fn">OptLock</span> {
+    std::atomic&lt;<span class="kw">uint64_t</span>&gt; lockVersion;
+    <span class="c1">// bit 0: 锁标志  |  bits 1-63: 版本号</span>
+};
+
+<span class="kw">uint64_t</span> <span class="fn">readLockOrRestart</span>(Node* n) {
+    <span class="kw">auto</span> v = n-&gt;lockVersion.load();
+    <span class="kw">if</span> (v &amp; <span class="hl">1</span>) restart();
+    <span class="kw">return</span> v;
+}
+
+<span class="kw">void</span> <span class="fn">readUnlockOrRestart</span>(Node* n, <span class="kw">uint64_t</span> old) {
+    <span class="kw">if</span> (n-&gt;lockVersion.load() != old) restart();
+}</div>
+      </div>
+      <div>
+        <div class="card card-accent" style="margin-bottom:14px">
+          <h4>与传统锁耦合的差异</h4>
+          <p class="dim" style="font-size:17px">代码结构几乎相同。仅 <span class="mono">readLock</span>/<span class="mono">unlock</span> 替换为 <span class="mono">readLockOrRestart</span>/<span class="mono">readUnlockOrRestart</span>。可（几乎）像普通读写锁一样推理。</p>
+        </div>
+        <div class="card card-accent" style="margin-bottom:14px">
+          <h4>为什么能扩展</h4>
+          <p class="dim" style="font-size:17px">读者对共享缓存行<b style="color:var(--text-1)">零写入</b>。版本号只读（共享态），不写（独占态）。缓存一致性流量大幅下降。</p>
+        </div>
+        <div class="card card-accent" style="margin-bottom:14px">
+          <h4>写者仍然用锁</h4>
+          <p class="dim" style="font-size:17px">写操作获取锁标志位。<span class="mono">writeUnlock</span> 递增版本号，触发看到中间态的读者重试。</p>
+        </div>
+        <div class="row" style="justify-content:space-around">
+          <div style="text-align:center"><span class="num-stat">+65%</span><p class="dim2" style="font-size:12px;margin-top:4px">单线程额外开销</p></div>
+          <div style="text-align:center"><span class="num-stat" style="color:var(--good)">+10%</span><p class="dim2" style="font-size:12px;margin-top:4px">20 线程额外开销</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="deck-footer"><span>协议一 · OLC</span><span class="slide-number" data-current="4" data-total="11"></span></div>
+  </section>
+
+  <!-- 5. OLC 安全性 -->
+  <section class="slide">
+    <div class="kicker">协议一 · 安全性</div>
+    <h2 class="h2">OLC 对算法的<span style="color:var(--accent)">三个要求</span></h2>
+    <div class="grid g3" style="margin-top:32px">
+      <div class="card card-accent">
+        <h4 style="font-family:var(--font-serif)">① 防止无限循环</h4>
+        <p class="dim" style="font-size:17px">读者在两个版本检查之间可能看到不一致状态。ART 树结构遍历不形成环，无此风险。</p>
+      </div>
+      <div class="card card-accent">
+        <h4 style="font-family:var(--font-serif)">② 防止野指针</h4>
+        <p class="dim" style="font-size:17px">乐观读到的 <span class="mono">nextNode</span> 可能已被释放。解引用前加额外版本检查：<span class="mono">checkOrRestart(node, version)</span>。</p>
+      </div>
+      <div class="card card-accent">
+        <h4 style="font-family:var(--font-serif)">③ 延迟内存回收</h4>
+        <p class="dim" style="font-size:17px">节点删除后不能立即释放。方案：<b style="color:var(--text-1)">epoch-based reclamation</b>，标记 <span class="mono">obsolete</span> 后等所有读者离开 epoch。</p>
+      </div>
+    </div>
+    <div class="grid g2" style="margin-top:20px">
+      <div class="callout" style="font-size:16px"><b style="color:var(--accent)">前进保证：</b>极端情况限制乐观重试次数，超限后降级为获取写锁。</div>
+      <div class="callout" style="font-size:16px"><b style="color:var(--accent)">调试技巧：</b>将乐观原语映射到 <span class="mono">pthread_rwlock</span>，用 Helgrind 检测同步 bug，生产环境切回。</div>
+    </div>
+    <div class="deck-footer"><span>协议一 · 安全性</span><span class="slide-number" data-current="5" data-total="11"></span></div>
+  </section>
+
+  <!-- 6. ROWEX -->
+  <section class="slide">
+    <div class="kicker">协议二 · ROWEX</div>
+    <h2 class="h2">读操作<span style="color:var(--accent)">永不阻塞</span>，永不重试</h2>
+    <div class="grid g2" style="margin-top:24px">
+      <div>
+        <p class="lede" style="font-size:19px;margin-bottom:16px">OLC 的弱点：<b style="color:var(--accent-3)">所有操作都可能重试</b>，高竞争下读性能恶化。ROWEX 消除读者重试 —— 零阻塞，零版本检查。</p>
+        <table class="table-cmp">
+          <tr><th></th><th>OLC</th><th>ROWEX</th></tr>
+          <tr><td>读者行为</td><td>快照版本 → 乐观读 → 验证</td><td class="hi">直接读，零开销</td></tr>
+          <tr><td>写者行为</td><td>物理锁 + 递增版本</td><td>本地锁 + 原子操作</td></tr>
+          <tr><td>代码改动</td><td class="hi">最少 (≈44 行 lookup)</td><td>需改数据结构内部</td></tr>
+          <tr><td>高竞争读</td><td style="color:var(--accent-3)">退化</td><td class="hi">保持稳定</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="card card-accent" style="margin-bottom:14px">
+          <h4>核心权衡</h4>
+          <p class="dim" style="font-size:17px">ROWEX 中<b style="color:var(--text-1)">写者承担保证读者一致性的责任</b>。不再由读者检测冲突（OLC 方式），而是写者通过原子操作和精心排序预防冲突。</p>
+        </div>
+        <div class="card card-accent" style="margin-bottom:14px">
+          <h4>与无锁方案的对比</h4>
+          <p class="dim" style="font-size:17px">ROWEX 比无锁容易，因为写者<b style="color:var(--text-1)">可以用锁</b>（只是不对读者用）。比纯 CAS 设计有更多手段。但比 OLC 难 —— 必须修改数据结构内部。</p>
+        </div>
+        <div class="callout" style="font-size:16px"><b style="color:var(--accent)">适用场景：</b>高竞争 + 读密集型。Zipf 偏斜度 = 3（83% 同一键），ROWEX 查找 ~22 Mops/s，OLC 降至 ~8 Mops/s。</div>
+      </div>
+    </div>
+    <div class="deck-footer"><span>协议二 · ROWEX</span><span class="slide-number" data-current="6" data-total="11"></span></div>
+  </section>
+
+  <!-- 7. ROWEX 在 ART 中的实现 -->
+  <section class="slide">
+    <div class="kicker">协议二 · 实现</div>
+    <h2 class="h2">让 ART 支持<span style="color:var(--accent)">无阻塞读</span></h2>
+    <div class="grid g2" style="margin-top:24px">
+      <div>
+        <div class="card card-accent" style="margin-bottom:14px">
+          <h4>局部修改：全部原子化</h4>
+          <p class="dim" style="font-size:17px">读者可见字段全部用 <span class="mono">std::atomic</span>：键字节 (N4/N16)、子索引 (N48)、子指针（全部）。x86 上原子读<b style="color:var(--text-1)">零额外指令</b>，仅阻止编译器重排。</p>
+        </div>
+        <div class="card card-accent" style="margin-bottom:14px">
+          <h4>节点替换（4 步协议）</h4>
+          <ol style="padding-left:24px;font-size:17px;line-height:2.1;color:var(--text-1);margin:0">
+            <li>锁定节点 + 父节点</li>
+            <li>创建新节点，拷贝全部条目</li>
+            <li>原子写入父节点指针 → 新节点</li>
+            <li>标记旧节点 <span class="mono">obsolete</span>，解锁两者</li>
+          </ol>
+        </div>
+      </div>
+      <div>
+        <div class="card card-accent" style="margin-bottom:14px">
+          <h4>路径压缩：level 字段技巧</h4>
+          <p class="dim" style="font-size:17px">安装新节点 + 截断前缀无法在一个原子操作内完成。读者可能看到中间态。解决：每个节点存一个 <span class="mono">level</span> 字段（创建后不变），读者用它检测并跳过不匹配的前缀。</p>
+        </div>
+        <div class="card card-accent" style="margin-bottom:12px">
+          <h4>实现细节</h4>
+          <p class="dim" style="font-size:17px">前缀 + 长度打包为单个 8 字节值 → 一次原子写入。代价：最大前缀从 9 字节降至 4 字节。</p>
+        </div>
+        <div class="tag-row">
+          <span class="pill pill-accent">+12 字节/节点 (ROWEX)</span>
+          <span class="pill">+8 字节 (OLC)</span>
+          <span class="pill">+4 字节 (锁耦合)</span>
+        </div>
+      </div>
+    </div>
+    <div class="deck-footer"><span>协议二 · 实现</span><span class="slide-number" data-current="7" data-total="11"></span></div>
+  </section>
+
+  <!-- 8. 实验评估 — 扩展性 -->
+  <section class="slide">
+    <div class="kicker">实验评估 · 扩展性</div>
+    <h2 class="h2"><span style="color:var(--accent)">扩展性</span>：OLC / ROWEX 接近无锁</h2>
+    <div style="margin-top:20px">
+      <img class="img-framed" src="../assets/fig-art-practical-synchronization-p4-1.png" alt="扩展性" style="max-width:85%">
+      <p class="img-caption" style="font-size:12px;margin-top:10px">▲ 图 5：扩展性 (50M 随机整数，Haswell EP, 10 核 / 20 超线程) — 锁耦合仅 ~25 Mops/s @20 线程，OLC/ROWEX ~90 Mops/s</p>
+    </div>
+    <div class="grid g2" style="margin-top:24px">
+      <div class="callout" style="font-size:16px"><b style="color:var(--accent)">关键数据：</b>锁耦合 20 线程 <b>2787 cycles/lookup</b>（6.6× 单线程），L1 缺失从 5.2 升至 9.0。OLC 仅 418 cycles，L1 缺失 5.7。</div>
+      <div class="callout" style="font-size:16px"><b style="color:var(--accent)">空间开销：</b>锁耦合 +4 字节/节点，OLC +8 字节，ROWEX +12 字节。Masstree 作为竞争者，整数键比 OLC 慢 ~2×。</div>
+    </div>
+    <div class="deck-footer"><span>实验评估 · 扩展性</span><span class="slide-number" data-current="8" data-total="11"></span></div>
+  </section>
+
+  <!-- 9. 实验评估 — 竞争与字符串 -->
+  <section class="slide">
+    <div class="kicker">实验评估 · 竞争与字符串</div>
+    <h2 class="h2"><span style="color:var(--accent)">ROWEX</span> 在高竞争下独占优势</h2>
+    <div class="grid g2" style="margin-top:20px;align-items:start">
+      <div>
+        <img class="img-framed" src="../assets/fig-art-practical-synchronization-p5-1.png" alt="竞争">
+        <p class="img-caption">▲ 图 6：竞争下性能 (1 读 + 1 写线程, Zipf 偏斜度 0-3)</p>
+      </div>
+      <div>
+        <img class="img-framed" src="../assets/fig-art-practical-synchronization-p5-2.png" alt="字符串">
+        <p class="img-caption">▲ 图 7：字符串数据 20 线程 (genome 256K / Wikipedia 16M / URL 6.4M)</p>
+      </div>
+    </div>
+    <div class="grid g2" style="margin-top:18px">
+      <div class="callout" style="font-size:16px"><b style="color:var(--accent)">竞争实验：</b>Zipf = 3（83% 同一键）时 ROWEX 查找 ~22 Mops/s 保持平稳，OLC 降至 ~8 Mops/s，锁耦合崩至 ~2 Mops/s。ROWEX 非阻塞读的优势在此显现。</div>
+      <div class="callout" style="font-size:16px"><b style="color:var(--accent)">字符串实验：</b>三种真实数据集。OLC / ROWEX 均接近无同步 ART。Masstree 随键变长缩小差距但仍落后。锁耦合在所有场景最慢。</div>
+    </div>
+    <div class="deck-footer"><span>实验评估 · 竞争与字符串</span><span class="slide-number" data-current="9" data-total="11"></span></div>
+  </section>
+
+  <!-- 10. 代码复杂度与相关工作 -->
+  <section class="slide">
+    <div class="kicker">实验评估 · 复杂度</div>
+    <h2 class="h2">代码<span style="color:var(--accent)">复杂度</span>与相关工作</h2>
+    <div class="grid g2" style="margin-top:24px">
+      <div>
+        <table class="table-cmp" style="font-size:17px">
+          <tr><th>方案</th><th>lookup</th><th>insert</th><th>remove</th></tr>
+          <tr><td>无同步</td><td>29</td><td>95</td><td>87</td></tr>
+          <tr><td>HTM</td><td>30</td><td>96</td><td>88</td></tr>
+          <tr><td>锁耦合</td><td>41</td><td>136</td><td>139</td></tr>
+          <tr class="row-hi"><td class="hi">OLC ★</td><td class="hi">44</td><td class="hi">148</td><td class="hi">143</td></tr>
+          <tr><td>ROWEX</td><td>34</td><td>200</td><td>156</td></tr>
+        </table>
+        <p class="dim2" style="font-size:12px;margin-top:8px">▲ 核心算法 C++ 代码行数（不含锁实现、GC、注释、空行）。ROWEX 实际复杂度被低估 —— 协议极其精细。</p>
+      </div>
+      <div>
+        <div class="card card-accent" style="margin-bottom:10px">
+          <h4>Bw-Tree [2012]</h4>
+          <p class="dim" style="font-size:16px">无锁 B 树，delta record + 映射表，设计精巧但极其复杂。需额外间接层。</p>
+        </div>
+        <div class="card card-accent" style="margin-bottom:10px">
+          <h4>Masstree [2012]</h4>
+          <p class="dim" style="font-size:16px">B 树 / Trie 混合，混合锁 + 原子操作 + OLC 思想。与本文最接近，但 ART 整数键更快 (~2×)。</p>
+        </div>
+        <div class="card card-accent" style="margin-bottom:10px">
+          <h4>OLFIT [Cha 2001]</h4>
+          <p class="dim" style="font-size:16px">最早用版本号检测 B-link 树内节点变更，但未跨节点追踪版本。本文将思路一般化。</p>
+        </div>
+        <div class="card card-accent">
+          <h4>HTM</h4>
+          <p class="dim" style="font-size:16px">仅需包装事务 (30 vs 29 行 lookup)，但需特定硬件，大元组或高竞争下退化。</p>
+        </div>
+      </div>
+    </div>
+    <div class="deck-footer"><span>实验评估 · 复杂度</span><span class="slide-number" data-current="10" data-total="11"></span></div>
+  </section>
+
+  <!-- 11. 总结 -->
+  <section class="slide center">
+    <div style="max-width:920px">
+      <div class="kicker" style="text-align:left">总结</div>
+      <h2 class="h2">锁<span style="color:var(--accent)">不邪恶</span>。<br>滥用锁才邪恶。</h2>
+      <div class="grid g3" style="margin-top:36px;text-align:left">
+        <div class="card card-accent">
+          <h4 style="font-family:var(--font-serif)">① 乐观锁耦合 (OLC)</h4>
+          <p class="dim" style="font-size:17px">版本号替代物理读锁。仅 44 行 lookup。近无锁级扩展性。冲突少时首选。</p>
+        </div>
+        <div class="card card-accent">
+          <h4 style="font-family:var(--font-serif)">② ROWEX</h4>
+          <p class="dim" style="font-size:17px">读者永不阻塞。写者用本地锁 + 原子操作。高竞争下读性能不退化。</p>
+        </div>
+        <div class="card card-accent">
+          <h4 style="font-family:var(--font-serif)">③ 通用构建块</h4>
+          <p class="dim" style="font-size:17px">不是 ART 专用技巧。适用于 B 树、二叉搜索树等结构。两个协议都是实用中间方案。</p>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:22px;font-size:17px;text-align:left">
+        <b>真正的敌人不是锁 —— 是不必要的共享缓存行写入。</b>OLC 和 ROWEX 都消除了读者的缓存行写入。需要简单选 OLC，需要读决不等待选 ROWEX。不要抛弃锁 —— 少量、谨慎地使用它。
+      </div>
+      <p class="dim2" style="font-size:14px;margin-top:24px">DaMoN'16 · doi:10.1145/2933349.2933352 · Technische Universität München</p>
+    </div>
+    <div class="deck-footer"><span>总结</span><span class="slide-number" data-current="11" data-total="11"></span></div>
+  </section>
+
+</div>
+<script src="../../../assets/runtime.js"></script>
+</body></html>
