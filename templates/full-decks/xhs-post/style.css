@@ -10,8 +10,24 @@
   --shadow:0 14px 36px rgba(90,40,30,.08);
   font-family:'Inter','Noto Sans SC','PingFang SC',sans-serif;
 }
-.tpl-xhs-post{background:#f0eae2;display:flex;align-items:center;justify-content:center;min-height:100vh}
-.tpl-xhs-post .deck{width:810px;height:1080px;position:relative;background:transparent}
+/* 竖屏适配：在横屏显示器上自动缩放 */
+.tpl-xhs-post{background:#f0eae2;display:flex;align-items:center;justify-content:center;min-height:100vh;overflow:hidden}
+.tpl-xhs-post .deck{
+  width:810px;height:1080px;position:relative;background:transparent;
+  transform-origin:center center;
+}
+/* 当视口高度不足以容纳 1080px 时，按比例缩放 */
+@media (max-height:1120px){
+  .tpl-xhs-post .deck{
+    transform:scale(calc(100vh / 1120));
+  }
+}
+/* 当视口宽度不足以容纳 810px 时，按比例缩放 */
+@media (max-width:850px){
+  .tpl-xhs-post .deck{
+    transform:scale(calc(100vw / 850));
+  }
+}
 .tpl-xhs-post .slide{
   position:absolute;inset:0;width:810px;height:1080px;aspect-ratio:3/4;
   padding:70px 64px;border-radius:28px;overflow:hidden;
