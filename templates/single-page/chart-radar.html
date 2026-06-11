@@ -7,8 +7,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 </head><body class="single">
 <div class="deck"><section class="slide is-active" data-title="Radar chart">
-  <p class="kicker">Chart · 雷达图</p>
-  <h2 class="h2">把 html-ppt 和竞品放一张图</h2>
+  <p class="kicker">차트 · 레이더 차트</p>
+  <h2 class="h2">html-ppt와 경쟁제품을 하나의 그림에 담다</h2>
   <div class="card mt-l" style="height:520px;padding:28px"><canvas id="c"></canvas></div>
   <script>
     addEventListener('DOMContentLoaded',()=>{
@@ -17,7 +17,7 @@
       const a2=css.getPropertyValue('--accent-2').trim();
       const text2=css.getPropertyValue('--text-2').trim();
       new Chart(document.getElementById('c'),{type:'radar',
-        data:{labels:['上手','美观','自定义','性能','导出','生态'],
+        data:{labels:['시작하기','아름다운','사용자 정의','성능','수출','생태학'],
           datasets:[
             {label:'html-ppt',data:[9,9,10,10,9,6],borderColor:a1,backgroundColor:a1+'33',borderWidth:3,pointRadius:5},
             {label:'reveal.js',data:[8,7,9,8,8,10],borderColor:a2,backgroundColor:a2+'22',borderWidth:3,pointRadius:5}]},

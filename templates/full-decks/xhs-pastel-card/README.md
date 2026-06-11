@@ -1,11 +1,11 @@
 # xhs-pastel-card
 
-暖奶油 `#fef8f1` 底 + 模糊彩色 blob + Playfair italic 衬线大字 + 整色马卡龙卡片（桃 / 薄荷 / 天 / 丁香 / 柠檬 / 玫瑰）。共性提取自 `20260412-obsidian-skills/html/xhs-obsidian-skills.html` 的 `soft-purple/pink/blue/green/orange/teal` 软色卡系统，以及 `20260409 v2-白底版` 的胶囊 chip 顶部条。
+따뜻한 크림 `#fef8f1` 베이스 + 흐릿한 컬러 얼룩 + 플레이페어 이탤릭 세리프 큰 레터링 + 풀 컬러 마카롱 카드(복숭아/민트/데이/라일락/레몬/로즈). 에서 추출한 공통점 `20260412-obsidian-skills/html/xhs-obsidian-skills.html` 의 `soft-purple/pink/blue/green/orange/teal` 부드러운 컬러의 카드 시스템과 `20260409 v2-흰하단버전` 캡슐 칩 상단 바.
 
-**Visual traits:** 三颗柔光 blob 作背景、顶部 chip+page 组合、Playfair italic 做 accent 词（em / rose / mint）、整色圆角 28px 大卡片、italic Playfair 序号 01-04、donut SVG 图、小 divider 条 + 渐变、衬线正文做标题 / sans 做正文混排。
+**시각적 특성:** 배경으로 부드러운 조명 얼룩 3개, 상단 칩+페이지 조합, Playfair 이탤릭체로 악센트 단어(em / rose / mint), 풀 컬러 둥근 모서리 28px 대형 카드, 기울임꼴 Playfair 일련 번호 01-04, 도넛 SVG 이미지, 작은 구분선 + 그라데이션, 제목으로 세리프 텍스트 / 기본 텍스트 혼합 레이아웃으로 산세.
 
-**Use when:** 生活方式 / 个人成长 / 轻内容 / 情感向的小红书贴或个人演讲；你想要一种「不那么科技感、偏杂志偏手作」的气质；适合讲「慢」「休息」「温柔」主题。
+**사용할 경우:** 라이프스타일/개인 성장/가벼운 콘텐츠/감정적인 작은 빨간 스티커 또는 개인 연설; 당신은 "덜 기술적이고, 잡지 지향적이며, 손으로 만든" 기질을 원합니다. "느림", "휴식", "부드러움"이라는 주제에 적합합니다.
 
-**Source inspiration:** `20260412-obsidian-skills/html/xhs-obsidian-skills.html` + `20260409` v2-白底版（共性 pastel 系统）。
+**Source inspiration:** `20260412-obsidian-skills/html/xhs-obsidian-skills.html` + `20260409` v2-흰색 배경 버전(일반적인 파스텔 시스템).
 
 **Path:** `templates/full-decks/xhs-pastel-card/index.html`

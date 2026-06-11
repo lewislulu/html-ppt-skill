@@ -8,7 +8,7 @@
 
 **Author:** lewis &lt;sudolewis@gmail.com&gt;
 **License:** MIT
-**中文文档:** [README.zh-CN.md](README.zh-CN.md)
+**중국어 문서:** [README.zh-CN.md](README.zh-CN.md)
 
 ![html-ppt — cover with live previews](docs/readme/hero.gif)
 
@@ -18,7 +18,7 @@
 
 Press `S` on any deck to pop open a dedicated presenter window with four
 draggable, resizable **magnetic cards**: current slide, next slide preview,
-speaker script (逐字稿), and timer. Two windows stay in sync via
+스피커 스크립트(축어적) 및 타이머. 두 개의 창은 다음을 통해 동기화 상태를 유지합니다.
 `BroadcastChannel`.
 
 ![Presenter mode with 4 magnetic cards](docs/readme/presenter-mode.png)
@@ -53,9 +53,9 @@ npx skills add https://github.com/lewislulu/html-ppt-skill
 That registers the skill with your agent runtime. After install, any agent
 that supports AgentSkills can author presentations by asking things like:
 
-> "做一份 8 页的技术分享 slides，用 cyberpunk 主题"
+> "사이버펑크 테마를 활용한 8페이지 기술 공유 슬라이드를 만들어 보세요"
 > "turn this outline into a pitch deck"
-> "做一个小红书图文，9 张，白底柔和风"
+> "그림과 텍스트, 9개의 그림, 흰색 배경과 부드러운 스타일로 작은 빨간 책을 만들어보세요"
 
 ## What's in the box
 
@@ -94,14 +94,14 @@ isolated iframe so theme ≠ theme is visually guaranteed).
 Eight extracted from real-world decks, seven generic scenario scaffolds:
 
 **Extracted looks**
-- `xhs-white-editorial` — 小红书白底杂志风
-- `graphify-dark-graph` — 暗底 + 力导向知识图谱
-- `knowledge-arch-blueprint` — 蓝图 / 架构图风
-- `hermes-cyber-terminal` — 终端 cyberpunk
-- `obsidian-claude-gradient` — 紫色渐变卡
-- `testing-safety-alert` — 红 / 琥珀警示风
-- `xhs-pastel-card` — 柔和马卡龙图文
-- `dir-key-nav-minimal` — 方向键极简
+- `xhs-white-editorial` — Xiaohongshu 흰색 배경 잡지 스타일
+- `graphify-dark-graph` — 어두운 바닥 + Force-Directed 지식 그래프
+- `knowledge-arch-blueprint` — 청사진/아키텍처 스타일
+- `hermes-cyber-terminal` — 터미널 사이버펑크
+- `obsidian-claude-gradient` — 보라색 그라데이션 카드
+- `testing-safety-alert` — 빨간색/황색 경고 바람
+- `xhs-pastel-card` — 부드러운 마카롱 그래픽 및 텍스트
+- `dir-key-nav-minimal` — 미니멀한 방향 키
 
 **Scenario decks**
 - `pitch-deck`, `product-launch`, `tech-sharing`, `weekly-report`,

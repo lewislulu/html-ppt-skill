@@ -1,4 +1,4 @@
-/* dir-key-nav-minimal — 方向键极简 · 8 种 mono-background 切换 */
+/* dir-key-nav-minimal — 미니멀한 방향 키 · 8가지 유형의 단일 배경 전환 */
 .tpl-dir-key-nav-minimal{
   --dk-font:'Inter','Noto Sans SC','PingFang SC',-apple-system,sans-serif;
   --dk-mono:'JetBrains Mono',monospace;

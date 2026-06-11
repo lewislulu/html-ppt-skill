@@ -1,4 +1,4 @@
-/* theme: rainbow-gradient — 彩虹渐变点缀（白底） */
+/* 테마: 레인보우 그라데이션 — 레인보우 그라데이션 장식(흰색 배경) */
 :root{
   --bg:#ffffff;--bg-soft:#f8f8fb;--surface:#ffffff;--surface-2:#f4f4f8;
   --border:rgba(20,20,40,.08);--border-strong:rgba(20,20,40,.2);

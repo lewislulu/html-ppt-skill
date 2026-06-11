@@ -1,11 +1,11 @@
 # testing-safety-alert
 
-白底 + 红琥珀警示色 + 条纹危险边 + 大红 strike 和 pill。灵感来自 `20260412-AI测试与安全/xhs-ai-testing-safety-v2.html` 的 `.focus` 黑底白字块、hero quote box 和高对比 black-on-white 气质 —— 但把语气推到「警示 / 风控 / 事故报告」层级。
+흰색 배경 + 빨간색 호박색 경고 색상 + 줄무늬 위험 가장자리 + 밝은 빨간색 파업 및 알약. 에서 영감을 받은 `20260412-AI테스트테스트한글안전안전/xhs-ai-testing-safety-v2.html` 의 `.focus` 검은색 배경에 흰색 텍스트 블록, 영웅 인용 상자 및 흰색 바탕에 검은색 고대비 기질이 있지만 톤을 "경고/위험 통제/사고 보고" 수준으로 끌어올립니다.
 
-**Visual traits:** 顶部 45° 红黑斜条纹警示带、底部副条纹、`strike-through` 红色斜切的否定大字、L1/L2/L3 三档色卡 (绿/琥珀/红)、圆形前置指示灯 alert-box、policy-yaml 深色代码块带红色左边框 + `bad` 关键词高亮、红/绿复选框 checklist、Q1 事故柱状图。
+**시각적 특성:** 상단 45° 빨간색 및 검정색 대각선 줄무늬 경고 테이프, 하단 하위 줄무늬,`strike-through` 빨간색 경사 음수 문자, L1/L2/L3 3단계 컬러 카드(녹색/황색/빨간색), 둥근 전면 표시등 경고 상자, 빨간색 왼쪽 테두리가 있는 정책 yaml 어두운 코드 블록 + `bad` 키워드 강조 표시, 빨간색/녹색 체크박스 체크리스트, Q1 사건 히스토그램.
 
-**Use when:** 讲安全 / 风控 / 事故复盘 / 红队测试 / AI 上线前评估 / policy as code；你需要让观众立刻感到「这事严肃，别马虎」。
+**사용할 경우:** 안전/위험 제어/사고 검토/레드팀 테스트/AI 사전 출시 평가/코드로서의 정책에 대해 이야기합니다. 청중이 즉시 "이건 심각한 일이니까 방심하지 마라"라고 느끼게 해야 합니다.
 
-**Source inspiration:** `20260412-AI测试与安全/html/xhs-ai-testing-safety-v2.html`.
+**Source inspiration:** `20260412-AI테스트테스트한글안전안전/html/xhs-ai-testing-safety-v2.html`.
 
 **Path:** `templates/full-decks/testing-safety-alert/index.html`

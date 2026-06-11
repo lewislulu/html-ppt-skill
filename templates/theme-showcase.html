@@ -29,12 +29,12 @@
 <script>
 /* 36 themes total (24 v1 + 12 v2). Each rendered in its OWN iframe so CSS is isolated. */
 const THEMES = [
-  ['minimal-white',      '极简白 · clean restraint'],
-  ['editorial-serif',    '杂志衬线 · high editorial'],
-  ['soft-pastel',        '马卡龙 · soft pastel'],
-  ['sharp-mono',         '黑白高对比 · sharp mono'],
-  ['arctic-cool',        '冷色调 · arctic'],
-  ['sunset-warm',        '暖色调 · sunset'],
+  ['minimal-white',      '미니멀한 화이트 · 깔끔한 구속'],
+  ['editorial-serif',    '잡지 세리프 · 하이 사설'],
+  ['soft-pastel',        '마카롱 · 부드러운 파스텔'],
+  ['sharp-mono',         '흑백 고대비 · 샤프 모노'],
+  ['arctic-cool',        '시원한 색상 · 북극'],
+  ['sunset-warm',        '따뜻한 색상 · 일몰'],
   ['catppuccin-latte',   'Catppuccin Latte'],
   ['catppuccin-mocha',   'Catppuccin Mocha'],
   ['dracula',            'Dracula'],
@@ -45,26 +45,26 @@ const THEMES = [
   ['rose-pine',          'Rose Pine'],
   ['neo-brutalism',      'Neo-Brutalism'],
   ['glassmorphism',      'Glassmorphism'],
-  ['bauhaus',            'Bauhaus 几何原色'],
+  ['bauhaus',            '바우하우스 기하학적 원색'],
   ['swiss-grid',         'Swiss Grid'],
   ['terminal-green',     'Terminal Green'],
-  ['xiaohongshu-white',  '小红书白底'],
+  ['xiaohongshu-white',  '작은 빨간 책 흰색 배경'],
   ['rainbow-gradient',   'Rainbow Gradient'],
-  ['aurora',             'Aurora 极光'],
-  ['blueprint',          'Blueprint 蓝图'],
+  ['aurora',             '오로라 오로라'],
+  ['blueprint',          '청사진 청사진'],
   ['memphis-pop',        'Memphis Pop'],
   /* v2 additions */
-  ['cyberpunk-neon',     'Cyberpunk Neon 霓虹'],
-  ['y2k-chrome',         'Y2K Chrome 镜面'],
-  ['retro-tv',           'Retro TV CRT 扫描线'],
-  ['japanese-minimal',   '和风极简 · 朱红'],
-  ['vaporwave',          'Vaporwave 蒸汽波'],
+  ['cyberpunk-neon',     '사이버펑크 네온 네온'],
+  ['y2k-chrome',         'Y2K 크롬 거울'],
+  ['retro-tv',           '레트로 TV CRT 스캔 라인'],
+  ['japanese-minimal',   '일본식 미니멀리즘 · 주홍'],
+  ['vaporwave',          '증기파 증기파'],
   ['midcentury',         'Mid-Century Modern'],
-  ['corporate-clean',    'Corporate Clean 商务'],
-  ['academic-paper',     '学术白皮书'],
-  ['news-broadcast',     'News Broadcast 新闻'],
+  ['corporate-clean',    '기업 클린사업'],
+  ['academic-paper',     '학술백서'],
+  ['news-broadcast',     '뉴스 방송 뉴스'],
   ['pitch-deck-vc',      'Pitch Deck VC / YC'],
-  ['magazine-bold',      'Magazine Bold 大字杂志'],
+  ['magazine-bold',      '매거진 볼드'],
   ['engineering-whiteprint','Engineering Whiteprint']
 ];
 
@@ -94,7 +94,7 @@ function demoHTML(themeName, label){
   <p class="lede">Same demo slide, different tokens. Background, type, accent, radius, shadow all come from <code>assets/themes/${themeName}.css</code>.</p>
   <div class="grid g3 mt-l">
     <div class="card">
-      <h4>Palette · 调色盘</h4>
+      <h4>팔레트 · 컬러 팔레트</h4>
       <p class="dim">accent / accent-2 / accent-3 / text / surface-2</p>
       <div class="swatch">
         <div style="background:var(--accent)"></div>
@@ -107,10 +107,10 @@ function demoHTML(themeName, label){
     <div class="card">
       <h4>KPI</h4>
       <div class="kpi gradient-text">2.4K</div>
-      <p class="dim">上周月活 · weekly active</p>
+      <p class="dim">지난주 월간 활동 · 주간 활동</p>
     </div>
     <div class="card">
-      <h4>Code · 令牌</h4>
+      <h4>코드 · 토큰</h4>
       <pre class="mini-code">:root {
   --accent: /* theme */;
   --radius: /* theme */;

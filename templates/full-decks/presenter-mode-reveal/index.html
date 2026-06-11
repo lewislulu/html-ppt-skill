@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>演讲者模式示例 · Presenter Mode Deck</title>
+<title>발표자 모드 예 · 발표자 모드 데크</title>
 <link rel="stylesheet" href="../../../assets/fonts.css">
 <link rel="stylesheet" href="../../../assets/base.css">
 <link rel="stylesheet" id="theme-link" href="../../../assets/themes/tokyo-night.css">
@@ -13,173 +13,173 @@
 <body class="tpl-presenter-mode-reveal">
 <div class="deck">
 
-  <!-- ============ 1. COVER ============ -->
-  <section class="slide" data-title="Cover">
-    <p class="kicker">presenter-mode / demo</p>
-    <h1 class="h1 anim-fade-up" data-anim="fade-up">如何做一场<br><span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">有逐字稿</span>的技术分享</h1>
-    <p class="lede mt-m">按 <span class="mono">S</span> 进入演讲者视图 · <span class="mono">T</span> 切换主题 · <span class="mono">← →</span> 翻页</p>
-    <div class="speaker">
+  <!-- ============ 1. 표지 ============ -->
+  <section class="슬라이드" data-title="표지">
+    <p class="kicker">발표자 모드/데모</p>
+    <h1 class="h1 anim-fade-up" data-anim="fade-up">만드는 방법<br><span style="Background:var(--grad);-webkit-Background-clip:text;Background-clip:text;color:transparent">축어적 스크립트를 사용한 기술 공유</span></h1>
+    <p class="lede mt-m"><span class="mono">S</span>를 눌러 발표자 보기로 전환 · <span class="mono">T</span>를 눌러 주제 전환 · <span class="mono">← →</span> 페이지 넘기기</p>
+    <div 클래스="스피커">
       <div class="av"></div>
-      <div><b>@lewis</b><span>sharing talk · 30 min</span></div>
+      <div><b>@lewis</b><span>대화 공유 · 30분</span></div>
     </div>
-    <div class="deck-footer">
-      <span class="mono">#presenter #逐字稿 #tech-talk</span>
+    <div class="데크-바닥글">
+      <span class="mono">#presenter #verbatio #tech-talk</span>
       <span class="slide-number" data-current="1" data-total="6"></span>
     </div>
-    <aside class="notes">
-      <p>大家好，欢迎来到今天的技术分享。我是 lewis，今天想跟大家聊一个很多人忽略但其实非常影响演讲效果的话题——<strong>如何让一场技术分享既有深度，又讲得不卡壳</strong>。</p>
-      <p>在正式开始之前，先跟大家介绍一下这份 deck 本身：这是一个支持<em>演讲者模式</em>的 HTML 幻灯片模板。现在你们看到的是观众视图，但我自己的屏幕上看到的是完全不一样的东西——当前页、下一页、完整逐字稿、计时器，全在一块屏幕上。</p>
-      <p>为什么我要专门做这个？因为我发现自己做技术分享时最大的痛点不是 PPT 不够好看，而是<strong>讲到某一页突然不知道该说什么，或者忘了过渡怎么接</strong>。今天这份分享既是内容本身，也是个演示——我会一直开着演讲者模式讲，你们可以观察我讲得有多流畅。</p>
-      <p>今天分享大概 30 分钟，分 5 个部分。有问题随时打断。Let's go.</p>
+    <별도 클래스="노트">
+      <p>안녕하세요 여러분, 오늘의 기술 공유에 오신 것을 환영합니다. 제 이름은 루이스입니다. 오늘 저는 많은 사람들이 무시하지만 실제로 연설의 효과에 큰 영향을 미치는 주제인 <strong>막힘 없이 심층적이고 원활한 기술 공유를 만드는 방법</strong>에 대해 이야기하고 싶습니다. </p>
+      <p>공식적으로 시작하기 전에 먼저 자료 자체를 소개하겠습니다. 이는 <em>스피커 모드</em>를 지원하는 HTML 슬라이드 템플릿입니다. 지금 보고 있는 것은 청중 보기이지만 내 화면에서 보고 있는 것은 완전히 다른 것입니다. 현재 페이지, 다음 페이지, 전체 내용, 타이머 등이 ​​모두 한 화면에 있습니다. </p>
+      <p>이 작업을 구체적으로 수행해야 하는 이유는 무엇인가요? 왜냐하면 기술나눔을 할 때 가장 큰 문제점은 PPT가 부족한 것이 아니라 특정 페이지에 대해 이야기할 때 갑자기 무슨 말을 해야 할지 모르겠거나 전환 방법을 잊어버린다는 점을 깨달았기 때문입니다. 오늘의 공유는 콘텐츠 그 자체이자 시연입니다. 저는 말하기 위해 항상 스피커 모드를 켜겠습니다. 제가 얼마나 매끄럽게 말하는지 여러분도 보실 수 있습니다. </p>
+      <p>오늘 공유는 5개 부분으로 나누어 약 30분 정도 소요됩니다. 질문이 있으면 언제든지 중단하세요. 가자.</p>
     </aside>
-  </section>
+  </섹션>
 
-  <!-- ============ 2. AGENDA ============ -->
+  <!-- ============ 2. 의제 ============ -->
   <section class="slide" data-title="Agenda">
     <p class="kicker">agenda</p>
-    <h2 class="h2">今天要讲的 5 件事</h2>
+    <h2 class="h2">오늘 이야기할 5가지</h2>
     <div class="stack mt-l">
-      <div class="agenda-row"><span class="num">01</span><span class="t">为什么 PPT 本身做得好还不够</span><span class="d">~5min</span></div>
-      <div class="agenda-row"><span class="num">02</span><span class="t">演讲者模式到底该有哪些信息</span><span class="d">~6min</span></div>
-      <div class="agenda-row"><span class="num">03</span><span class="t">逐字稿怎么写才不像念稿</span><span class="d">~8min</span></div>
-      <div class="agenda-row"><span class="num">04</span><span class="t">Live demo · html-ppt skill 怎么用</span><span class="d">~8min</span></div>
+      <div class="agenda-row"><span class="num">01</span><span class="t">PPT 자체만으로는 부족한 이유</span><span class="d">~5min</span></div>
+      <div class="agenda-row"><span class="num">02</span><span class="t">스피커 모드에는 어떤 정보가 포함되어야 합니까?</span><span class="d">~6min</span></div>
+      <div class="agenda-row"><span class="num">03</span><span class="t">읽는 원고처럼 보이지 않도록 그대로 원고를 작성하는 방법</span><span class="d">~8min</span></div>
+      <div class="agenda-row"><span class="num">04</span><span class="t">라이브 데모 · html-ppt 스킬 사용법</span><span class="d">~8min</span></div>
       <div class="agenda-row"><span class="num">05</span><span class="t">Takeaways + Q&amp;A</span><span class="d">~3min</span></div>
     </div>
     <aside class="notes">
-      <p>先过一下今天的议程。</p>
-      <p>第一部分我想先说服你们<strong>"PPT 做得漂亮≠讲得好"</strong>。我见过太多很精致的 deck，但讲的人一上去就开始 "嗯…这个…就是…"。</p>
-      <p>第二部分聊演讲者视图。业界的产品其实差别蛮大的，Keynote、PowerPoint、reveal.js 都有各自的方案，但真正好用的设计逻辑是什么，我会给出我的答案。</p>
-      <p>第三部分是今天的<em>核心</em>——逐字稿。很多人以为逐字稿就是把要说的话一字不差写下来，错。逐字稿的目的是让你<strong>"看一眼就接得上"</strong>，写法完全不一样。</p>
-      <p>第四部分会现场 demo 我自己用的 html-ppt skill，展示如何 30 分钟出一份带逐字稿的 deck。</p>
-      <p>最后收尾 + 答疑。</p>
-      <p>OK，进入第一部分。</p>
+      <p>먼저 오늘의 안건을 살펴보겠습니다.</p>
+      <p>첫 번째 부분에서는 먼저 여러분을 설득하고 싶습니다.<strong>"아름답게 완성된 PPT ≠ 말 잘해요"</strong>. 나는 매우 정교한 데크를 너무 많이 보아왔지만 연사가 그 데크에 오르자마자 "글쎄...이건...이게..."라고 말하기 시작했습니다.</p>
+      <p>두 번째 부분에서는 발표자 보기에 대해 설명합니다. 업계의 제품은 실제로 상당히 다릅니다. Keynote, PowerPoint 및 discover.js에는 모두 자체 솔루션이 있습니다. 하지만 정말 유용한 디자인 로직은 무엇일까요? 나는 대답을 할 것이다.</p>
+      <p>세 번째 부분은 오늘부터입니다<em>핵심</em> - 축어적 초안. 많은 사람들이 말 그대로 글을 쓴다는 것은 자신이 하고 싶은 말을 정확하게 적는 것이라고 생각하는데, 그것은 잘못된 것입니다. 축어적 초안의 목적은 다음을 허용하는 것입니다.<strong>"보기만 해도 알 수 있어요"</strong>, 글쓰기 방법이 완전히 다릅니다.</p>
+      <p>네 번째 부분은 제가 직접 사용하는 html-ppt 기술의 라이브 데모로, 30분 안에 축어 초안이 포함된 데크를 만드는 방법을 보여줍니다.</p>
+      <p>최종 마무리 + Q&A.</p>
+      <p>좋아, 첫 번째 부분으로 가자.</p>
     </aside>
   </section>
 
-  <!-- ============ 3. PROBLEM ============ -->
-  <section class="slide" data-title="Problem">
-    <p class="kicker">// part 01 · problem</p>
-    <h2 class="h2">做 PPT 和讲 PPT，<br>是<span class="accent">两件事</span>。</h2>
+  <!-- ============ 3. 문제 ============ -->
+  <section class="slide" data-title="문제">
+    <p class="kicker">// 01부 · 문제</p>
+    <h2 class="h2">PPT를 하는 것과 PPT로 말하는 것은 <br><span class="accent">두 가지 다른 것</span>입니다. </h2>
     <div class="grid g3 mt-l">
-      <div class="card card-accent">
-        <h4>✅ PPT 做得好</h4>
-        <p class="dim">主题统一、排版干净、图表清晰、动效克制。这些是"静态作品"的质量。</p>
+      <div class="카드 카드-악센트">
+        <h4>✅ PPT 잘했어요</h4>
+        <p class="dim">테마가 통일되어 있고 레이아웃이 깔끔하고 차트가 명확하며 모션 효과가 억제되어 있습니다. 이것이 "정적 작업"의 특성입니다. </p>
       </div>
-      <div class="card card-accent">
-        <h4>❌ 讲得好</h4>
-        <p class="dim">逻辑连贯、语速稳定、不 "嗯啊"、能接住问题、能当场调整节奏。</p>
+      <div class="카드 카드-악센트">
+        <h4>❌ 그렇군요</h4>
+        <p class="dim">논리적으로 일관되고, "어-허"라고 말하지 않고 꾸준한 속도로 말하고, 질문에 대답할 수 있고, 즉석에서 리듬을 조절할 수 있습니다. </p>
       </div>
-      <div class="card card-accent">
-        <h4>💡 差别在哪</h4>
-        <p class="dim">前者是<strong>纸上功夫</strong>，后者需要你<strong>"看一眼幻灯片就知道下句话说什么"</strong>。</p>
+      <div class="카드 카드-악센트">
+        <h4>💡 차이점은 무엇인가요</h4>
+        <p class="dim">전자는 <strong>종이 작업</strong>인 반면, 후자는 <strong>"슬라이드를 보기만 해도 다음 문장이 무엇을 말할지 알 수"</strong> 있어야 합니다. </p>
       </div>
     </div>
-    <aside class="notes">
-      <p>我先抛一个可能有争议的观点——<strong>做 PPT 和讲 PPT 是两件完全不同的事</strong>。</p>
-      <p>大家看左边这张卡片，"PPT 做得好" 意味着什么？主题统一、排版干净、图表清晰、动效克制——这些都是<em>静态作品</em>的质量标准，可以离线评判。</p>
-      <p>但中间这张卡片就不一样了："讲得好" 意味着逻辑连贯、语速稳定、不卡壳、能接住提问、能根据现场反应调整节奏——这些是<strong>临场能力</strong>，跟 PPT 好不好看基本没关系。</p>
-      <p>最关键的是右边这句话——讲得好的人，本质上是"<strong>看一眼幻灯片就知道下句话说什么</strong>"。这个能力靠什么？不是背稿，也不是即兴发挥，而是靠<em>合理设计的提词器系统</em>。</p>
-      <p>今天接下来 25 分钟，我就是围绕这个核心问题展开的。</p>
+    <별도 클래스="노트">
+      <p>논쟁의 소지가 있는 점부터 시작하겠습니다. <strong>PPT를 하는 것과 PPT로 말하는 것은 완전히 다른 두 가지입니다</strong>. </p>
+      <p>왼쪽에 있는 카드를 보세요. "PPT 잘 했어요"은(는) 무슨 뜻인가요? 통일된 테마, 깔끔한 레이아웃, 명확한 다이어그램, 절제된 모션 효과 - 이는 <em>정적 작품</em>의 품질 기준이며 오프라인에서 판단할 수 있습니다. </p>
+      <p>그러나 중간에 있는 카드는 다릅니다. '말을 잘한다'는 것은 논리적으로 일관되고, 안정된 속도로 말하고, 막히지 않고, 질문에 답할 수 있고, 현장 반응에 따라 리듬을 조정할 수 있는 것을 의미합니다. 이는 <strong>현장 반응</strong>이며 기본적으로 PPT의 모양과 관련이 없습니다. </p>
+      <p>가장 중요한 것은 오른쪽 문장입니다. 말을 잘하는 사람은 기본적으로 '슬라이드만 봐도 <strong>다음 문장이 무엇을 말할지 알 수 있습니다</strong>'입니다. 이 능력은 무엇에 의존합니까? 원고를 외우거나 즉석에서 만드는 것이 아니라 <em>제대로 설계된 텔레프롬프터 시스템</em>에 의존하는 것입니다. </p>
+      <p>오늘은 다음 25분 동안 이 핵심 질문에 집중하겠습니다. </p>
     </aside>
-  </section>
+  </섹션>
 
-  <!-- ============ 4. SOLUTION ============ -->
+  <!-- ============ 4. 해결 방법 ============ -->
   <section class="slide" data-title="Presenter View">
     <p class="kicker">// part 02 · presenter view</p>
-    <h2 class="h2">演讲者视图应该有<span class="accent">四块信息</span></h2>
+    <h2 class="h2">발표자 보기에는 다음이 있어야 합니다.<span class="accent">네 가지 정보</span></h2>
     <div class="grid g2 mt-l">
       <div>
-        <div class="feature-row"><span class="num blue">①</span><div><b>当前页大图</b><p class="dim">占视图一半以上，保证你能扫一眼就知道观众现在看到什么。</p></div></div>
-        <div class="feature-row"><span class="num green">②</span><div><b>下一页预览</b><p class="dim">帮你提前准备过渡句，避免"下一页我忘了讲什么了"。</p></div></div>
+        <div class="feature-row"><span class="num blue">①</span><div><b>현재 페이지의 큰 그림</b><p class="dim">화면의 절반 이상을 차지하므로 청중이 무엇을 보고 있는지 한눈에 알 수 있습니다.</p></div></div>
+        <div class="feature-row"><span class="num green">②</span><div><b>다음 페이지 미리보기</b><p class="dim">"다음 페이지에 말할 내용을 잊어버렸습니다."가 발생하지 않도록 전환 문장을 미리 준비하도록 도와주세요.</p></div></div>
       </div>
       <div>
-        <div class="feature-row"><span class="num orange">③</span><div><b>逐字稿区域</b><p class="dim">大字号、高对比度、支持滚动，这才是演讲者真正在看的东西。</p></div></div>
-        <div class="feature-row"><span class="num purple">④</span><div><b>计时器 + 页码</b><p class="dim">知道自己讲了多久、还剩几页，节奏全凭这个。</p></div></div>
+        <div class="feature-row"><span class="num orange">③</span><div><b>말 그대로의 영역</b><p class="dim">큰 글꼴 크기, 고대비, 스크롤 지원 등이 화자가 실제로 보고 있는 모습입니다.</p></div></div>
+        <div class="feature-row"><span class="num purple">④</span><div><b>타이머 + 페이지 번호</b><p class="dim">얼마나 오랫동안 이야기했는지, 몇 페이지가 남았는지 아는 것은 리듬에 따라 다릅니다.</p></div></div>
       </div>
     </div>
     <aside class="notes">
-      <p>演讲者模式应该给你四块信息。我按重要性排序。</p>
-      <p>第一块，<strong>当前页大图</strong>。这个必须占据视图一半以上空间，因为它是你跟观众的"同步锚"——观众看到什么，你脑子里也得是什么。</p>
-      <p>第二块，<strong>下一页预览</strong>。这个很多人不理解为什么要放，我解释一下：演讲最卡的瞬间不是讲某一页，而是<em>翻到下一页的那 2 秒</em>。如果你提前看到下一页长什么样，过渡句自然就有了。</p>
-      <p>第三块，<strong>逐字稿区域</strong>——这是今天的重点，下一部分我会专门讲。这里先说一个硬性要求：字号必须大、对比度必须高、必须能滚动。因为你讲的时候<em>只有余光瞄一下</em>，字小了根本来不及读。</p>
-      <p>第四块，<strong>计时器和页码</strong>。知道自己讲了多久、还剩几页——节奏感全靠它。Keynote 做得最好，reveal.js 默认不够清楚。</p>
-      <p>这四块缺一不可。今天这个 deck 我把这四块都做出来了，按 S 大家可以试试。</p>
+      <p>스피커 모드는 네 가지 정보를 제공합니다. 중요한 순서대로 나열하겠습니다.</p>
+      <p>첫 번째 작품,<strong>현재 페이지의 큰 그림</strong>. 이것은 당신과 청중 사이의 "동기화 앵커"이기 때문에 시야의 절반 이상을 차지해야 합니다. 청중이 보는 것이 당신이 생각하는 것과 같아야 합니다.</p>
+      <p>두 번째 작품,<strong>다음 페이지 미리보기</strong>. 많은 사람들이 이것이 왜 포함되어 있는지 이해하지 못합니다. 설명해 보겠습니다. 연설에서 가장 막히는 순간은 특정 페이지에 대해 이야기하는 것이 아니라<em>다음 페이지로 넘어가는 데 걸리는 시간 2초</em>. 다음 페이지가 어떻게 보일지 미리 보면 전환문이 자연스럽게 나올 것입니다.</p>
+      <p>세 번째 작품,<strong>말 그대로의 영역</strong> - 이것이 오늘의 초점입니다. 이에 대해서는 다음 부분에서 이야기하겠습니다. 먼저 엄격한 요구 사항에 대해 이야기하겠습니다. 글꼴 크기는 커야 하고 대비는 높아야 하며 스크롤 가능해야 합니다. 왜냐면 당신이 얘기할 때<em>그냥 곁눈질로 보세요</em>, 문자가 너무 작아서 읽을 수 없습니다.</p>
+      <p>네번째 작품,<strong>타이머 및 페이지 번호</strong>. 얼마나 오랫동안 이야기했는지, 몇 페이지가 남았는지 아는 것은 모두 리듬감에 달려 있습니다. Keynote가 최선을 다하지만,reveal.js는 기본적으로 충분히 명확하지 않습니다.</p>
+      <p>이 4가지 부분은 필수입니다. 오늘 이 덱 4개를 모두 만들었습니다. S를 누르면 시도해 볼 수 있습니다.</p>
     </aside>
   </section>
 
-  <!-- ============ 5. SCRIPT ============ -->
-  <section class="slide" data-title="Script">
-    <p class="kicker">// part 03 · script</p>
-    <h2 class="h2">逐字稿的<span class="accent">3 条铁律</span></h2>
-    <div class="stack mt-l">
-      <div class="rule-row">
+  <!-- ============ 5. 스크립트 ============ -->
+  <섹션 클래스="슬라이드" data-title="스크립트">
+    <p class="kicker">// 03부 · 스크립트</p>
+    <h2 class="h2"><span class="accent">축어 쓰기의 3가지 규칙</span></h2>
+    <div 클래스="스택 mt-l">
+      <div 클래스="규칙-행">
         <span class="num red">01</span>
         <div>
-          <b>不是一字不差的讲稿，是<span class="accent">"提示信号"</span></b>
-          <p class="dim">把要讲的核心点加粗，把过渡句单独成段，把数据和名字列清楚——<em>让你看一眼就接得上</em>。</p>
+          <b>말 그대로의 말이 아니라 <span class="accent">"큐 신호"</span></b>입니다.
+          <p class="dim">논의할 핵심 사항을 굵은 글씨로 표시하고, 전환 문장을 단락으로 구분하고, 데이터와 이름을 명확하게 나열하세요. <em>한 눈에 알아볼 수 있도록</em>. </p>
         </div>
       </div>
-      <div class="rule-row">
+      <div 클래스="규칙-행">
         <span class="num red">02</span>
         <div>
-          <b>每页 <span class="accent">150–300 字</span>，不多不少</b>
-          <p class="dim">少于 150 字提示不够，多于 300 字你没时间读。按 2–3 分钟/页的节奏控制。</p>
+          페이지당 <b><span class="accent">150~300단어</span>, 그 이상도 그 이하도 아닙니다</b>
+          <p class="dim">150단어 미만이면 팁이 충분하지 않습니다. 300단어 이상이면 읽을 시간이 없습니다. 2~3분/페이지 케이던스 제어를 누릅니다. </p>
         </div>
       </div>
-      <div class="rule-row">
+      <div 클래스="규칙-행">
         <span class="num red">03</span>
         <div>
-          <b>用<span class="accent">口语</span>写，不用书面语</b>
-          <p class="dim">"因此" → "所以"；"该方案" → "这个方案"。写的时候读一遍，听起来像说话才对。</p>
+          <b>문어가 아닌 <span class="accent">음성 언어</span>로 작성</b>
+          <p class="dim">"그러므로" → "그래서"; "이 계획" → "이 계획". 글을 쓰면서 읽으면 말하는 것처럼 들리게 됩니다. </p>
         </div>
       </div>
     </div>
-    <aside class="notes">
-      <p>进入最核心的一部分——逐字稿怎么写。我总结了 3 条铁律。</p>
-      <p><strong>第一条，逐字稿不是讲稿</strong>。很多人一听"逐字稿"就以为要把每句话一字不差写下来。错。如果你照着稿念，观众会立刻看出来，信任感瞬间崩塌。</p>
-      <p>逐字稿的真实作用是<em>"提示信号"</em>——把核心要点加粗，把过渡句单独成段，把数据和专有名词列清楚。这样你讲的时候<strong>瞄一眼就能接得上</strong>，但说出来的还是你自己的话。</p>
-      <p><strong>第二条，每页控制在 150 到 300 字</strong>。这个是我做了十几场分享摸出来的经验值。少于 150 字提示不够，讲到一半卡住；多于 300 字你根本来不及扫完。按一页讲 2 到 3 分钟算，这个字数刚好。</p>
-      <p><strong>第三条，用口语写</strong>。这条最多人栽跟头。你写"因此"，讲出来会变成"所以"；你写"该方案"，讲出来会变成"这个方案"。<em>写的时候读一遍</em>，不拗口才对。</p>
-      <p>这三条配合起来，你会发现讲 PPT 突然变成了一件很舒服的事。</p>
+    <별도 클래스="노트">
+      <p>핵심 부분, 즉 축어 원고를 작성하는 방법을 살펴보겠습니다. 철칙 3가지를 정리했습니다. </p>
+      <p><strong>1조, 축어는 음성 대본이 아니다</strong>. 많은 사람들은 "verbatim"이라는 말을 들으면 모든 문장을 단어 하나하나 적어야 한다고 생각합니다. 잘못된. 대본을 그대로 따라하면 관객들이 바로 보게 되고, 관객들의 신뢰는 순식간에 무너진다. </p>
+      <p>축어 초안의 실제 기능은 <em>'큐 신호'</em>입니다. 핵심 요점을 굵게 표시하고 전환 문장을 별도의 단락으로 나누고 데이터와 고유 명사를 명확하게 나열합니다. 이렇게 말하면 말을 할 때 슬쩍 훑어보면 알아차릴 수 있지만, 말하는 내용은 여전히 ​​자기 자신의 말이다. </p>
+      <p><strong>2조: 페이지당 단어를 150~300자로 제한</strong>하세요. 십여번 이상의 나눔회를 하면서 얻은 경험치입니다. 150단어 미만이면 프롬프트가 충분하지 않아 문장 중간에 갇히게 됩니다. 300단어 이상이면 끝낼 시간이 없습니다. 한 페이지당 말하는 데 2~3분 정도가 소요되는데, 이는 딱 맞는 단어 수입니다. </p>
+      <p><strong>3조, 음성으로 작성</strong>. 이것이 대부분의 사람들이 걸려 넘어지는 곳입니다. "그러므로"라고 쓰면 말할 때 "그러므로"가 됩니다. "이 계획"이라고 쓰면 말하면 "이 계획"이 됩니다. <em>글을 쓰면서 한 번 읽어보세요</em>. 그리고 오만해지지 마세요. </p>
+      <p>이 세 가지가 합쳐지면 갑자기 PPT로 말하는 것이 아주 편해진다는 것을 알게 될 것입니다. </p>
     </aside>
-  </section>
+  </섹션>
 
-  <!-- ============ 6. DEMO + CLOSING ============ -->
+  <!-- ============ 6. 데모 + 종료 ============ -->
   <section class="slide" data-title="Demo & Close">
     <p class="kicker">// part 04-05 · demo + close</p>
-    <h2 class="h2">现在<span class="accent">你也能做到</span></h2>
+    <h2 class="h2">지금<span class="accent">너도 할 수 있어</span></h2>
     <div class="code-block mt-m">
-<span class="comment"># 安装 html-ppt skill</span>
+<span class="comment"># html-ppt 스킬 설치</span>
 <span class="cmd">npx</span> skills add <span class="flag">https://github.com/lewislulu/html-ppt-skill</span>
 
-<span class="comment"># 复制演讲者模式模板</span>
+<span class="comment"># 스피커 모드 템플릿 복사</span>
 <span class="cmd">cp -r</span> templates/full-decks/presenter-mode-reveal examples/my-talk
 <span class="cmd">open</span> examples/my-talk/index.html
 
-<span class="comment"># 键盘操作</span>
-<span class="flag">S</span>  <span class="comment">→ 进入演讲者视图</span>
-<span class="flag">T</span>  <span class="comment">→ 切换主题（5 种预设）</span>
-<span class="flag">← →</span> <span class="comment">→ 翻页</span>
-<span class="flag">R</span>  <span class="comment">→ 重置计时器</span>
+<span class="comment"># 키보드 조작</span>
+<span class="flag">S</span>  <span class="comment">→ 발표자 보기로 진입</span>
+<span class="flag">T</span>  <span class="comment">→ 테마 전환(5개 사전 설정)</span>
+<span class="flag">← →</span> <span class="comment">→ 페이지 넘기기</span>
+<span class="flag">R</span>  <span class="comment">→타이머 재설정</span>
     </div>
-    <p class="lede mt-m tc">关键是：<strong>每一页 &lt;aside class="notes"&gt; 里写 150–300 字逐字稿</strong>。</p>
+    <p class="lede mt-m tc">핵심은 다음과 같습니다.<strong>각 페이지에 150~300단어를 그대로 작성하세요 &lt;class="notes"&gt;</strong>.</p>
     <div class="deck-footer">
       <span class="mono">#thanks · Q&amp;A</span>
       <span class="slide-number" data-current="6" data-total="6"></span>
     </div>
     <aside class="notes">
-      <p>最后我演示一下这个 skill 怎么用，给大家省点时间自己摸索。</p>
-      <p>第一步，装 html-ppt skill，一行命令。第二步，把我这个 <code>presenter-mode-reveal</code> 模板复制到你自己的 examples 目录。第三步，打开 html，按 S。</p>
-      <p>键盘操作我列在这里了。<strong>S 进入演讲者视图、T 切换主题、左右键翻页、R 重置计时器</strong>。主题默认带 5 个——tokyo-night、dracula、catppuccin-mocha、nord、corporate-clean——基本覆盖了深色技术分享、浅色商务汇报两种常见场景。</p>
-      <p>最关键的一步——<em>每一页底部的 <code>&lt;aside class="notes"&gt;</code> 里，老老实实写 150 到 300 字的逐字稿</em>。这是整个方法论的交付物。AI 可以帮你写初稿，但你一定要自己过一遍，读出来听听是不是你会说的话。</p>
-      <p>好，我今天就讲到这里。如果你做下一场分享的时候想起了这个"演讲者视图 + 逐字稿"的组合，并且觉得讲得比以前顺——那就是我最大的收获。谢谢大家，有问题现在开始。</p>
+      <p>마지막으로, 이 기술을 사용하여 모든 사람이 스스로 탐색할 시간을 절약하는 방법을 보여 드리겠습니다.</p>
+      <p>첫 번째 단계는 한 줄 명령인 html-ppt 스킬을 설치하는 것입니다. 두 번째 단계는 나에게 이것을 주는 것입니다 <code>presenter-mode-reveal</code> 템플릿을 자신의 예제 디렉터리에 복사합니다. 세 번째 단계는 html을 열고 S를 누르는 것입니다.</p>
+      <p>여기에 키보드 작업을 나열했습니다.<strong>S는 발표자 보기로 들어가고, T는 주제를 전환하고, 왼쪽 및 오른쪽 키는 페이지를 넘기고, R은 타이머를 재설정합니다.</strong>. 테마에는 5가지 기본 테마(tokyo-night, dracula, catppuccin-mocha, nord 및 Corporate-Clean)가 포함되어 있으며 기본적으로 어두운 기술 공유 및 가벼운 비즈니스 보고라는 두 가지 일반적인 시나리오를 다룹니다.</p>
+      <p>가장 중요한 단계 - <em>각 페이지 하단에 <code>&lt;aside class="notes"&gt;</code> 여기에 150~300자 정도의 초안을 솔직하게 작성해 보세요.</em>. 이는 전체 방법론의 결과물입니다. AI는 초안을 작성하는 데 도움을 줄 수 있지만, 그것이 자신이 말하는 내용인지 확인하려면 직접 살펴보고 읽어야 합니다.</p>
+      <p>알았어, 오늘은 여기서 그만할게. 다음 공유를 할 때 "발표자 보기 + 축어적" 조합을 생각하고 음성이 전보다 더 부드러워졌다고 느낀다면 이것이 저의 가장 큰 이득입니다. 모두들 감사합니다. 궁금한 점이 있으면 지금부터 시작하겠습니다.</p>
     </aside>
   </section>
 
 </div>
 
 <div style="position:fixed;bottom:12px;left:12px;font-size:11px;color:#484f5866;z-index:100;pointer-events:none">
-  S 演讲者视图 · T 切换主题 · ← → 翻页 · F 全屏 · O 总览 · R 重置计时
+  S 발표자 보기 · T 주제 전환 · ← → 페이지 넘기기 · F 전체 화면 · O 개요 · R 타이머 재설정
 </div>
 
 <script src="../../../assets/runtime.js"></script>

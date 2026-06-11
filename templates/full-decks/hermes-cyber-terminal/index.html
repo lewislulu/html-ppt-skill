@@ -11,27 +11,27 @@
 <body class="tpl-hermes-cyber-terminal">
 <div class="deck">
 
-  <!-- 1. COVER -->
-  <section class="slide is-active">
+  <!-- 1. 표지 -->
+  <section class="슬라이드가 활성화되었습니다">
     <div class="hc-grid"></div>
     <div class="hc-vignette"></div>
     <div class="hc-scanlines"></div>
     <div class="hc-chrome"><div class="dots"><span></span><span></span><span></span></div><div>~/hermes · zsh · 118x42 · 01:37:04</div></div>
-    <div style="margin:auto 0">
+    <div 스타일="마진:자동 0">
       <p class="hc-prompt">whoami --hermes</p>
-      <h1 class="hc-h1">HERMES<br>AGENT / v0.9.2<span class="hc-cursor"></span></h1>
-      <p class="hc-lede">一个号称能「自主跑完整软件工程任务」的命令行 agent。<br>真的好用？还是又一轮营销？—— 我连续跑了 72 小时，告诉你答案。</p>
-      <div style="margin-top:26px">
+      <h1 class="hc-h1">HERMES<br>에이전트 / v0.9.2<span class="hc-cursor"></span></h1>
+      <p class="hc-lede">"완전한 소프트웨어 엔지니어링 작업을 자율적으로 실행"할 수 있다고 주장하는 명령줄 에이전트입니다. <br>정말 유용할까요? 아니면 또 다른 마케팅?  - 답을 알려드리기 위해 72시간 동안 계속 달려왔습니다. </p>
+      <div 스타일="margin-top:26px">
         <span class="hc-tag">rust-core</span>
-        <span class="hc-tag">mcp-native</span>
+        <span class="hc-tag">mcp-네이티브</span>
         <span class="hc-tag amber">72h-benchmark</span>
-        <span class="hc-tag red">honest-review</span>
+        <span class="hc-tag red">솔직한 리뷰</span>
       </div>
     </div>
-    <div class="hc-footer"><span>hermes-review · lewis · 2026</span><span>01 / 08</span></div>
-  </section>
+    <div class="hc-footer"><span>hermes-review · 루이스 · 2026</span><span>01/08</span></div>
+  </섹션>
 
-  <!-- 2. SECTION DIVIDER -->
+  <!-- 2. 섹션 구분선 -->
   <section class="slide">
     <div class="hc-grid"></div>
     <div class="hc-scanlines"></div>
@@ -39,135 +39,135 @@
     <div style="margin:auto 0">
       <p class="hc-prompt">cat chapter_01.md</p>
       <h1 class="hc-h1" style="font-size:110px">// Setup</h1>
-      <p class="hc-lede">从 <code style="color:var(--hc-amber)">brew install hermes</code> 到第一次 prompt —— 一共 4 分 22 秒。</p>
+      <p class="hc-lede">에서 <code style="color:var(--hc-amber)">brew install hermes</code> 첫 번째 프롬프트까지 – 총 4분 22초.</p>
     </div>
     <div class="hc-footer"><span>section · setup</span><span>02 / 08</span></div>
   </section>
 
-  <!-- 3. CONTENT — spec cards -->
-  <section class="slide">
+  <!-- 3. 콘텐츠 — 사양 카드 -->
+  <섹션 클래스="슬라이드">
     <div class="hc-grid"></div>
     <div class="hc-scanlines"></div>
-    <div class="hc-chrome"><div class="dots"><span></span><span></span><span></span></div><div>benchmark · cold-start</div></div>
-    <h2 class="hc-h2">开箱数据</h2>
-    <p class="hc-lede">cold start → first-successful-task 三次平均</p>
-    <div class="hc-grid-3">
-      <div class="hc-card"><div class="lbl">install time</div><div class="val">42s</div><div class="desc">单 binary，无 docker，无 python env。</div></div>
-      <div class="hc-card"><div class="lbl">first token</div><div class="val">1.8s</div><div class="desc">接入 claude-opus-4-6，无预热。</div></div>
-      <div class="hc-card"><div class="lbl">first PR merged</div><div class="val">4m22s</div><div class="desc">跑的是 fix-a-typo 级别的低难度任务。</div></div>
+    <div class="hc-chrome"><div class="dots"><span></span><span></span><span></span></div><div>벤치마크 · 초기 시작</div></div>
+    <h2 class="hc-h2">언박싱 데이터</h2>
+    <p class="hc-lede">콜드 스타트 → 첫 번째 성공 작업 평균 3배</p>
+    <div 클래스="hc-grid-3">
+      <div class="hc-card"><div class="lbl">설치 시간</div><div class="val">42초</div><div class="desc">단일 바이너리, Docker 없음, Python 환경 없음. </div></div>
+      <div class="hc-card"><div class="lbl">첫 번째 토큰</div><div class="val">1.8s</div><div class="desc">claude-opus-4-6에 연결, 예열 없음. </div></div>
+      <div class="hc-card"><div class="lbl">첫 번째 PR 병합</div><div class="val">4m22s</div><div class="desc">오타 수정 수준에서 난이도가 낮은 작업을 실행합니다. </div></div>
     </div>
-    <div class="hc-grid-2">
-      <div class="hc-card"><div class="lbl">// verdict +</div><div class="val" style="color:var(--hc-green);font-size:18px">冷启动是真的快</div><div class="desc">和 OpenClaw 的 docker + pip 流程比，快不止一个数量级。</div></div>
-      <div class="hc-card"><div class="lbl">// verdict -</div><div class="val" style="color:var(--hc-red);font-size:18px">MCP 服务器配置不够友好</div><div class="desc">env 变量需要手动塞进 ~/.hermes/env，文档几乎没写。</div></div>
+    <div 클래스="hc-grid-2">
+      <div class="hc-card"><div class="lbl">// verdict +</div><div class="val" style="color:var(--hc-green);font-size:18px">콜드 스타트가 정말 빠릅니다</div><div class="desc">OpenClaw의 docker + pip 프로세스에 비해 훨씬 더 빠릅니다. </div></div>
+      <div class="hc-card"><div class="lbl">// verdict -</div><div class="val" style="color:var(--hc-red);font-size:18px">MCP 서버 구성이 충분히 친숙하지 않습니다</div><div class="desc">env 변수를 ~/.hermes/env에 수동으로 삽입해야 하며 문서가 거의 없습니다. </div></div>
     </div>
-    <div class="hc-footer"><span>data · verified 3 runs</span><span>03 / 08</span></div>
-  </section>
+    <div class="hc-footer"><span>데이터 · 3회 실행 확인</span><span>03/08</span></div>
+  </섹션>
 
-  <!-- 4. CODE -->
+  <!-- 4. 코드 -->
   <section class="slide">
     <div class="hc-grid"></div>
     <div class="hc-scanlines"></div>
     <div class="hc-chrome"><div class="dots"><span></span><span></span><span></span></div><div>trace · hermes run</div></div>
     <p class="hc-prompt">hermes run "refactor auth module to use pkce"</p>
-    <h3 class="hc-h3" style="margin-top:12px">↓ 真实 trace (节选)</h3>
+    <h3 class="hc-h3" style="margin-top:12px">↓ 실제 흔적(발췌)</h3>
     <pre class="hc-codebox" style="margin-top:10px"><span class="cm"># hermes v0.9.2 · session 42a1</span>
-[<span class="fn">plan</span>]    <span class="st">"分析 src/auth/*.ts → 找 oauth flow → 抽成 pkce"</span>
+[<span class="fn">plan</span>]    <span class="st">"src/auth/*.ts 분석 → oauth 흐름 찾기 → pkce 공제"</span>
 [<span class="fn">read</span>]    src/auth/oauth.ts       <span class="cm">// 214 lines</span>
 [<span class="fn">read</span>]    src/auth/token.ts       <span class="cm">// 88 lines</span>
-[<span class="kw">think</span>]   <span class="st">"发现 implicit flow，改为 code+pkce，需新 state param"</span>
+[<span class="kw">think</span>]   <span class="st">"암시적 흐름 발견, code+pkce로 변경, 새 상태 매개변수 필요"</span>
 [<span class="fn">edit</span>]    src/auth/oauth.ts       <span class="hl">+43 -17</span>
 [<span class="fn">edit</span>]    src/auth/token.ts       <span class="hl">+12 -4</span>
 [<span class="fn">test</span>]    pnpm vitest auth        <span class="st">PASS 18/18</span>
 [<span class="fn">commit</span>]  <span class="var">"feat(auth): migrate to oauth2 code+pkce"</span>
 [<span class="fn">push</span>]    origin feat/pkce-auth   <span class="st">ok</span>
 
-<span class="cm"># 总耗时 3m 14s · 14k tokens · $0.21</span></pre>
+<span class="cm"># 총 소요 시간 300만 14초 · 14,000개 토큰 · $0.21</span></pre>
     <div class="hc-footer"><span>trace · live</span><span>04 / 08</span></div>
   </section>
 
-  <!-- 5. CHART -->
-  <section class="slide">
+  <!-- 5. 차트 -->
+  <섹션 클래스="슬라이드">
     <div class="hc-grid"></div>
     <div class="hc-scanlines"></div>
-    <div class="hc-chrome"><div class="dots"><span></span><span></span><span></span></div><div>benchmark · hermes vs openclaw</div></div>
-    <h2 class="hc-h2">72 小时对比</h2>
-    <p class="hc-lede">同一组 48 个 GitHub issue，两个 agent 各跑一遍</p>
+    <div class="hc-chrome"><div class="dots"><span></span><span></span><span></span></div><div>벤치마크 · hermes 대 openclaw</div></div>
+    <h2 class="hc-h2">72시간 비교</h2>
+    <p class="hc-lede">각각 두 명의 에이전트가 실행하는 48개의 GitHub 문제로 구성된 동일한 그룹</p>
     <svg viewBox="0 0 1000 380" style="width:100%;max-width:1040px;margin-top:24px" xmlns="http://www.w3.org/2000/svg">
-      <g font-family="JetBrains Mono, monospace" font-size="13" fill="#8a8892">
-        <!-- axis -->
+      <g 글꼴-가족="JetBrains 모노, 고정 폭" 글꼴 크기="13" fill="#8a8892">
+        <!-- 축 -->
         <line x1="80" y1="40" x2="80" y2="320" stroke="rgba(126,211,164,.2)"/>
         <line x1="80" y1="320" x2="960" y2="320" stroke="rgba(126,211,164,.2)"/>
-        <!-- y labels -->
+        <!-- y 라벨 -->
         <text x="70" y="46" text-anchor="end">100%</text>
         <text x="70" y="116" text-anchor="end">75%</text>
         <text x="70" y="186" text-anchor="end">50%</text>
         <text x="70" y="256" text-anchor="end">25%</text>
         <text x="70" y="324" text-anchor="end">0</text>
-        <!-- bars: hermes -->
+        <!-- 바: 에르메스 -->
         <g>
-          <rect x="130" y="80"  width="80" height="240" fill="rgba(126,211,164,.15)" stroke="#7ed3a4" stroke-width="1.5"/>
-          <text x="170" y="76" text-anchor="middle" fill="#7ed3a4" font-weight="700">82%</text>
-          <text x="170" y="345" text-anchor="middle">resolved</text>
-          <rect x="240" y="146" width="80" height="174" fill="rgba(126,211,164,.15)" stroke="#7ed3a4" stroke-width="1.5"/>
-          <text x="280" y="142" text-anchor="middle" fill="#7ed3a4" font-weight="700">58%</text>
-          <text x="280" y="345" text-anchor="middle">one-shot</text>
-          <rect x="350" y="60"  width="80" height="260" fill="rgba(126,211,164,.15)" stroke="#7ed3a4" stroke-width="1.5"/>
-          <text x="390" y="56" text-anchor="middle" fill="#7ed3a4" font-weight="700">89%</text>
-          <text x="390" y="345" text-anchor="middle">test-pass</text>
-          <rect x="460" y="110" width="80" height="210" fill="rgba(126,211,164,.15)" stroke="#7ed3a4" stroke-width="1.5"/>
-          <text x="500" y="106" text-anchor="middle" fill="#7ed3a4" font-weight="700">71%</text>
-          <text x="500" y="345" text-anchor="middle">pr-merged</text>
+          <ect x="130" y="80" width="80" height="240" fill="rgba(126,211,164,.15)" 스트로크="#7ed3a4" 스트로크-폭="1.5"/>
+          <text x="170" y="76" text-anchor="middle" fill="#7ed3a4"font-weight="700">82%</text>
+          <text x="170" y="345" text-anchor="middle">해결됨</text>
+          <ect x="240" y="146" width="80" height="174" fill="rgba(126,211,164,.15)" 스트로크="#7ed3a4" 스트로크-폭="1.5"/>
+          <text x="280" y="142" text-anchor="middle" fill="#7ed3a4"font-weight="700">58%</text>
+          <text x="280" y="345" text-anchor="middle">원샷</text>
+          <ect x="350" y="60" width="80" height="260" fill="rgba(126,211,164,.15)" 스트로크="#7ed3a4" 스트로크 너비="1.5"/>
+          <text x="390" y="56" text-anchor="middle" fill="#7ed3a4"font-weight="700">89%</text>
+          <text x="390" y="345" text-anchor="middle">테스트 통과</text>
+          <ect x="460" y="110" width="80" height="210" fill="rgba(126,211,164,.15)" 스트로크="#7ed3a4" 스트로크-폭="1.5"/>
+          <text x="500" y="106" text-anchor="middle" fill="#7ed3a4"font-weight="700">71%</text>
+          <text x="500" y="345" text-anchor="middle">병합됨</text>
         </g>
-        <!-- bars: openclaw -->
+        <!-- 막대: openclaw -->
         <g>
-          <rect x="570" y="150" width="80" height="170" fill="rgba(233,197,138,.12)" stroke="#e9c58a" stroke-width="1.5"/>
-          <text x="610" y="146" text-anchor="middle" fill="#e9c58a" font-weight="700">60%</text>
-          <text x="610" y="345" text-anchor="middle">resolved</text>
-          <rect x="680" y="212" width="80" height="108" fill="rgba(233,197,138,.12)" stroke="#e9c58a" stroke-width="1.5"/>
-          <text x="720" y="208" text-anchor="middle" fill="#e9c58a" font-weight="700">38%</text>
-          <text x="720" y="345" text-anchor="middle">one-shot</text>
-          <rect x="790" y="130" width="80" height="190" fill="rgba(233,197,138,.12)" stroke="#e9c58a" stroke-width="1.5"/>
-          <text x="830" y="126" text-anchor="middle" fill="#e9c58a" font-weight="700">67%</text>
-          <text x="830" y="345" text-anchor="middle">test-pass</text>
+          <ect x="570" y="150" width="80" height="170" fill="rgba(233,197,138,.12)" 스트로크="#e9c58a" 스트로크-폭="1.5"/>
+          <text x="610" y="146" text-anchor="middle" fill="#e9c58a"font-weight="700">60%</text>
+          <text x="610" y="345" text-anchor="middle">해결됨</text>
+          <ect x="680" y="212" width="80" height="108" fill="rgba(233,197,138,.12)" 스트로크="#e9c58a" 스트로크-폭="1.5"/>
+          <text x="720" y="208" text-anchor="middle" fill="#e9c58a"font-weight="700">38%</text>
+          <text x="720" y="345" text-anchor="middle">원샷</text>
+          <ect x="790" y="130" width="80" height="190" fill="rgba(233,197,138,.12)" 스트로크="#e9c58a" 스트로크-폭="1.5"/>
+          <text x="830" y="126" text-anchor="middle" fill="#e9c58a"font-weight="700">67%</text>
+          <text x="830" y="345" text-anchor="middle">테스트 통과</text>
         </g>
-        <!-- legend -->
-        <g transform="translate(820,50)">
-          <rect x="0" y="0" width="14" height="14" fill="rgba(126,211,164,.15)" stroke="#7ed3a4"/>
-          <text x="22" y="12" fill="#7ed3a4">hermes 0.9.2</text>
-          <rect x="0" y="22" width="14" height="14" fill="rgba(233,197,138,.12)" stroke="#e9c58a"/>
-          <text x="22" y="34" fill="#e9c58a">openclaw 2.1</text>
+        <!-- 범례 -->
+        <g 변환="번역(820,50)">
+          <ect x="0" y="0" width="14" height="14" fill="rgba(126,211,164,.15)" 스트로크="#7ed3a4"/>
+          <text x="22" y="12" fill="#7ed3a4">에르메스 0.9.2</text>
+          <ect x="0" y="22" width="14" height="14" fill="rgba(233,197,138,.12)" 스트로크="#e9c58a"/>
+          <text x="22" y="34" fill="#e9c58a">오픈클로 2.1</text>
         </g>
       </g>
     </svg>
-    <div class="hc-footer"><span>benchmark · n=48</span><span>05 / 08</span></div>
-  </section>
+    <div class="hc-footer"><span>벤치마크 · n=48</span><span>05/08</span></div>
+  </섹션>
 
-  <!-- 6. STATS -->
-  <section class="slide">
+  <!-- 6. 통계 -->
+  <섹션 클래스="슬라이드">
     <div class="hc-grid"></div>
     <div class="hc-scanlines"></div>
     <div class="hc-chrome"><div class="dots"><span></span><span></span><span></span></div><div>tldr</div></div>
-    <p class="hc-prompt">echo $VERDICT</p>
+    <p class="hc-prompt">에코 $VERDICT</p>
     <div class="hc-big">7.8<span style="font-size:60px;color:var(--hc-ink2)">/ 10</span></div>
-    <p class="hc-lede" style="margin-top:14px">值得装，还不值得完全依赖。</p>
+    <p class="hc-lede" style="margin-top:14px">가장 가치는 있지만 완전히 의지할 가치는 없습니다. </p>
     <div class="hc-grid-2" style="margin-top:24px">
-      <div class="hc-card"><div class="lbl">+ strong points</div><div class="desc">• rust 本体冷启快<br>• trace 可读性极强<br>• diff 审核友好，commit message 也写得合格</div></div>
-      <div class="hc-card"><div class="lbl">- weak points</div><div class="desc">• plan 阶段偶尔跳步<br>• 超 50k LoC 仓库会 OOM<br>• MCP 配置需要手动塞 env</div></div>
+      <div class="hc-card"><div class="lbl">+ 장점</div><div class="desc">• Rust 본문은 빠르게 콜드 스타트됩니다<br>• 추적은 매우 읽기 쉽습니다<br>• diff는 검토하기 쉽고 커밋 메시지도 잘 작성되었습니다</div></div>
+      <div class="hc-card"><div class="lbl">- 약점</div><div class="desc">• 계획 단계가 가끔 건너뜁니다.<br>• 50,000개 이상의 LoC 창고가 OOM됩니다<br>• MCP 구성에서 수동으로 환경을 차단해야 합니다</div></div>
     </div>
-    <div class="hc-footer"><span>verdict · honest</span><span>06 / 08</span></div>
-  </section>
+    <div class="hc-footer"><span>평결 · 정직</span><span>06/08</span></div>
+  </섹션>
 
   <!-- 7. CTA -->
   <section class="slide">
     <div class="hc-grid"></div>
     <div class="hc-scanlines"></div>
     <div class="hc-chrome"><div class="dots"><span></span><span></span><span></span></div><div>install</div></div>
-    <h2 class="hc-h2">想自己跑一遍？</h2>
-    <p class="hc-lede">三条命令，不到 5 分钟就能看见它干第一件事。</p>
+    <h2 class="hc-h2">직접 실행하고 싶으신가요?</h2>
+    <p class="hc-lede">3개의 명령이 있으며 5분 이내에 첫 번째 작업을 수행하는 것을 볼 수 있습니다.</p>
     <pre class="hc-codebox" style="margin-top:22px"><span class="cm"># 1. install</span>
 <span class="kw">$</span> brew install hermes-agent/tap/hermes
 
-<span class="cm"># 2. auth (先准备好 anthropic api key)</span>
+<span class="cm"># 2. auth (인류 API 키를 먼저 준비하세요)</span>
 <span class="kw">$</span> hermes auth login
 
 <span class="cm"># 3. first task</span>
@@ -188,7 +188,7 @@
     <div style="margin:auto 0">
       <p class="hc-prompt">exit 0</p>
       <h1 class="hc-h1" style="font-size:120px">// thanks<span class="hc-cursor"></span></h1>
-      <p class="hc-lede">完整 trace、48 个任务的 PR 列表、benchmark 脚本都在 <span style="color:var(--hc-amber)">github.com/lewis/hermes-review</span></p>
+      <p class="hc-lede">전체 추적, 48개 작업의 PR 목록 및 벤치마크 스크립트가 모두 포함되어 있습니다. <span style="color:var(--hc-amber)">github.com/lewis/hermes-review</span></p>
     </div>
     <div class="hc-footer"><span>session closed</span><span>08 / 08</span></div>
   </section>

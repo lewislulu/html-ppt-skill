@@ -1,6 +1,6 @@
 ---
 name: html-ppt
-description: HTML PPT Studio — author professional static HTML presentations in many styles, layouts, and animations, all driven by templates. Use when the user asks for a presentation, PPT, slides, keynote, deck, slideshow, "幻灯片", "演讲稿", "做一份 PPT", "做一份 slides", a reveal-style HTML deck, a 小红书 图文, or any kind of multi-slide pitch/report/sharing document that should look tasteful and be usable with keyboard navigation. Triggers include keywords like "presentation", "ppt", "slides", "deck", "keynote", "reveal", "slideshow", "幻灯片", "演讲稿", "分享稿", "小红书图文", "talk slides", "pitch deck", "tech sharing", "technical presentation".
+설명: HTML PPT Studio — 템플릿을 기반으로 다양한 스타일, 레이아웃 및 애니메이션으로 전문적인 정적 HTML 프레젠테이션을 작성합니다. 사용자가 프리젠테이션, PPT, 슬라이드, 키노트, 데크, 슬라이드쇼, "파워포인트", "슬라이드 만들기", 공개 스타일 HTML 데크, 작은 문서 또는 세련되고 키보드 탐색과 함께 사용할 수 있어야 하는 모든 종류의 다중 슬라이드 피치/보고서/공유 문서를 요청할 때 사용합니다. 트리거에는 "프레젠테이션", "ppt", "슬라이드", "덱", "키노트", "공개", "슬라이드쇼", "슬라이드", "연설", "공유", "작은 이야기", "토크 슬라이드", "피치 덱", "기술 공유", "기술 프레젠테이션"과 같은 키워드가 포함됩니다.
 ---
 
 # html-ppt — HTML PPT Studio
@@ -20,7 +20,7 @@ One command, no build. Pure static HTML/CSS/JS with only CDN webfonts.
 ## What the skill gives you
 
 - **36 themes** (`assets/themes/*.css`) — minimal-white, editorial-serif, soft-pastel, sharp-mono, arctic-cool, sunset-warm, catppuccin-latte/mocha, dracula, tokyo-night, nord, solarized-light, gruvbox-dark, rose-pine, neo-brutalism, glassmorphism, bauhaus, swiss-grid, terminal-green, xiaohongshu-white, rainbow-gradient, aurora, blueprint, memphis-pop, cyberpunk-neon, y2k-chrome, retro-tv, japanese-minimal, vaporwave, midcentury, corporate-clean, academic-paper, news-broadcast, pitch-deck-vc, magazine-bold, engineering-whiteprint
-- **15 full-deck templates** (`templates/full-decks/<name>/`) — complete multi-slide decks with scoped `.tpl-<name>` CSS. 8 extracted from real-world decks (xhs-white-editorial, graphify-dark-graph, knowledge-arch-blueprint, hermes-cyber-terminal, obsidian-claude-gradient, testing-safety-alert, xhs-pastel-card, dir-key-nav-minimal), 7 scenario scaffolds (pitch-deck, product-launch, tech-sharing, weekly-report, xhs-post 3:4, course-module, **presenter-mode-reveal** — 演讲者模式专用)
+- **15 full-deck templates** (`templates/full-decks/<name>/`) — complete multi-slide decks with scoped `.tpl-<name>` CSS. 실제 덱에서 추출한 8개(xhs-white-editor, graphify-dark-graph, Knowledge-arch-blueprint, hermes-cyber-terminal, obsidian-claude-gradient, Testing-safety-alert, xhs-pastel-card, dir-key-nav-minimal), 7개의 시나리오 비계(피치 덱, 제품 출시, 기술 공유, 주간 보고서, xhs-post 3:4, 코스 모듈, **발표자 모드-공개** — 스피커 모드만 해당)
 - **31 layouts** (`templates/single-page/*.html`) with realistic demo data
 - **27 CSS animations** (`assets/animations/animations.css`) via `data-anim`
 - **20 canvas FX animations** (`assets/animations/fx/*.js`) via `data-fx` — particle-burst, confetti-cannon, firework, starfield, matrix-rain, knowledge-graph (force-directed), neural-net (pulses), constellation, orbit-ring, galaxy-swirl, word-cascade, letter-explode, chain-react, magnetic-field, data-stream, gradient-blob, sparkle-trail, shockwave, typewriter-multi, counter-explosion
@@ -34,19 +34,19 @@ One command, no build. Pure static HTML/CSS/JS with only CDN webfonts.
 Use when the user asks for any kind of slide-based output or wants to turn
 text/notes into a presentable deck. Prefer this over building from scratch.
 
-### 🎤 Presenter Mode (演讲者模式 + 逐字稿)
+### 🎤 발표자 모드(발표자 모드 + 축어)
 
-If the user mentions any of: **演讲 / 分享 / 讲稿 / 逐字稿 / speaker notes / presenter view / 演讲者视图 / 提词器**, or says things like "我要去给团队讲 xxx", "要做一场技术分享", "怕讲不流畅", "想要一份带逐字稿的 PPT" — **use the `presenter-mode-reveal` full-deck template** and write 150–300 words of 逐字稿 in each slide's `<aside class="notes">`.
+사용자가 **연설/공유/음성 메모/축어적/발표자 노트/발표자 보기/발표자 보기/텔레프롬프터** 중 하나를 언급하거나 "팀에게 xxx라고 말할 거예요", "기술 공유를 하고 싶습니다", "말이 유창하지 못할 것 같아 걱정됩니다", "말 그대로 PPT를 원합니다"와 같은 말을 하는 경우 — ** `presenter-mode-reveal` 전체 자료 템플릿** 및 각 슬라이드에 150~300단어를 그대로 작성합니다. `<aside class="notes">`.
 
 See [references/presenter-mode.md](references/presenter-mode.md) for the full authoring guide including the 3 rules of speaker script writing:
-1. **不是讲稿，是提示信号** — 加粗核心词 + 过渡句独立成段
-2. **每页 150–300 字** — 2–3 分钟/页的节奏
-3. **用口语，不用书面语** — "因此"→"所以"，"该方案"→"这个方案"
+1. **강의 노트가 아니라 알림입니다** — 굵은 핵심 단어 + 독립 문단으로의 전환 문장
+2. **페이지당 150~300단어** — 2~3분/페이지 케이던스
+3. **문자가 아닌 말로 사용** — "그러므로" → "그래서", "이 계획" → "이 계획"
 
 All full-deck templates support the S key presenter mode (it's built into `runtime.js`). **S opens a new popup window with 4 magnetic cards**:
 - 🔵 **CURRENT** — pixel-perfect iframe preview of the current slide
 - 🟣 **NEXT** — pixel-perfect iframe preview of the next slide
-- 🟠 **SPEAKER SCRIPT** — large-font 逐字稿 (scrollable)
+- 🟠 **발표자 스크립트** — 큰 글꼴 축어 스크립트(스크롤 가능)
 - 🟢 **TIMER** — elapsed time + slide counter + prev/next/reset buttons
 
 Each card is **draggable by its header** and **resizable by the bottom-right corner handle**. Card positions/sizes persist to `localStorage` per deck. A "Reset layout" button restores the default arrangement.
@@ -55,7 +55,7 @@ Each card is **draggable by its header** and **resizable by the bottom-right cor
 
 **Smooth navigation**: on slide change, the presenter window sends `postMessage({type:'preview-goto', idx:N})` to each iframe. The iframe just toggles `.is-active` between slides — **no reload, no flicker**. The two windows also stay in sync via `BroadcastChannel`.
 
-Only `presenter-mode-reveal` is designed from the ground up around the feature with proper example 逐字稿 on every slide.
+Only `presenter-mode-reveal` 모든 슬라이드에 적절한 예를 그대로 포함하여 기능을 중심으로 처음부터 설계되었습니다.
 
 Keyboard in presenter window: `← →` navigate (syncs audience) · `R` reset timer · `Esc` close popup.
 Keyboard in audience window: `S` open presenter · `T` cycle theme · `← →` navigate (syncs presenter) · `F` fullscreen · `O` overview.
@@ -67,28 +67,28 @@ the user directly, or — if they already handed you rich content — propose a
 tasteful default and confirm.
 
 1. **Content & audience.** What's the deck about, how many slides, who's
-   watching (engineers / execs / 小红书读者 / 学生 / VC)?
+   보고 계시나요(엔지니어/임원/샤오홍슈 독자/학생/VC)?
 2. **Style / theme.** Which of the 36 themes fits? If unsure, recommend 2-3
    candidates based on tone:
    - Business / investor pitch → `pitch-deck-vc`, `corporate-clean`, `swiss-grid`
    - Tech sharing / engineering → `tokyo-night`, `dracula`, `catppuccin-mocha`,
      `terminal-green`, `blueprint`
-   - 小红书图文 → `xiaohongshu-white`, `soft-pastel`, `rainbow-gradient`,
+   - 작은 빨간 책 그림 및 텍스트 → `xiaohongshu-white`, `soft-pastel`, `rainbow-gradient`,
      `magazine-bold`
    - Academic / report → `academic-paper`, `editorial-serif`, `minimal-white`
    - Edgy / cyber / launch → `cyberpunk-neon`, `vaporwave`, `y2k-chrome`,
      `neo-brutalism`
 3. **Starting point.** One of the 14 full-deck templates, or scratch? Point
    to the closest `templates/full-decks/<name>/` and ask if it fits. If the
-   user's content suggests something obvious (e.g. "我要做产品发布会" →
+   사용자의 콘텐츠가 명백한 내용을 암시하는 경우(예: "제품 출시를 원합니다" →
    `product-launch`), propose it confidently instead of asking blindly.
 
 A good opening message looks like:
 
-> 我可以给你做这份 PPT！先确认三件事：
-> 1. 大致内容 / 页数 / 观众是谁？
-> 2. 风格偏好？我建议从这 3 个主题里选一个：`tokyo-night`（技术分享默认好看）、`xiaohongshu-white`（小红书风）、`corporate-clean`（正式汇报）。
-> 3. 要不要用我现成的 `tech-sharing` 全 deck 模板打底？
+> 이 PPT는 제가 만들어 드릴 수 있어요! 먼저 다음 세 가지를 확인하세요.
+> 1. 일반 내용/페이지 수/청취자는 누구인가요?
+> 2. 스타일 선호? 다음 3가지 주제 중 하나를 선택하는 것이 좋습니다.`tokyo-night`(기술 공유는 기본적으로 좋아보이네요),`xiaohongshu-white`(샤오홍 서예 스타일),`corporate-clean`(공식 보고서).
+> 3. 제가 만든 것을 사용하시겠습니까? `tech-sharing` 전체 데크 템플릿 기반?
 
 Only after those are clear, scaffold the deck and start writing.
 
@@ -140,7 +140,7 @@ Only after those are clear, scaffold the deck and start writing.
 - **Supply notes.** Wrap speaker notes in `<div class="notes">…</div>` inside
   each slide. Press S to open the overlay.
 - **NEVER put presenter-only text on the slide itself.** Descriptive text like
-  "这一页展示了……" or "Speaker: 这里可以补充……" or small explanatory captions
+  "이 페이지에는..." 또는 "발표자: 여기에..." 또는 작은 설명 캡션이 표시됩니다.
   aimed at the presenter MUST go inside `<div class="notes">`, NOT as visible
   `<p>` / `<span>` elements on the slide. The `.notes` class is `display:none`
   by default — it only appears in the S overlay. Slides should contain ONLY
@@ -159,7 +159,7 @@ Chinese + English deck, and how to export.
 - [references/layouts.md](references/layouts.md) — all 31 layout types.
 - [references/animations.md](references/animations.md) — 27 CSS + 20 canvas FX animations.
 - [references/full-decks.md](references/full-decks.md) — all 15 full-deck templates.
-- [references/presenter-mode.md](references/presenter-mode.md) — **演讲者模式 + 逐字稿编写指南（技术分享/演讲必看）**.
+- [references/presenter-mode.md](references/presenter-mode.md) — **스피커 모드 + 축어적 글쓰기 가이드(기술 공유/연설을 위해 읽어야 함)**.
 - [references/authoring-guide.md](references/authoring-guide.md) — full workflow.
 
 ## File structure

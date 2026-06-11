@@ -154,7 +154,7 @@
 .tpl-presenter-mode-reveal .purple { color: #bc8cff; }
 .tpl-presenter-mode-reveal .red { color: #f85149; }
 
-/* Rule rows (3 铁律) */
+/* 규칙 행(3개의 철칙) */
 .tpl-presenter-mode-reveal .rule-row {
   display: grid;
   grid-template-columns: 56px 1fr;

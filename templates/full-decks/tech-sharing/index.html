@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Rust 异步运行时内部机制 · Tech Sharing</title>
+<title>Rust 비동기 런타임 내부 · 기술 공유</title>
 <link rel="stylesheet" href="../../../assets/fonts.css">
 <link rel="stylesheet" href="../../../assets/base.css">
 <link rel="stylesheet" href="../../../assets/animations/animations.css">
@@ -11,46 +11,46 @@
 <body class="tpl-tech-sharing">
 <div class="deck">
 
-  <!-- 1. Cover -->
-  <section class="slide" data-title="Cover">
-    <p class="kicker">tech-sharing / 2026-04-15</p>
-    <h1 class="h1 anim-fade-up" data-anim="fade-up">Rust 异步运行时<br>到底在<span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">调度什么</span>?</h1>
-    <p class="lede mt-m">从 <span class="mono">Future::poll</span> 到 tokio 的 work-stealing，一次讲清楚。</p>
-    <div class="speaker"><div class="av"></div><div><b>@lewis</b><span>platform infra · 45 min + Q&amp;A</span></div></div>
+  <!-- 1. 표지 -->
+  <section class="슬라이드" data-title="표지">
+    <p class="kicker">기술 공유 / 2026-04-15</p>
+    <h1 class="h1 anim-fade-up" data-anim="fade-up">Rust 비동기 런타임<br><span style="Background:var(--grad);-webkit-Background-clip:text;Background-clip:text;color:transparent"></span>에는 정확히 무엇이 예약되어 있나요?</h1>
+    <p class="lede mt-m"><span class="mono">Future::poll</span>부터 tokio의 작업 훔치기까지, 한 번에 명확하게 설명하겠습니다. </p>
+    <div class="speaker"><div class="av"></div><div><b>@lewis</b><span>플랫폼 인프라 · 45분 + Q&amp;A</span></div></div>
     <div class="deck-footer"><span class="mono">#async #rust #tokio</span><span class="slide-number" data-current="1" data-total="8"></span></div>
-  </section>
+  </섹션>
 
-  <!-- 2. Agenda -->
+  <!-- 2. 의제 -->
   <section class="slide" data-title="Agenda">
     <p class="kicker">agenda.toml</p>
-    <h2 class="h2">今天的路线图</h2>
+    <h2 class="h2">오늘의 로드맵</h2>
     <div class="stack mt-l">
-      <div class="agenda-row"><span class="num">01</span><span class="t">Context: 为什么需要 async</span><span class="d">~5min</span></div>
+      <div class="agenda-row"><span class="num">01</span><span class="t">컨텍스트: 비동기가 필요한 이유</span><span class="d">~5min</span></div>
       <div class="agenda-row"><span class="num">02</span><span class="t">Deep dive 1: Future &amp; Waker</span><span class="d">~12min</span></div>
       <div class="agenda-row"><span class="num">03</span><span class="t">Deep dive 2: Tokio scheduler</span><span class="d">~15min</span></div>
-      <div class="agenda-row"><span class="num">04</span><span class="t">Code: 手写一个 mini-runtime</span><span class="d">~8min</span></div>
+      <div class="agenda-row"><span class="num">04</span><span class="t">코드: 미니 런타임 필기 작성</span><span class="d">~8min</span></div>
       <div class="agenda-row"><span class="num">05</span><span class="t">Takeaways + Q&amp;A</span><span class="d">~5min</span></div>
     </div>
   </section>
 
-  <!-- 3. Context -->
-  <section class="slide" data-title="Context">
-    <p class="kicker">// context</p>
-    <h2 class="h2">问题：一个线程一个连接，<br>撑不住 10 万并发。</h2>
+  <!-- 3. 맥락 -->
+  <섹션 클래스="슬라이드" data-title="컨텍스트">
+    <p class="kicker">//컨텍스트</p>
+    <h2 class="h2">문제: 하나의 스레드와 하나의 연결<br>은 100,000개의 동시성을 지원할 수 없습니다. </h2>
     <div class="grid g3 mt-l">
-      <div class="card card-accent"><h4>Thread-per-conn</h4><p class="dim">每条连接一根 OS 线程，栈 2–8MB。10 万连接 = 几百 GB RAM。</p><span class="tag mt-s">❌ 不现实</span></div>
-      <div class="card card-accent"><h4>Event loop (C)</h4><p class="dim">epoll/kqueue + 回调地狱。快，但写起来痛苦且容易出 bug。</p><span class="tag mt-s">😩 callback hell</span></div>
-      <div class="card card-accent"><h4>Async / await</h4><p class="dim">看起来像同步代码，编译成状态机。一根线程跑几千任务。</p><span class="tag mt-s">✅ Rust 选这个</span></div>
+      <div class="card card-accent"><h4>연결당 스레드</h4><p class="dim">연결당 OS 스레드 1개, 스택 2~8MB. 100,000개의 연결 = 수백 GB의 RAM. </p><span class="tag mt-s">❌ 비현실적</span></div>
+      <div class="card card-accent"><h4>이벤트 루프(C)</h4><p class="dim">epoll/kqueue + 콜백 지옥. 빠르지만 쓰기가 힘들고 버그가 발생하기 쉽습니다. </p><span class="tag mt-s">😩 콜백 지옥</span></div>
+      <div class="card card-accent"><h4>Async/await</h4><p class="dim">상태 머신으로 컴파일된 동기 코드처럼 보입니다. 하나의 스레드가 수천 개의 작업을 실행합니다. </p><span class="tag mt-s">✅ Rust가 이것을 선택합니다</span></div>
     </div>
-  </section>
+  </섹션>
 
-  <!-- 4. Deep dive 1 -->
+  <!-- 4. 심층 분석 1 -->
   <section class="slide" data-title="Deep Dive 1">
     <p class="kicker">deep-dive · 1 / 2</p>
-    <h2 class="h2">Future 其实只有一个方法。</h2>
+    <h2 class="h2">Future에는 실제로 한 가지 방법만 있습니다.</h2>
     <div class="grid g2 mt-l" style="align-items:start">
       <div>
-        <p class="lede">编译器把 <span class="mono">async fn</span> 变成一个实现了 <span class="mono">Future</span> trait 的匿名状态机。运行时只做一件事：反复 <span class="mono">poll</span> 它，直到返回 <span class="mono">Ready</span>。</p>
+        <p class="lede">컴파일러 <span class="mono">async fn</span> 실현이 된다 <span class="mono">Future</span> 특성에 대한 익명 상태 머신. 실행 중에는 단 한 가지만 수행합니다: 반복 <span class="mono">poll</span> 돌아올 때까지 <span class="mono">Ready</span>.</p>
         <div class="mt-l">
           <span class="tag">Pending</span> <span class="tag">Ready(T)</span> <span class="tag">Waker.wake()</span>
         </div>
@@ -65,43 +65,43 @@
     ) -&gt; Poll&lt;<span class="kw">Self</span>::Output&gt;;
 }
 
-<span class="cmt">// Poll::Pending   → 挂起，等 waker 唤醒</span>
-<span class="cmt">// Poll::Ready(v)  → 完成，产出 v</span></pre>
+<span class="cmt">// Poll::Pending → 정지, waker가 깨어날 때까지 기다림</span>
+<span class="cmt">// Poll::Ready(v) → 완료, v 출력</span></pre>
       </div>
     </div>
   </section>
 
-  <!-- 5. Deep dive 2 -->
-  <section class="slide" data-title="Deep Dive 2">
-    <p class="kicker">deep-dive · 2 / 2</p>
-    <h2 class="h2">Tokio 是一个偷任务的小工。</h2>
+  <!-- 5. 심층 분석 2 -->
+  <section class="slide" data-title="심층 다이브 2">
+    <p class="kicker">심층 분석 · 2/2</p>
+    <h2 class="h2">토키오는 일을 훔치는 일꾼입니다. </h2>
     <div class="grid g2 mt-l" style="align-items:start">
       <div>
-        <p class="lede">Multi-thread runtime = N 个 worker，每个 worker 有自己的本地队列。空闲的 worker 会去别人队列里"偷"任务。</p>
-        <div class="stack mt-m">
-          <div class="tag">✦ local queue · 256 slots</div>
-          <div class="tag">✦ global injection queue</div>
-          <div class="tag">✦ work-stealing @ 50% steal ratio</div>
-          <div class="tag">✦ LIFO slot for cache locality</div>
+        <p class="lede">멀티 스레드 런타임 = N 작업자, 각 작업자는 자체 로컬 대기열을 갖습니다. 유휴 작업자는 다른 사람의 대기열에서 작업을 "훔칩니다". </p>
+        <div 클래스="스택 mt-m">
+          <div class="tag">✦ 로컬 대기열 · 256개 슬롯</div>
+          <div class="tag">✦ 전역 주입 큐</div>
+          <div class="tag">✦ 작업 훔치기 @ 50% 훔치기 비율</div>
+          <div class="tag">✦ 캐시 지역성을 위한 LIFO 슬롯</div>
         </div>
       </div>
-      <div class="card" style="padding:32px">
-        <h4 class="mono" style="color:var(--accent-2)">scheduler tick loop</h4>
+      <div 클래스="카드" 스타일="패딩:32px">
+        <h4 class="mono" style="color:var(--accent-2)">스케줄러 틱 루프</h4>
         <div class="stack mt-m" style="font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.9;color:var(--text-2)">
-          <div><span style="color:var(--accent)">1.</span> pop from LIFO slot</div>
-          <div><span style="color:var(--accent)">2.</span> else pop from local queue</div>
-          <div><span style="color:var(--accent)">3.</span> else drain global queue (every 61 ticks)</div>
-          <div><span style="color:var(--accent)">4.</span> else steal from random victim</div>
-          <div><span style="color:var(--accent)">5.</span> else park the thread</div>
+          <div><span style="color:var(--accent)">1.</span> LIFO 슬롯에서 팝</div>
+          <div><span style="color:var(--accent)">2.</span> 그렇지 않으면 로컬 대기열에서 팝</div>
+          <div><span style="color:var(--accent)">3.</span> else 전역 대기열 비우기(61틱마다)</div>
+          <div><span style="color:var(--accent)">4.</span> 그렇지 않으면 무작위 피해자에게서 물건을 훔칩니다.</div>
+          <div><span style="color:var(--accent)">5.</span> 그렇지 않으면 스레드를 파킹</div>
         </div>
       </div>
     </div>
-  </section>
+  </섹션>
 
-  <!-- 6. Code example -->
+  <!-- 6. 코드 예시 -->
   <section class="slide" data-title="Code">
     <p class="kicker">mini-runtime.rs · ~40 LOC</p>
-    <h2 class="h2">手写一个最小 runtime。</h2>
+    <h2 class="h2">최소한의 런타임을 직접 작성하세요.</h2>
     <div class="terminal mt-m">
       <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span>src/main.rs</span></div>
 <pre><span class="kw">use</span> std::collections::VecDeque;
@@ -120,23 +120,23 @@
         <span class="kw">let</span> waker = Waker::from(task.clone());
         <span class="kw">let mut</span> cx = Context::from_waker(&amp;waker);
         <span class="kw">let mut</span> fut = task.<span class="num">0</span>.lock().unwrap();
-        <span class="kw">let</span> _ = fut.as_mut().<span class="fn">poll</span>(&amp;<span class="kw">mut</span> cx); <span class="cmt">// 就是这一行</span>
+        <span class="kw">let</span> _ = fut.as_mut().<span class="fn">poll</span>(&amp;<span class="kw">mut</span> cx); <span class="cmt">// 이 줄입니다</span>
     }
 }</pre>
     </div>
   </section>
 
-  <!-- 7. Takeaways -->
-  <section class="slide" data-title="Takeaways">
-    <p class="kicker">// takeaways</p>
-    <h2 class="h2">三件事带回去。</h2>
+  <!-- 7. 테이크아웃 -->
+  <section class="slide" data-title="요점">
+    <p class="kicker">// 테이크아웃</p>
+    <h2 class="h2">세 가지 물건을 가지고 돌아가세요. </h2>
     <div class="grid g3 mt-l">
-      <div class="card card-accent"><h4>1 · async 是零成本抽象</h4><p class="dim">编译成状态机，没有运行时虚表，没有 GC。</p></div>
-      <div class="card card-accent"><h4>2 · Waker 是脉搏</h4><p class="dim">Future 不主动做事，运行时靠 waker 决定"什么时候再 poll"。</p></div>
-      <div class="card card-accent"><h4>3 · 别在 async 里阻塞</h4><p class="dim">一行 <span class="mono">std::fs::read</span> 能让整个 worker 停摆。用 <span class="mono">spawn_blocking</span>。</p></div>
+      <div class="card card-accent"><h4>1 · 비동기는 비용이 들지 않는 추상화입니다.</h4><p class="dim">상태 머신으로 컴파일되며 런타임 가상 테이블도 없고 GC도 없습니다. </p></div>
+      <div class="card card-accent"><h4>2 · Waker는 펄스입니다</h4><p class="dim">Future는 주도적으로 작업을 수행하지 않으며, Waker에 의존하여 런타임 중에 "다시 폴링할 시기"를 결정합니다. </p></div>
+      <div class="card card-accent"><h4>3 · 비동기식으로 차단하지 마세요</h4><p class="dim"><span class="mono">std::fs::read</span> 한 줄로 전체 작업자가 중단될 수 있습니다. <span class="mono">spawn_blocking</span>을 사용하세요. </p></div>
     </div>
-    <p class="lede mt-l">延伸阅读：<span class="mono">tokio.rs/blog/2019-10-scheduler</span> · <span class="mono">rust-lang.github.io/async-book</span></p>
-  </section>
+    <p class="lede mt-l">확장 읽기: <span class="mono">tokio.rs/blog/2019-10-scheduler</span> · <span class="mono">rust-lang.github.io/async-book</span></p>
+  </섹션>
 
   <!-- 8. Q&A -->
   <section class="slide center tc" data-title="Q and A">

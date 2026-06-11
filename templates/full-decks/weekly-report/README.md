@@ -1,4 +1,4 @@
-# weekly-report · 周报
+# 주간 보고서 · 한글한글
 
 7-slide team weekly report: cover (week range), KPI grid, shipped items, a metric trend chart, blockers, next-week plan, thanks.
 

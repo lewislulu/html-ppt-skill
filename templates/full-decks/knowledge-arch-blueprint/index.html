@@ -11,69 +11,69 @@
 <body class="tpl-knowledge-arch-blueprint">
 <div class="deck">
 
-  <!-- 1. COVER -->
-  <section class="slide is-active">
+  <!-- 1. 표지 -->
+  <section class="슬라이드가 활성화되었습니다">
     <div class="kb-grid-bg"></div>
     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:40px;margin-bottom:44px">
       <div>
-        <div class="kb-kicker">Karpathy Stack · 架构图 v2</div>
-        <h1 class="kb-h1">LLM <span class="rust">知识库</span> 的<br>工程化蓝图</h1>
-        <p class="kb-sub">从「乱贴笔记」到「可审计、可纠错、可复用」的第二大脑 —— 这是我读完 Karpathy 的分享后画的一张系统图。</p>
+        <div class="kb-kicker">Karpathy 스택 · 아키텍처 다이어그램 v2</div>
+        <h1 class="kb-h1">LLM <span class="rust">지식 기반</span>의 <br>엔지니어링 청사진</h1>
+        <p class="kb-sub">"혼돈스러운 노트"에서 "감사 가능, 수정 가능, 재사용 가능" 제2의 두뇌까지 - 이것은 Karpathy의 공유를 읽은 후 그린 시스템 다이어그램입니다. </p>
       </div>
-      <div class="kb-insight"><span class="kk">KEY INSIGHT</span>Karpathy 原版缺一块：<br>反馈闭环让错误能回流纠正。</div>
+      <div class="kb-insight"><span class="kk">주요 정보</span>Karpathy의 원본 버전에는 일부가 누락되어 있습니다.<br>피드백 폐쇄 루프를 통해 오류를 리플로우하고 수정할 수 있습니다. </div>
     </div>
-    <div class="kb-section-label">Pipeline · End-to-end</div>
-    <div class="kb-pipeline">
-      <div class="kb-step"><div class="kb-step-num">STEP 01</div><div class="kb-step-title">采集</div><div class="kb-step-body">浏览器剪藏、PDF、Podcast 转写、聊天记录</div></div>
-      <div class="kb-step"><div class="kb-step-num">STEP 02</div><div class="kb-step-title">去噪</div><div class="kb-step-body">清洗导航栏、广告、重复段落、低信噪素材</div></div>
-      <div class="kb-step hero"><div class="kb-step-num">STEP 03 · CORE</div><div class="kb-step-title">Wiki 化</div><div class="kb-step-body">结构化成双链笔记，实体、关系、属性全在一起</div></div>
-      <div class="kb-step"><div class="kb-step-num">STEP 04</div><div class="kb-step-title">使用</div><div class="kb-step-body">Agent 随时检索、回答、再写入</div></div>
+    <div class="kb-section-label">파이프라인 · 엔드투엔드</div>
+    <div 클래스="kb-파이프라인">
+      <div class="kb-step"><div class="kb-step-num">STEP 01</div><div class="kb-step-title">컬렉션</div><div class="kb-step-body">브라우저 클리핑, PDF, 팟캐스트 기록, 채팅 기록</div></div>
+      <div class="kb-step"><div class="kb-step-num">STEP 02</div><div class="kb-step-title">노이즈 제거</div><div class="kb-step-body">내비게이션 바, 광고, 반복되는 단락 및 신호 잡음이 적은 자료 정리</div></div>
+      <div class="kb-step Hero"><div class="kb-step-num">STEP 03 · CORE</div><div class="kb-step-title">Wikiization</div><div class="kb-step-body">이중 체인 노트로 구성되어 엔터티, 관계 및 속성이 모두 함께 있습니다</div></div>
+      <div class="kb-step"><div class="kb-step-num">STEP 04</div><div class="kb-step-title">사용</div><div class="kb-step-body">언제든지 검색하고 답변하고 다시 작성할 수 있는 에이전트</div></div>
     </div>
-    <div class="kb-footer"><span>Blueprint · v2 · 2026.04</span><span>01 / 08</span></div>
-  </section>
+    <div class="kb-footer"><span>Blueprint · v2 · 2026.04</span><span>01/08</span></div>
+  </섹션>
 
-  <!-- 2. SECTION DIVIDER -->
+  <!-- 2. 섹션 구분선 -->
   <section class="slide">
     <div class="kb-grid-bg"></div>
     <div style="margin:auto 0">
       <div class="kb-kicker">Chapter One</div>
-      <h1 class="kb-h1" style="font-size:120px">为什么 <span class="rust">笔记</span><br>不够用了</h1>
-      <p class="kb-sub" style="font-size:24px;margin-top:20px">当你的知识量超过记忆容量，<br>你需要的不是更多文件，而是一张<b>可导航的图</b>。</p>
+      <h1 class="kb-h1" style="font-size:120px">왜 <span class="rust">메모</span><br>충분하지 않다</h1>
+      <p class="kb-sub" style="font-size:24px;margin-top:20px">당신의 지식이 기억 용량을 초과하면,<br>당신에게 필요한 것은 더 많은 문서가 아니라, 하나의 문서입니다<b>탐색 가능한 그래프</b>.</p>
     </div>
     <div class="kb-footer"><span>Section · Chapter 1</span><span>02 / 08</span></div>
   </section>
 
-  <!-- 3. CONTENT 2-col -->
-  <section class="slide">
+  <!-- 3. 콘텐츠 2열 -->
+  <섹션 클래스="슬라이드">
     <div class="kb-grid-bg"></div>
-    <div class="kb-kicker">Problem · Solution</div>
-    <h1 class="kb-h1" style="font-size:48px">原版 vs <span class="rust">升级版</span></h1>
-    <div class="kb-grid-2">
-      <div class="kb-card">
-        <div class="kb-kicker" style="color:#888">原版 Karpathy</div>
-        <h4>一次性写入</h4>
-        <p>采集 → 转写 → 存档，错了就错了。没有回路，没有修正机制，笔记越多越混乱。</p>
+    <div class="kb-kicker">문제 · 해결책</div>
+    <h1 class="kb-h1" style="font-size:48px">원래 버전과 <span class="rust">업그레이드 버전</span></h1>
+    <div 클래스="kb-grid-2">
+      <div 클래스="kb-카드">
+        <div class="kb-kicker" style="color:#888">원래 카르파시</div>
+        <h4>한 번만 쓰기</h4>
+        <p>수집 → 전사 → 보관, 실수하면 틀린 것입니다. 루프도 없고 수정 메커니즘도 없으며 음표가 많을수록 혼란스러워집니다. </p>
       </div>
-      <div class="kb-card" style="background:var(--kb-rust-soft);border-color:var(--kb-rust)">
-        <div class="kb-kicker">升级 v2</div>
-        <h4>反馈闭环</h4>
-        <p>AI 使用知识库时记录每次 miss / 幻觉 / 过期事实，自动回灌到源文件，让笔记会自我修正。</p>
+      <div class="kb-card" style="배경:var(--kb-rust-soft);border-color:var(--kb-rust)">
+        <div class="kb-kicker">v2 업그레이드</div>
+        <h4>피드백 폐쇄 루프</h4>
+        <p>AI는 지식 베이스를 사용할 때 모든 누락/환각/만료 사실을 기록하고 이를 자동으로 소스 파일에 피드백하여 메모가 자체 수정될 수 있도록 합니다. </p>
       </div>
     </div>
-    <div class="kb-legend">
-      <div class="d"><span class="b"></span>普通节点</div>
-      <div class="d"><span class="b rust"></span>核心节点 · 反馈回路入口</div>
-      <div class="d">—— 数据流 &nbsp;&nbsp; ┈┈ 反馈回路</div>
+    <div 클래스="kb-전설">
+      <div class="d"><span class="b"></span>일반 노드</div>
+      <div class="d"><span class="b Rust"></span>코어 노드 · 피드백 루프 입구</div>
+      <div class="d"> -  데이터 흐름 &nbsp;&nbsp; ┈┈ 피드백 루프</div>
     </div>
-    <div class="kb-footer"><span>Content · Compare</span><span>03 / 08</span></div>
-  </section>
+    <div class="kb-footer"><span>콘텐츠 · 비교</span><span>03/08</span></div>
+  </섹션>
 
-  <!-- 4. CODE -->
+  <!-- 4. 코드 -->
   <section class="slide">
     <div class="kb-grid-bg"></div>
     <div class="kb-kicker">Implementation · Skill Manifest</div>
-    <h1 class="kb-h1" style="font-size:48px">反馈回路 <span class="rust">怎么实现</span></h1>
-    <p class="kb-sub">一个 100 行的 Agent Skill，把「AI 用得顺不顺」回写成 vault 的一条条修订记录。</p>
+    <h1 class="kb-h1" style="font-size:48px">피드백 루프 <span class="rust">달성하는 방법</span></h1>
+    <p class="kb-sub">100줄의 에이전트 스킬은 "AI가 원활하게 사용되는지 여부"를 볼트에 개정 기록으로 다시 기록합니다.</p>
     <pre class="kb-codebox"><span class="cm"># skills/wiki-feedback/SKILL.md</span>
 <span class="kw">name</span>: wiki-feedback
 <span class="kw">trigger</span>: <span class="st">"after every retrieval"</span>
@@ -89,13 +89,13 @@
     <div class="kb-footer"><span>Content · Code</span><span>04 / 08</span></div>
   </section>
 
-  <!-- 5. DIAGRAM - SVG feedback loop -->
-  <section class="slide">
+  <!-- 5. 다이어그램 - SVG 피드백 루프 -->
+  <섹션 클래스="슬라이드">
     <div class="kb-grid-bg"></div>
-    <div class="kb-kicker">System Diagram</div>
-    <h1 class="kb-h1" style="font-size:44px">反馈回路全貌</h1>
+    <div class="kb-kicker">시스템 다이어그램</div>
+    <h1 class="kb-h1" style="font-size:44px">피드백 루프 전체 보기</h1>
     <svg viewBox="0 0 1200 520" style="width:100%;max-width:1200px;margin-top:20px" xmlns="http://www.w3.org/2000/svg">
-      <defs>
+      <def>
         <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
           <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
         </marker>
@@ -103,8 +103,8 @@
           <path d="M0,0 L10,5 L0,10 z" fill="#B5392A"/>
         </marker>
       </defs>
-      <g font-family="Inter, sans-serif" font-size="16" font-weight="700">
-        <!-- boxes -->
+      <g 글꼴-가족="인터, 산세리프" 글꼴 크기="16" 글꼴 무게="700">
+        <!-- 상자 -->
         <rect x="40" y="180" width="200" height="120" rx="10" fill="#fff" stroke="#1a1a1a" stroke-width="2"/>
         <text x="140" y="220" text-anchor="middle">Sources</text>
         <text x="140" y="250" text-anchor="middle" font-size="12" font-weight="400" fill="#666">web · pdf · chat</text>
@@ -122,53 +122,53 @@
         <text x="940" y="220" text-anchor="middle">Agent Use</text>
         <text x="940" y="250" text-anchor="middle" font-size="12" font-weight="400" fill="#666">retrieve / answer</text>
 
-        <!-- forward arrows -->
-        <line x1="245" y1="240" x2="295" y2="240" stroke="#1a1a1a" stroke-width="2" marker-end="url(#arrow)"/>
-        <line x1="505" y1="240" x2="555" y2="240" stroke="#1a1a1a" stroke-width="2" marker-end="url(#arrow)"/>
-        <line x1="785" y1="240" x2="835" y2="240" stroke="#1a1a1a" stroke-width="2" marker-end="url(#arrow)"/>
+        <!-- 앞으로 화살표 -->
+        <line x1="245" y1="240" x2="295" y2="240" 스트로크="#1a1a1a" 스트로크-폭="2" marker-end="url(#arrow)"/>
+        <line x1="505" y1="240" x2="555" y2="240" 스트로크="#1a1a1a" 스트로크-폭="2" marker-end="url(#arrow)"/>
+        <line x1="785" y1="240" x2="835" y2="240" 스트로크="#1a1a1a" 스트로크-폭="2" marker-end="url(#arrow)"/>
 
-        <!-- feedback dashed -->
-        <path d="M 940 180 Q 940 80, 670 80 Q 400 80, 400 180" fill="none" stroke="#B5392A" stroke-width="2" stroke-dasharray="6 6" marker-end="url(#arrow-r)"/>
-        <rect x="580" y="58" width="180" height="30" rx="6" fill="#F0EAE0" stroke="#B5392A" stroke-width="1"/>
-        <text x="670" y="78" text-anchor="middle" fill="#B5392A" font-size="12">FEEDBACK · wrong / miss</text>
+        <!-- 피드백 대시 -->
+        <path d="M 940 180 Q 940 80, 670 80 Q 400 80, 400 180" fill="none" 스트로크="#B5392A" 스트로크-폭="2" 스트로크-dasharray="6 6" marker-end="url(#arrow-r)"/>
+        <ect x="580" y="58" width="180" height="30" rx="6" fill="#F0EAE0" 스트로크="#B5392A" 스트로크-너비="1"/>
+        <text x="670" y="78" text-anchor="middle" fill="#B5392A"font-size="12">피드백 · 잘못됨/틀림</text>
 
-        <!-- bottom feedback to sources -->
-        <path d="M 940 300 Q 940 420, 670 420 Q 140 420, 140 300" fill="none" stroke="#B5392A" stroke-width="2" stroke-dasharray="6 6" marker-end="url(#arrow-r)"/>
-        <rect x="560" y="400" width="220" height="30" rx="6" fill="#F0EAE0" stroke="#B5392A" stroke-width="1"/>
-        <text x="670" y="420" text-anchor="middle" fill="#B5392A" font-size="12">NIGHTLY · suggest new sources</text>
+        <!-- 소스에 대한 하단 피드백 -->
+        <path d="M 940 300 Q 940 420, 670 420 Q 140 420, 140 300" fill="none" 스트로크="#B5392A" 스트로크-폭="2" 스트로크-dasharray="6 6" marker-end="url(#arrow-r)"/>
+        <ect x="560" y="400" width="220" height="30" rx="6" fill="#F0EAE0" 스트로크="#B5392A" 스트로크-너비="1"/>
+        <text x="670" y="420" text-anchor="middle" fill="#B5392A"font-size="12">밤마다 · 새로운 소스 제안</text>
       </g>
     </svg>
-    <div class="kb-footer"><span>Diagram · Feedback Loop</span><span>05 / 08</span></div>
-  </section>
+    <div class="kb-footer"><span>다이어그램 · 피드백 루프</span><span>05/08</span></div>
+  </섹션>
 
-  <!-- 6. STATS -->
-  <section class="slide">
+  <!-- 6. 통계 -->
+  <섹션 클래스="슬라이드">
     <div class="kb-grid-bg"></div>
-    <div class="kb-kicker">After 6 Months</div>
-    <h1 class="kb-h1" style="font-size:44px">升级版 <span class="rust">跑了半年</span> 的数据</h1>
+    <div class="kb-kicker">6개월 후</div>
+    <h1 class="kb-h1" style="font-size:44px">업그레이드 버전 <span class="rust">반년 실행 후 데이터</span></h1>
     <div style="display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:24px;margin-top:28px;align-items:center">
-      <div style="text-align:center"><div class="kb-big-num">13</div><p style="font-size:14px;color:#666;margin-top:6px;letter-spacing:.1em;text-transform:uppercase">关键优化项 · 全部落地</p></div>
-      <div class="kb-card"><h4 style="color:var(--kb-rust)">-62%</h4><p>幻觉率（相比无反馈回路版本）</p></div>
-      <div class="kb-card"><h4 style="color:var(--kb-rust)">+4.1×</h4><p>单次检索命中率</p></div>
+      <div style="text-align:center"><div class="kb-big-num">13</div><p style="font-size:14px;color:#666;margin-top:6px;letter-spacing:.1em;text-transform:uppercase">주요 최적화 항목 · 모두 구현됨</p></div>
+      <div class="kb-card"><h4 style="color:var(--kb-rust)">-62%</h4><p>환상률(피드백 루프가 없는 버전과 비교)</p></div>
+      <div class="kb-card"><h4 style="color:var(--kb-rust)">+4.1×</h4><p>단일 검색 적중률</p></div>
     </div>
     <div class="kb-grid-2" style="margin-top:18px">
-      <div class="kb-card"><h4>自动修订 227 条</h4><p>其中 189 条被人工批准合并，38 条被拒绝（数据已归档）。</p></div>
-      <div class="kb-card"><h4>新增笔记 412 篇</h4><p>从 miss 日志聚类而来，每篇都有来源追溯。</p></div>
+      <div class="kb-card"><h4>227개 항목이 자동으로 수정되었습니다.</h4><p>이 중 189개 항목이 수동으로 병합 승인되었고 38개 항목이 거부되었습니다(데이터는 보관되었습니다). </p></div>
+      <div class="kb-card"><h4>412개의 새로운 노트</h4><p>미스 로그에서 클러스터링되며 각 노트에는 추적 가능한 소스가 있습니다. </p></div>
     </div>
-    <div class="kb-footer"><span>Content · Stats</span><span>06 / 08</span></div>
-  </section>
+    <div class="kb-footer"><span>콘텐츠 · 통계</span><span>06/08</span></div>
+  </섹션>
 
   <!-- 7. CTA -->
   <section class="slide">
     <div class="kb-grid-bg"></div>
     <div class="kb-kicker">Next Step</div>
-    <h1 class="kb-h1" style="font-size:60px">开始你的 <span class="rust">Wiki v2</span></h1>
-    <p class="kb-sub">不用重写所有笔记。先接一条回路，让 AI 的每次使用都在「改好」你的 vault。</p>
+    <h1 class="kb-h1" style="font-size:60px">당신의 시작 <span class="rust">Wiki v2</span></h1>
+    <p class="kb-sub">모든 메모를 다시 작성할 필요가 없습니다. 먼저 루프를 연결하여 AI가 사용될 때마다 금고를 "개선"합니다.</p>
     <div class="kb-pipeline">
-      <div class="kb-step"><div class="kb-step-num">TONIGHT</div><div class="kb-step-title">装 Skill</div><div class="kb-step-body">pnpm i -g @lewis/wiki-feedback</div></div>
-      <div class="kb-step"><div class="kb-step-num">DAY 2</div><div class="kb-step-title">跑 7 天</div><div class="kb-step-body">观察 miss log 自动累积</div></div>
-      <div class="kb-step hero"><div class="kb-step-num">DAY 8 · CORE</div><div class="kb-step-title">第一次审 PR</div><div class="kb-step-body">花 15 分钟 review 自动生成的修订</div></div>
-      <div class="kb-step"><div class="kb-step-num">MONTH 1</div><div class="kb-step-title">开始信它</div><div class="kb-step-body">你的 vault 会变成活的</div></div>
+      <div class="kb-step"><div class="kb-step-num">TONIGHT</div><div class="kb-step-title">스킬 설치</div><div class="kb-step-body">pnpm i -g @lewis/wiki-feedback</div></div>
+      <div class="kb-step"><div class="kb-step-num">DAY 2</div><div class="kb-step-title">7일 동안 달리다</div><div class="kb-step-body">Miss Log가 자동으로 누적되는 것을 관찰</div></div>
+      <div class="kb-step hero"><div class="kb-step-num">DAY 8 · CORE</div><div class="kb-step-title">첫 번째 PR 리뷰</div><div class="kb-step-body">자동으로 생성된 개정판을 검토하는 데 15분이 소요됩니다.</div></div>
+      <div class="kb-step"><div class="kb-step-num">MONTH 1</div><div class="kb-step-title">그것을 믿기 시작하다</div><div class="kb-step-body">당신의 금고가 살아날 것입니다</div></div>
     </div>
     <div class="kb-footer"><span>CTA</span><span>07 / 08</span></div>
   </section>
@@ -178,8 +178,8 @@
     <div class="kb-grid-bg"></div>
     <div style="margin:auto 0;text-align:center">
       <div class="kb-kicker">END · blueprint v2</div>
-      <h1 class="kb-h1" style="font-size:140px;margin-top:24px">谢谢 <span class="rust">·</span> thanks</h1>
-      <p class="kb-sub" style="margin:0 auto;font-size:22px">图纸、Skill、笔记模板都在 <b>github.com/lewis/karpathy-wiki-v2</b></p>
+      <h1 class="kb-h1" style="font-size:140px;margin-top:24px">감사합니다 <span class="rust">·</span> thanks</h1>
+      <p class="kb-sub" style="margin:0 auto;font-size:22px">그림, 스킬, 메모 템플릿이 모두 있습니다 <b>github.com/lewis/karpathy-wiki-v2</b></p>
     </div>
     <div class="kb-footer"><span>End of deck</span><span>08 / 08</span></div>
   </section>

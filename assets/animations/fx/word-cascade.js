@@ -4,8 +4,8 @@
     const U = window.HPX._u;
     const k = U.canvas(el), ctx = k.ctx;
     const pal = U.palette(el);
-    const WORDS = ['AI','知识','Graph','Claude','LLM','Agent','Vector','RAG','Token','神经',
-      'Prompt','Chain','Skill','Code','Cloud','GPU','Flow','推理','Data','Model'];
+    const WORDS = ['AI','지식','Graph','Claude','LLM','Agent','Vector','RAG','Token','신경',
+      'Prompt','Chain','Skill','Code','Cloud','GPU','Flow','추론','Data','Model'];
     let items = [];
     let last = -1;
     let piles = {}; // column -> stack height

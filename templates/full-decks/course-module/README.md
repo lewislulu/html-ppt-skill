@@ -1,4 +1,4 @@
-# course-module · 教学模块
+# 코스 모듈 · 교육 모듈
 
 7-slide teaching module: cover (title + meta), objectives, core concept, worked example, exercise, check-your-understanding (MCQ), summary.
 

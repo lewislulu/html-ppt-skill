@@ -1,11 +1,11 @@
 # dir-key-nav-minimal
 
-8 张幻灯片，每张一个纯色/渐变 mono-background（indigo / cream / crimson / emerald / slate / violet / white / charcoal）。灵感直接来自 `20260405 演示幻灯片【方向键版】.html` —— 八个 `t-*` 主题类，每张幻灯一个背景，方向键切换，极简 editorial 气质。
+슬라이드 8개, 각 슬라이드는 단색/그라디언트 단색 배경(남색/크림색/진홍색/에메랄드/슬레이트/보라색/흰색/차콜색)입니다. 직접적으로 영감을 받은 `20260405 발표프롬프트한글한글카드【한글양방향키버전】.html`  - 여덟 `t-*` 테마 유형, 각 슬라이드에는 배경, 전환할 화살표 키, 미니멀리스트 편집 스타일이 있습니다.
 
-**Visual traits:** 每张独立背景色 + 单一 accent、巨大 160px 标题无副图、4px 短粗 accent line divider、arrow-prefixed mono list、左下 `← →` 键盘提示 + 右下 page label、全屏 breathing negative space、JetBrains Mono 做数字 / 代码 / 键盘 hint、每个背景有自己的 `.dk-accent` 色。
+**시각적 특성:** 각 이미지에는 독립적인 배경색 + 단일 악센트, 하위 이미지가 없는 거대한 160px 제목, 짧고 두꺼운 4px 악센트 선 구분선, 화살표가 붙은 모노 목록, 왼쪽 하단이 있습니다. `← →` 키보드 힌트 + 오른쪽 하단 페이지 라벨, 전체 화면 숨쉬는 여백, 숫자/코드/키보드 힌트용 JetBrains Mono, 각 배경에는 고유한 내용이 있음 `.dk-accent` 색상.
 
-**Use when:** 有话要说、没太多图、希望用排版节奏推进观众注意力；keynote 式的极简讲稿；每张幻灯只讲一件事；公开分享 / keynote / 演讲稿。
+**사용할 때:** 할 말이 있지만 사진이 많지 않고 레이아웃 리듬을 사용하여 청중의 관심을 끌고 싶습니다. 기조 연설 스타일의 미니멀리스트 연설 스크립트; 각 슬라이드는 단 한 가지만 알려줍니다. 공개적으로 공유/기조연설/스피치 스크립트.
 
-**Source inspiration:** `20260405-Karpathy-知识库/20260405 演示幻灯片【方向键版】.html`.
+**Source inspiration:** `20260405-Karpathy-지식한글저장소/20260405 발표프롬프트한글한글카드【한글양방향키버전】.html`.
 
 **Path:** `templates/full-decks/dir-key-nav-minimal/index.html`
