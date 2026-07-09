@@ -40,6 +40,32 @@ idx:N})` 通知 iframe，iframe 只是切换 `.is-active` class —— **不重�
 `templates/full-decks/presenter-mode-reveal/` 这个现成模板 —— 每一页都带完整
 150–300 字的示例逐字稿。
 
+## ✏️ 编辑模式（全新）
+
+直接**在浏览器里编辑 deck 并保存回 html 文件**——零构建、无本地服务，
+`file://` 双击打开就能用。
+
+```html
+<!-- 放在 <body> 最后一个 script，runtime.js 之后 -->
+<script src="../../assets/edit-mode.js"></script>
+```
+
+URL 加 `?edit` 打开（`index.html?edit`）即激活；不带 `?edit` 时脚本完全
+惰性，放映、键盘导航、演讲者模式不受任何影响。
+
+- **文字** — 双击任意文字就地编辑，Esc / 点击别处提交
+- **✨ 动画** — 点选元素，从 26 种 CSS 入场动画里挑（悬停即预览，点选即应用）
+- **🎇 特效** — 给当前页挑 20 种 canvas 特效（data-fx）
+- **🧩 组件** — 点卡片 / 列表项 / pill：隐藏·显示、复制一份（文字置占位）、
+  删除；"选父级"可扩大选中范围
+- **💾 保存** — File System Access API 直写文件（Chrome；首次选一次本文件，
+  之后静默保存）；FSA 不可用时自动降级为下载
+
+原理：脚本在 runtime 注入 chrome（进度条、概览克隆、counter 改写）**之前**
+同步抓取干净 DOM 快照，保存时序列化这份干净副本——运行时状态永远不会漏进
+文件，二次保存恒为零 diff。注意首次保存会经历一次 DOM 解析/序列化归一，
+归一后 commit 一次即可。
+
 ## 一行命令安装
 
 ```bash
