@@ -38,9 +38,17 @@
 
   window.__hpxActive = window.__hpxActive || new Map();
 
+  /* querySelectorAll never matches root itself, but decks put data-fx on the
+   * <section class="slide"> too (e.g. a cover starfield) — include it. */
+  function fxEls(root){
+    const els = Array.from(root.querySelectorAll('[data-fx]'));
+    if (root.matches && root.matches('[data-fx]')) els.unshift(root);
+    return els;
+  }
+
   function initFxIn(root){
     if (!window.HPX) return;
-    const els = root.querySelectorAll('[data-fx]');
+    const els = fxEls(root);
     els.forEach((el) => {
       if (window.__hpxActive.has(el)) return;
       const name = el.getAttribute('data-fx');
@@ -54,7 +62,7 @@
   }
 
   function stopFxIn(root){
-    const els = root.querySelectorAll('[data-fx]');
+    const els = fxEls(root);
     els.forEach((el) => {
       const h = window.__hpxActive.get(el);
       if (h && typeof h.stop === 'function'){
