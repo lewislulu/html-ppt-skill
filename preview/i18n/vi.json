@@ -1,0 +1,27 @@
+{
+  "_comment": "Chuỗi tiếng Việt cho preview/anim-stage.html. Baseline zh-CN nằm trong map ZH ngay trong file đó; key nào thiếu ở đây sẽ tự động dùng lại baseline.",
+
+  "stage.kicker": "Demo",
+  "stage.h1": "Nói ý tưởng cho rõ",
+  "stage.lede": "Một class, một chuyển động. Tất cả đều do tokens điều khiển.",
+  "stage.type": "đang gõ dòng này…",
+  "stage.hover": "rê chuột lên thẻ",
+  "stage.thanks": "Cảm ơn",
+  "stage.pill1": "tokens",
+  "stage.pill2": "ưu tiên bàn phím",
+  "stage.pill3": "xuất PNG",
+  "stage.pill4": "không cần build",
+
+  "stage.card1t": "① Cấu trúc",
+  "stage.card1d": "Nghĩ cho xong mình định nói gì, rồi hẵng lo tới chuyện đẹp.",
+  "stage.card2t": "② Layout",
+  "stage.card2d": "31 layout, phủ gần hết các tình huống bạn sẽ gặp.",
+  "stage.card3t": "③ Theme",
+  "stage.card3d": "36 theme, đổi bằng cách thay đúng một file biến.",
+  "stage.card4t": "④ Hiệu ứng",
+  "stage.card4d": "27 hiệu ứng CSS cộng 20 hiệu ứng canvas.",
+  "stage.card5t": "⑤ Kịch bản",
+  "stage.card5d": "Lời dẫn nằm trong .notes — bấm S để mở ra.",
+  "stage.card6t": "⑥ Xuất file",
+  "stage.card6d": "Một câu lệnh xuất toàn bộ slide ra PNG."
+}

@@ -14,12 +14,17 @@
     let lw = k.w, lh = k.h;
     const stop = U.loop(() => {
       if (k.w!==lw || k.h!==lh){ init(); lw=k.w; lh=k.h; }
-      ctx.fillStyle = 'rgba(0,0,0,0.08)';
+      ctx.fillStyle = U.fade(el, 0.08);
       ctx.fillRect(0,0,k.w,k.h);
       ctx.font = fs+'px monospace';
       for (let i=0;i<cols;i++){
         const ch = glyphs[(Math.random()*glyphs.length)|0];
         const x = i*fs, y = drops[i]*fs;
+        /* The green is deliberately NOT themed. Every other fx samples the
+         * theme's accents, but "matrix rain" in the deck's brand colors is no
+         * longer matrix rain — an author picking this effect is picking the
+         * reference, glyphs and green together. The trail wash above still
+         * follows --bg, so it at least stops fogging light themes to black. */
         ctx.fillStyle = '#9fffc9';
         ctx.fillText(ch, x, y);
         ctx.fillStyle = '#00ff6a';

@@ -25,7 +25,7 @@
     el.addEventListener('pointermove', onMove);
     el.addEventListener('pointerenter', onAny);
     const stop = U.loop(() => {
-      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.fillStyle = U.fade(el, 0.15);
       ctx.fillRect(0,0,k.w,k.h);
       if (auto){
         autoT += 0.04;

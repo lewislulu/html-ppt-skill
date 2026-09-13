@@ -51,7 +51,7 @@
         n.x += n.vx; n.y += n.vy;
       }
       ctx.clearRect(0,0,k.w,k.h);
-      ctx.strokeStyle = 'rgba(180,180,220,0.25)'; ctx.lineWidth=1;
+      ctx.strokeStyle = U.alpha(tx, 0.25); ctx.lineWidth=1;
       for (const [i,j] of edges){
         const a=nodes[i], b=nodes[j];
         ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();

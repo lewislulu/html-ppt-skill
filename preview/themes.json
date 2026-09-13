@@ -1,0 +1,66 @@
+{
+  "_comment": "Catalog for the preview site. Colors are copied verbatim from assets/themes/<id>.css so the swatches show the real palette. If you add a theme, add it here too.",
+  "groups": [
+    {
+      "name": "Minimal & Editorial",
+      "themes": [
+        { "id": "minimal-white",   "label": "Minimal White",   "note": "极简白 · clean restraint",   "bg": "#ffffff", "text": "#0c0d10", "accent": "#111216", "accent2": "#3b3f4a", "accent3": "#6b6f7a" },
+        { "id": "sharp-mono",      "label": "Sharp Mono",      "note": "黑白高对比",                  "bg": "#ffffff", "text": "#000000", "accent": "#000000", "accent2": "#000000", "accent3": "#ff2200" },
+        { "id": "editorial-serif", "label": "Editorial Serif", "note": "杂志衬线 · high editorial",   "bg": "#faf7f2", "text": "#1b1410", "accent": "#8a2a1c", "accent2": "#c97a4a", "accent3": "#1b1410" },
+        { "id": "academic-paper",  "label": "Academic Paper",  "note": "学术白皮书",                  "bg": "#fdfcf8", "text": "#0a0a0a", "accent": "#1a3a7a", "accent2": "#0a0a0a", "accent3": "#8a1a1a" },
+        { "id": "japanese-minimal","label": "Japanese Minimal","note": "和风极简 · 朱红",             "bg": "#fafaf5", "text": "#1a1a18", "accent": "#d93a2a", "accent2": "#1a1a18", "accent3": "#c9a961" },
+        { "id": "swiss-grid",      "label": "Swiss Grid",      "note": "国际主义网格",                "bg": "#ffffff", "text": "#111111", "accent": "#d6001c", "accent2": "#111111", "accent3": "#888888" },
+        { "id": "midcentury",      "label": "Mid-Century",     "note": "Mid-Century Modern",         "bg": "#f3ead8", "text": "#201810", "accent": "#d4902a", "accent2": "#2a7a7f", "accent3": "#c7502a" },
+        { "id": "magazine-bold",   "label": "Magazine Bold",   "note": "大字杂志",                    "bg": "#f5efe2", "text": "#0a0a0a", "accent": "#ea5a1a", "accent2": "#0a0a0a", "accent3": "#c42a10" }
+      ]
+    },
+    {
+      "name": "Business & Technical",
+      "themes": [
+        { "id": "corporate-clean",        "label": "Corporate Clean",  "note": "商务正式",           "bg": "#ffffff", "text": "#0a2540", "accent": "#0a2540", "accent2": "#1d4ed8", "accent3": "#64748b" },
+        { "id": "pitch-deck-vc",          "label": "Pitch Deck VC",    "note": "YC / VC 路演",       "bg": "#ffffff", "text": "#0b0d12", "accent": "#0070f3", "accent2": "#7928ca", "accent3": "#ff4ecb" },
+        { "id": "engineering-whiteprint", "label": "Eng. Whiteprint",  "note": "工程白图",           "bg": "#ffffff", "text": "#0a1e46", "accent": "#0a1e46", "accent2": "#1e5ac4", "accent3": "#c42a10" },
+        { "id": "blueprint",              "label": "Blueprint",        "note": "蓝图",               "bg": "#0b3a6f", "text": "#e8f3ff", "accent": "#ffffff", "accent2": "#aee1ff", "accent3": "#ffd27a" },
+        { "id": "news-broadcast",         "label": "News Broadcast",   "note": "新闻播报",           "bg": "#ffffff", "text": "#0a0a0a", "accent": "#e11d2d", "accent2": "#0a0a0a", "accent3": "#ffd100" }
+      ]
+    },
+    {
+      "name": "Developer",
+      "themes": [
+        { "id": "tokyo-night",       "label": "Tokyo Night",       "note": "技术分享默认好看", "bg": "#1a1b26", "text": "#c0caf5", "accent": "#7aa2f7", "accent2": "#bb9af7", "accent3": "#7dcfff" },
+        { "id": "catppuccin-mocha",  "label": "Catppuccin Mocha",  "note": "暗色柔和",         "bg": "#1e1e2e", "text": "#cdd6f4", "accent": "#cba6f7", "accent2": "#89b4fa", "accent3": "#f5c2e7" },
+        { "id": "catppuccin-latte",  "label": "Catppuccin Latte",  "note": "亮色柔和",         "bg": "#eff1f5", "text": "#4c4f69", "accent": "#8839ef", "accent2": "#1e66f5", "accent3": "#ea76cb" },
+        { "id": "dracula",           "label": "Dracula",           "note": "经典暗色",         "bg": "#282a36", "text": "#f8f8f2", "accent": "#bd93f9", "accent2": "#ff79c6", "accent3": "#8be9fd" },
+        { "id": "nord",              "label": "Nord",              "note": "北欧冷色",         "bg": "#2e3440", "text": "#eceff4", "accent": "#88c0d0", "accent2": "#81a1c1", "accent3": "#b48ead" },
+        { "id": "gruvbox-dark",      "label": "Gruvbox Dark",      "note": "复古暖调暗色",     "bg": "#282828", "text": "#ebdbb2", "accent": "#fabd2f", "accent2": "#fe8019", "accent3": "#b8bb26" },
+        { "id": "rose-pine",         "label": "Rosé Pine",         "note": "低饱和暗色",       "bg": "#191724", "text": "#e0def4", "accent": "#ebbcba", "accent2": "#c4a7e7", "accent3": "#9ccfd8" },
+        { "id": "solarized-light",   "label": "Solarized Light",   "note": "护眼亮色",         "bg": "#fdf6e3", "text": "#073642", "accent": "#268bd2", "accent2": "#2aa198", "accent3": "#d33682" },
+        { "id": "terminal-green",    "label": "Terminal Green",    "note": "终端绿",           "bg": "#030a04", "text": "#8cff9a", "accent": "#00ff88", "accent2": "#67ffd0", "accent3": "#b6ff6b" }
+      ]
+    },
+    {
+      "name": "Soft & Social",
+      "themes": [
+        { "id": "xiaohongshu-white", "label": "小红书白底",     "note": "小红书图文",   "bg": "#fffdfb", "text": "#1a1210", "accent": "#ff2742", "accent2": "#ff7a90", "accent3": "#ffb38a" },
+        { "id": "soft-pastel",       "label": "Soft Pastel",   "note": "马卡龙",       "bg": "#fdf7fb", "text": "#3a1f33", "accent": "#f49bb8", "accent2": "#b5d5f0", "accent3": "#f7d08a" },
+        { "id": "arctic-cool",       "label": "Arctic Cool",   "note": "冷色调",       "bg": "#f2f6fb", "text": "#0e1f33", "accent": "#1e6fb0", "accent2": "#17b1b1", "accent3": "#6f8aa6" },
+        { "id": "sunset-warm",       "label": "Sunset Warm",   "note": "暖色调",       "bg": "#fff7ef", "text": "#2a160a", "accent": "#e36a2d", "accent2": "#f2a341", "accent3": "#d94860" },
+        { "id": "rainbow-gradient",  "label": "Rainbow Grad.", "note": "彩虹渐变",     "bg": "#ffffff", "text": "#0c0d10", "accent": "#ff4d8b", "accent2": "#7a5cff", "accent3": "#36b6ff" },
+        { "id": "memphis-pop",       "label": "Memphis Pop",   "note": "孟菲斯波普",   "bg": "#fef6e8", "text": "#111111", "accent": "#ff3d8b", "accent2": "#37c2d7", "accent3": "#ffcc00" }
+      ]
+    },
+    {
+      "name": "Bold & Experimental",
+      "themes": [
+        { "id": "aurora",         "label": "Aurora",        "note": "极光 · demo 默认", "bg": "#06091c", "text": "#e8f0ff", "accent": "#5ef2c6", "accent2": "#7aa2ff", "accent3": "#c984ff" },
+        { "id": "cyberpunk-neon", "label": "Cyberpunk Neon","note": "霓虹",             "bg": "#000000", "text": "#f5f7ff", "accent": "#ff2bd6", "accent2": "#00f0ff", "accent3": "#f9f871" },
+        { "id": "vaporwave",      "label": "Vaporwave",     "note": "蒸汽波",           "bg": "#1a0938", "text": "#fdf0ff", "accent": "#ff6ec7", "accent2": "#00f5ff", "accent3": "#ffd166" },
+        { "id": "y2k-chrome",     "label": "Y2K Chrome",    "note": "千禧镜面",         "bg": "#dfe4ec", "text": "#1a1f2e", "accent": "#8a5cff", "accent2": "#3ccfd8", "accent3": "#ff84c4" },
+        { "id": "neo-brutalism",  "label": "Neo-Brutalism", "note": "新粗野",           "bg": "#fffef0", "text": "#000000", "accent": "#ffd400", "accent2": "#ff5ca8", "accent3": "#3a7cff" },
+        { "id": "retro-tv",       "label": "Retro TV",      "note": "CRT 扫描线",       "bg": "#f5ecd7", "text": "#2a1a08", "accent": "#e67e14", "accent2": "#c73a1f", "accent3": "#f2b544" },
+        { "id": "glassmorphism",  "label": "Glassmorphism", "note": "毛玻璃",           "bg": "#0b1024", "text": "#f2f4ff", "accent": "#7dd3fc", "accent2": "#c084fc", "accent3": "#f0abfc" },
+        { "id": "bauhaus",        "label": "Bauhaus",       "note": "几何原色",         "bg": "#f4efe3", "text": "#111111", "accent": "#e03c27", "accent2": "#f4c430", "accent3": "#1d4eaf" }
+      ]
+    }
+  ]
+}

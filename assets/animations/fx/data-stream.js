@@ -26,7 +26,7 @@
     let lh = k.h;
     const stop = U.loop((t) => {
       if (k.h!==lh){ init(); lh=k.h; }
-      ctx.fillStyle = 'rgba(5,8,14,0.35)';
+      ctx.fillStyle = U.fade(el, 0.35);
       ctx.fillRect(0,0,k.w,k.h);
       ctx.font = '13px ui-monospace,Menlo,monospace';
       for (let i=0;i<rows.length;i++){

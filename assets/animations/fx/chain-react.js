@@ -4,6 +4,7 @@
     const U = window.HPX._u;
     const k = U.canvas(el), ctx = k.ctx;
     const ac = U.accent(el,'#7c5cff'), ac2 = U.accent2(el,'#22d3ee');
+    const tx = U.text(el,'#e7e7ef');
     const N = 8;
     const stop = U.loop((t) => {
       ctx.clearRect(0,0,k.w,k.h);
@@ -20,18 +21,18 @@
         const r = 18 + pulse*18;
         // glow
         const g = ctx.createRadialGradient(x,cy,0,x,cy,r*2);
-        g.addColorStop(0, `rgba(124,92,255,${0.4*pulse})`);
+        g.addColorStop(0, U.alpha(ac, 0.4*pulse));
         g.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.fillStyle = g;
         ctx.fillRect(x-r*2, cy-r*2, r*4, r*4);
         // circle
         ctx.fillStyle = pulse>0.1 ? ac2 : ac;
         ctx.beginPath(); ctx.arc(x,cy,r,0,Math.PI*2); ctx.fill();
-        ctx.strokeStyle='rgba(255,255,255,0.4)'; ctx.lineWidth=2;
+        ctx.strokeStyle=U.alpha(tx, 0.4); ctx.lineWidth=2;
         ctx.stroke();
         // connectors
         if (i<N-1){
-          ctx.strokeStyle='rgba(200,200,230,0.3)'; ctx.lineWidth=2;
+          ctx.strokeStyle=U.alpha(tx, 0.3); ctx.lineWidth=2;
           ctx.beginPath(); ctx.moveTo(x+r,cy); ctx.lineTo(x+dx-r,cy); ctx.stroke();
         }
       }

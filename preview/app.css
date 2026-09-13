@@ -1,0 +1,209 @@
+/* html-ppt :: preview site chrome.
+ *
+ * Deliberately does NOT use assets/base.css or any theme token. The panel must
+ * stay visually constant while 36 themes flash past inside the iframe — if the
+ * chrome re-skinned along with the slide you'd have no fixed reference to judge
+ * against. Neutral dark grey is the closest thing to a darkroom safelight.
+ */
+
+:root {
+  --ui-bg: #0d0e12;
+  --ui-panel: #14161c;
+  --ui-panel-2: #1b1e26;
+  --ui-line: #262a34;
+  --ui-line-2: #333947;
+  --ui-text: #e6e8ef;
+  --ui-text-2: #9aa1b1;
+  --ui-text-3: #666d7e;
+  --ui-accent: #5b8cff;
+  --ui-radius: 10px;
+  --rail-w: 268px;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, 'JetBrains Mono', Menlo, Consolas, monospace;
+}
+
+* , *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0; height: 100%;
+  background: var(--ui-bg); color: var(--ui-text);
+  font-family: var(--font); font-size: 14px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+body { display: grid; grid-template-columns: var(--rail-w) 1fr; }
+
+/* ============================ LEFT RAIL ============================ */
+.rail {
+  background: var(--ui-panel);
+  border-right: 1px solid var(--ui-line);
+  display: flex; flex-direction: column;
+  min-height: 0;
+}
+
+.rail-head { padding: 16px 14px 12px; border-bottom: 1px solid var(--ui-line); }
+
+.brand { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.brand strong { display: block; font-size: 14px; letter-spacing: -.01em; }
+.brand-sub { display: block; font-size: 11px; color: var(--ui-text-3); }
+.brand-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex: none;
+  background: linear-gradient(135deg, #5ef2c6, #7aa2ff 55%, #c984ff);
+}
+
+.search {
+  width: 100%; padding: 7px 10px;
+  background: var(--ui-bg); color: var(--ui-text);
+  border: 1px solid var(--ui-line-2); border-radius: 8px;
+  font: inherit; font-size: 13px;
+}
+.search::placeholder { color: var(--ui-text-3); }
+.search:focus { outline: none; border-color: var(--ui-accent); }
+
+.theme-list { flex: 1; overflow-y: auto; padding: 8px; min-height: 0; }
+
+.group-name {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
+  color: var(--ui-text-3); padding: 12px 8px 6px;
+}
+
+.theme-btn {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 7px 8px; margin-bottom: 2px;
+  background: none; border: 1px solid transparent; border-radius: 8px;
+  color: var(--ui-text-2); font: inherit; text-align: left; cursor: pointer;
+}
+.theme-btn:hover { background: var(--ui-panel-2); color: var(--ui-text); }
+.theme-btn.is-active {
+  background: var(--ui-panel-2); color: var(--ui-text);
+  border-color: var(--ui-line-2);
+}
+.theme-btn.is-active .tb-label { font-weight: 600; }
+
+/* The swatch is a miniature of the theme: page background, then its three
+   accents as dots. Enough to predict the slide before you click it. */
+.swatch {
+  width: 34px; height: 24px; border-radius: 5px; flex: none;
+  border: 1px solid rgba(255,255,255,.16);
+  display: flex; align-items: center; justify-content: center; gap: 2.5px;
+}
+.swatch i { width: 5px; height: 5px; border-radius: 50%; display: block; }
+
+.tb-text { min-width: 0; flex: 1; }
+.tb-label { display: block; font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tb-note { display: block; font-size: 10.5px; color: var(--ui-text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.rail-foot {
+  padding: 9px 14px; border-top: 1px solid var(--ui-line);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px; color: var(--ui-text-3);
+}
+.rail-foot a { color: var(--ui-text-3); text-decoration: none; }
+.rail-foot a:hover { color: var(--ui-text); }
+
+/* ============================== MAIN ============================== */
+.main { display: grid; grid-template-rows: auto 1fr auto; min-width: 0; min-height: 0; }
+
+.bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--ui-line);
+  background: var(--ui-panel);
+}
+.bar-group { display: flex; align-items: center; gap: 8px; }
+.bar-group[hidden] { display: none; }
+.bar-spacer { flex: 1; }
+.bar-label { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: var(--ui-text-3); }
+
+.seg { display: flex; background: var(--ui-bg); border: 1px solid var(--ui-line-2); border-radius: 8px; padding: 2px; }
+.seg-btn {
+  padding: 5px 12px; border: 0; border-radius: 6px;
+  background: none; color: var(--ui-text-2);
+  font: inherit; font-size: 12.5px; cursor: pointer;
+}
+.seg-btn:hover { color: var(--ui-text); }
+.seg-btn.is-active { background: var(--ui-panel-2); color: var(--ui-text); box-shadow: 0 1px 2px rgba(0,0,0,.4); }
+.seg-sm .seg-btn { padding: 4px 10px; font-size: 12px; }
+
+.dots { display: flex; gap: 4px; }
+.dot {
+  width: 24px; height: 24px; padding: 0;
+  border: 1px solid var(--ui-line-2); border-radius: 6px;
+  background: var(--ui-bg); color: var(--ui-text-3);
+  font: inherit; font-size: 11px; cursor: pointer;
+}
+.dot:hover { color: var(--ui-text); border-color: var(--ui-text-3); }
+.dot.is-active { background: var(--ui-accent); border-color: var(--ui-accent); color: #fff; font-weight: 600; }
+
+.select {
+  padding: 5px 8px; min-width: 220px;
+  background: var(--ui-bg); color: var(--ui-text);
+  border: 1px solid var(--ui-line-2); border-radius: 8px;
+  font: inherit; font-size: 12.5px; font-family: var(--mono); cursor: pointer;
+}
+.select:focus { outline: none; border-color: var(--ui-accent); }
+
+.btn {
+  padding: 6px 12px;
+  background: var(--ui-panel-2); color: var(--ui-text);
+  border: 1px solid var(--ui-line-2); border-radius: 8px;
+  font: inherit; font-size: 12.5px; cursor: pointer;
+}
+.btn:hover { border-color: var(--ui-text-3); }
+.btn:active { transform: translateY(1px); }
+.btn-ghost { background: none; color: var(--ui-text-2); padding: 6px 9px; }
+
+/* ============================== STAGE ============================== */
+.stage-wrap {
+  position: relative; min-height: 0; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  padding: 22px;
+  /* Faint grid: gives the eye a neutral reference so a theme's own background
+     colour is judged against something, not against pure void. */
+  background-color: var(--ui-bg);
+  background-image:
+    linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* The iframe is always laid out at the deck's real design resolution and then
+   scaled. Resizing the iframe itself would re-flow the slide at a size no
+   audience will ever see, which is exactly what a preview must not do. */
+.stage-shadow {
+  width: 1280px; height: 720px; flex: none;
+  transform-origin: center center;
+  border-radius: 8px; overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 0 1px var(--ui-line-2);
+  background: #000;
+}
+#stage { width: 1280px; height: 720px; border: 0; display: block; }
+
+/* ============================ STATUS BAR ============================ */
+.statusbar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 14px;
+  border-top: 1px solid var(--ui-line);
+  background: var(--ui-panel);
+  font-size: 11.5px; color: var(--ui-text-3);
+}
+.status-item b { color: var(--ui-text-2); font-family: var(--mono); font-weight: 500; }
+.status-item i { font-style: normal; }
+.sep { color: var(--ui-line-2); }
+.keys { display: flex; align-items: center; gap: 5px; }
+kbd {
+  display: inline-block; padding: 1px 5px; min-width: 18px; text-align: center;
+  background: var(--ui-bg); border: 1px solid var(--ui-line-2);
+  border-bottom-width: 2px; border-radius: 4px;
+  font-family: var(--mono); font-size: 10px; color: var(--ui-text-2);
+}
+.keys span { margin-right: 8px; }
+
+/* ============================ RESPONSIVE ============================ */
+@media (max-width: 900px) {
+  body { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+  .rail { grid-row: 2; border-right: 0; border-top: 1px solid var(--ui-line); max-height: 42vh; }
+  .main { grid-row: 1; }
+  .bar { flex-wrap: wrap; }
+  .keys { display: none; }
+}

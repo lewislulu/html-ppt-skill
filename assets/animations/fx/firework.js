@@ -23,7 +23,7 @@
     };
     let last = -1;
     const stop = U.loop((t) => {
-      ctx.fillStyle = 'rgba(0,0,0,0.18)';
+      ctx.fillStyle = U.fade(el, 0.18);
       ctx.fillRect(0,0,k.w,k.h);
       if (t - last > 0.7) { launch(); last = t; }
       const dt = 1/60;

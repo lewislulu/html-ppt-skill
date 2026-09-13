@@ -4,6 +4,7 @@
     const U = window.HPX._u;
     const k = U.canvas(el), ctx = k.ctx;
     const ac = U.accent(el,'#7c5cff'), ac2 = U.accent2(el,'#22d3ee');
+    const tx = U.text(el,'#e7e7ef');
     const layers = [4,6,6,3];
     let nodes = [], edges = [], pulses = [];
     const layout = () => {
@@ -29,7 +30,7 @@
     const stop = U.loop((t) => {
       if (k.w!==lw||k.h!==lh){ layout(); lw=k.w; lh=k.h; }
       ctx.clearRect(0,0,k.w,k.h);
-      ctx.strokeStyle = 'rgba(160,160,200,0.22)'; ctx.lineWidth=1;
+      ctx.strokeStyle = U.alpha(tx, 0.22); ctx.lineWidth=1;
       for (const [i,j] of edges){
         const a=nodes[i], b=nodes[j];
         ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();

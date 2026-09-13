@@ -15,7 +15,7 @@
                s: U.rand(0.8, 2.2) };
     });
     const stop = U.loop((t) => {
-      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.fillStyle = U.fade(el, 0.15);
       ctx.fillRect(0,0,k.w,k.h);
       const cx=k.w/2, cy=k.h/2;
       for (const p of parts){

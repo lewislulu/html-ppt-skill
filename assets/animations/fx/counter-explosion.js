@@ -8,7 +8,9 @@
     const pal = U.palette(el);
     // number overlay
     const num = document.createElement('div');
-    num.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:900 120px system-ui,sans-serif;color:var(--text-1,#fff);pointer-events:none;text-shadow:0 4px 40px rgba(124,92,255,0.5);';
+    num.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;' +
+      'font:900 120px system-ui,sans-serif;color:var(--text-1,#fff);pointer-events:none;' +
+      'text-shadow:0 4px 40px ' + U.alpha(U.accent(el, '#7c5cff'), 0.5) + ';';
     num.textContent = '0';
     el.appendChild(num);
     let parts = [];

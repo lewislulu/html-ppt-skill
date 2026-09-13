@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>html-ppt — HTML PPT Studio</title>
+<meta name="description" content="Author professional static HTML presentations. 36 themes, 31 layouts, 47 animations, 15 full-deck templates. Zero build.">
+<style>
+  :root {
+    --bg: #0d0e12; --panel: #14161c; --line: #262a34; --line-2: #333947;
+    --text: #e6e8ef; --text-2: #9aa1b1; --text-3: #666d7e;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: var(--bg); color: var(--text);
+    font-family: var(--font); line-height: 1.6; -webkit-font-smoothing: antialiased;
+    display: flex; align-items: center; justify-content: center; padding: 40px 20px;
+  }
+  .wrap { width: 100%; max-width: 760px; }
+  .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(135deg,#5ef2c6,#7aa2ff 55%,#c984ff); }
+  h1 { font-size: 40px; line-height: 1.1; letter-spacing: -.03em; margin: 0 0 12px; }
+  .lede { font-size: 17px; color: var(--text-2); margin: 0 0 8px; max-width: 60ch; }
+  .facts { font-family: var(--mono); font-size: 13px; color: var(--text-3); margin: 0 0 30px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  a.card {
+    display: block; padding: 18px; border: 1px solid var(--line-2); border-radius: 12px;
+    background: var(--panel); color: var(--text); text-decoration: none;
+  }
+  a.card:hover { border-color: var(--text-3); }
+  a.card.primary { border-color: #3a5bbf; background: linear-gradient(140deg, #171d33, #14161c); grid-column: 1 / -1; }
+  .card h2 { font-size: 15px; margin: 0 0 4px; }
+  .card p { font-size: 13px; color: var(--text-2); margin: 0; }
+  .tag { font-family: var(--mono); font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: .12em; display: block; margin-bottom: 7px; }
+  footer { margin-top: 30px; font-size: 12px; color: var(--text-3); display: flex; gap: 14px; flex-wrap: wrap; }
+  footer a { color: var(--text-3); }
+  footer a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand"><span class="dot"></span><strong>html-ppt</strong></div>
+
+  <h1>HTML PPT Studio</h1>
+  <p class="lede">Author professional presentations as plain static HTML. One theme file is one look, one layout file is one page type, one class is one entry animation.</p>
+  <p class="facts">36 themes · 31 layouts · 27 CSS animations · 20 canvas FX · 15 full decks · zero build</p>
+
+  <div class="grid">
+    <a class="card primary" href="preview/">
+      <span class="tag">Start here</span>
+      <h2>Theme &amp; Animation Preview →</h2>
+      <p>One slide, live. Switch across all 36 themes and 47 animations without a reload, and flip between Chinese, English and Vietnamese to check how each theme handles ideographic versus Latin text.</p>
+    </a>
+
+    <a class="card" href="templates/theme-showcase.html">
+      <span class="tag">Gallery</span>
+      <h2>Theme showcase</h2>
+      <p>All 36 themes, one per slide.</p>
+    </a>
+
+    <a class="card" href="templates/layout-showcase.html">
+      <span class="tag">Gallery</span>
+      <h2>Layout showcase</h2>
+      <p>All 31 layouts with demo data.</p>
+    </a>
+
+    <a class="card" href="templates/animation-showcase.html">
+      <span class="tag">Gallery</span>
+      <h2>Animation showcase</h2>
+      <p>27 CSS animations plus 20 canvas FX.</p>
+    </a>
+
+    <a class="card" href="templates/full-decks-index.html">
+      <span class="tag">Gallery</span>
+      <h2>Full-deck templates</h2>
+      <p>15 complete multi-slide decks.</p>
+    </a>
+
+    <a class="card" href="examples/demo-deck/index.html">
+      <span class="tag">Example</span>
+      <h2>Demo deck</h2>
+      <p>A working 8-slide deck. Press <b>T</b>, <b>A</b>, <b>S</b>.</p>
+    </a>
+  </div>
+
+  <footer>
+    <a href="https://github.com/lewislulu/html-ppt-skill">GitHub</a>
+    <span>MIT</span>
+    <span>Skill for Claude Code — <code>npx skills add</code></span>
+  </footer>
+
+</div>
+</body>
+</html>

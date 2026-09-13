@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>html-ppt · Theme &amp; Animation Preview</title>
+<meta name="description" content="Live preview of all 36 themes and 47 animations in the html-ppt skill, across Chinese, English and Vietnamese.">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<aside class="rail">
+  <header class="rail-head">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <div>
+        <strong>html-ppt</strong>
+        <span class="brand-sub">theme &amp; animation preview</span>
+      </div>
+    </div>
+    <input id="theme-search" class="search" type="search" placeholder="Filter themes…" autocomplete="off" spellcheck="false">
+  </header>
+  <div id="theme-list" class="theme-list" role="listbox" aria-label="Themes"></div>
+  <footer class="rail-foot">
+    <span id="theme-count">36 themes</span>
+    <a href="https://github.com/lewislulu/html-ppt-skill" target="_blank" rel="noopener">GitHub ↗</a>
+  </footer>
+</aside>
+
+<main class="main">
+  <div class="bar">
+    <div class="seg" role="tablist" aria-label="Stage">
+      <button class="seg-btn" data-stage="theme" role="tab">Slides</button>
+      <button class="seg-btn" data-stage="anim" role="tab">Animations</button>
+    </div>
+
+    <div class="bar-group" id="slide-group">
+      <span class="bar-label">Slide</span>
+      <div id="slide-dots" class="dots"></div>
+    </div>
+
+    <div class="bar-group" id="anim-group" hidden>
+      <span class="bar-label">Effect</span>
+      <select id="anim-select" class="select"></select>
+    </div>
+
+    <div class="bar-spacer"></div>
+
+    <div class="bar-group">
+      <span class="bar-label">Language</span>
+      <div class="seg seg-sm" id="lang-seg" role="group" aria-label="Language">
+        <button class="seg-btn" data-lang="zh" lang="zh-CN">中文</button>
+        <button class="seg-btn" data-lang="en">EN</button>
+        <button class="seg-btn" data-lang="vi">VI</button>
+      </div>
+    </div>
+
+    <button id="replay" class="btn" title="Replay animation (R)">↻ Replay</button>
+    <button id="open-new" class="btn btn-ghost" title="Open this view in its own tab">↗</button>
+  </div>
+
+  <div class="stage-wrap" id="stage-wrap">
+    <div class="stage-shadow" id="stage-shadow">
+      <iframe id="stage" title="Slide preview" src="about:blank"></iframe>
+    </div>
+  </div>
+
+  <div class="statusbar">
+    <span class="status-item"><b id="s-theme">aurora</b> <i id="s-note"></i></span>
+    <span class="sep">·</span>
+    <span class="status-item" id="s-ctx">slide 1 / 8</span>
+    <span class="bar-spacer"></span>
+    <span class="keys">
+      <kbd>←</kbd><kbd>→</kbd> <span id="k-nav">slide</span>
+      <kbd>T</kbd> theme
+      <kbd>L</kbd> language
+      <kbd>R</kbd> replay
+    </span>
+  </div>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

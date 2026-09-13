@@ -76,6 +76,28 @@
     const previewOnlyIdx = getPreviewIdx();
     const isPreviewMode = previewOnlyIdx >= 0 && previewOnlyIdx < slides.length;
 
+    /* Count a .counter element from 0 up to its data-to. Unlike everything in
+     * animations.css this cannot be expressed as a class, so it has to be run
+     * by hand whenever a slide is shown — including in preview mode, which
+     * returns long before the normal navigation path below. Shared so the two
+     * callers can't drift apart. */
+    function animateCounters(slide) {
+      if (!slide) return;
+      slide.querySelectorAll('.counter').forEach((el) => {
+        const target = parseFloat(el.getAttribute('data-to') || el.textContent);
+        if (isNaN(target)) return;
+        const dur = parseInt(el.getAttribute('data-dur') || '1200', 10);
+        const start = performance.now();
+        function tick(now) {
+          const t = Math.min(1, (now - start) / dur);
+          const v = target * (1 - Math.pow(1 - t, 3));   /* ease-out cubic */
+          el.textContent = (target % 1 === 0) ? Math.round(v) : v.toFixed(1);
+          if (t < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }
+
     /* ===== Preview-only mode: show one slide, hide everything else ===== */
     if (isPreviewMode) {
       function showSlide(i) {
@@ -91,6 +113,7 @@
         });
       }
       showSlide(previewOnlyIdx);
+      animateCounters(slides[previewOnlyIdx]);
       /* Hide chrome that the presenter shouldn't see in preview */
       const hideSel = '.progress-bar, .notes-overlay, .overview, .notes, aside.notes, .speaker-notes';
       document.querySelectorAll(hideSel).forEach(el => { el.style.display = 'none'; });
@@ -98,7 +121,11 @@
       document.body.setAttribute('data-preview', '1');
       /* Auto-detect theme base path for theme switching in preview mode */
       function getPreviewThemeBase() {
-        const base = document.documentElement.getAttribute('data-theme-base');
+        /* Decks in this repo declare data-theme-base on <body>, but a deck may
+         * just as reasonably put it on <html> — accept either before falling
+         * back to deriving the directory from the theme <link> itself. */
+        const base = document.documentElement.getAttribute('data-theme-base')
+                  || document.body.getAttribute('data-theme-base');
         if (base) return base;
         const tl = document.getElementById('theme-link');
         if (tl) {
@@ -110,24 +137,75 @@
       }
       const previewThemeBase = getPreviewThemeBase();
 
-      /* Listen for postMessage from parent presenter window:
-       *  - preview-goto: switch visible slide WITHOUT reloading
-       *  - preview-theme: switch theme CSS link to match audience window */
+      function applyPreviewTheme(name) {
+        let link = document.getElementById('theme-link');
+        if (!link) {
+          link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.id = 'theme-link';
+          document.head.appendChild(link);
+        }
+        link.href = previewThemeBase + name + '.css';
+        document.documentElement.setAttribute('data-theme', name);
+      }
+
+      /* ?theme= makes a preview URL self-contained, so it can be opened or
+       * shared on its own rather than only ever being driven by postMessage
+       * from a parent that already knows the theme. Restricted to a plain
+       * theme-name charset: this value is concatenated into a stylesheet path. */
+      const urlTheme = /[?&]theme=([A-Za-z0-9_-]+)/.exec(location.search || '');
+      if (urlTheme) applyPreviewTheme(urlTheme[1]);
+
+      /* Re-trigger every entry animation on a slide. A CSS animation only runs
+       * once per element, so replaying means dropping the class, forcing a
+       * reflow to flush the style change, then putting it back — without the
+       * reflow the browser coalesces remove+add into a no-op and nothing moves.
+       *
+       * The reflow is taken ONCE, after every class is stripped and before any
+       * is restored. Reflowing per element instead would thrash layout once per
+       * animated node for no benefit: a single forced layout already flushes
+       * the whole document. */
+      function replayAnims(slide) {
+        if (!slide) return;
+
+        /* [class*="anim-"] is a cheap pre-filter that skips the vast majority of
+         * a slide's DOM; the exact prefix test below is what actually decides,
+         * since the selector also matches e.g. "no-anim-x". */
+        const work = [];
+        [slide].concat(Array.from(slide.querySelectorAll('[class*="anim-"]'))).forEach((el) => {
+          const cls = Array.from(el.classList).filter(c => c.indexOf('anim-') === 0);
+          if (cls.length) work.push({ el: el, cls: cls });
+        });
+
+        work.forEach(w => w.cls.forEach(c => w.el.classList.remove(c)));
+        if (work.length) void slide.offsetWidth;
+        work.forEach(w => w.cls.forEach(c => w.el.classList.add(c)));
+
+        /* Canvas FX are driven by fx-runtime.js, which exposes a reinit hook. */
+        if (typeof window.__hpxReinit === 'function') window.__hpxReinit(slide);
+        /* Not every animation is a class: a .counter slide (demo-deck slide 4)
+         * has no anim-* at all, and replaying it means re-running the count. */
+        animateCounters(slide);
+      }
+
+      /* Listen for postMessage from a parent window (presenter view, or the
+       * preview site under /preview):
+       *  - preview-goto:   switch visible slide WITHOUT reloading
+       *  - preview-theme:  switch theme CSS link to match audience window
+       *  - preview-replay: re-run the current slide's entry animations
+       * Language switching rides the same channel but is owned by i18n.js. */
       window.addEventListener('message', function(e) {
         if (!e.data) return;
         if (e.data.type === 'preview-goto') {
           const n = parseInt(e.data.idx, 10);
-          if (n >= 0 && n < slides.length) showSlide(n);
-        } else if (e.data.type === 'preview-theme' && e.data.name) {
-          let link = document.getElementById('theme-link');
-          if (!link) {
-            link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.id = 'theme-link';
-            document.head.appendChild(link);
+          if (n >= 0 && n < slides.length) {
+            showSlide(n);
+            replayAnims(slides[n]);
           }
-          link.href = previewThemeBase + e.data.name + '.css';
-          document.documentElement.setAttribute('data-theme', e.data.name);
+        } else if (e.data.type === 'preview-replay') {
+          replayAnims(document.querySelector('.slide.is-active'));
+        } else if (e.data.type === 'preview-theme' && e.data.name) {
+          applyPreviewTheme(e.data.name);
         }
       });
       /* Signal to parent that preview iframe is ready */
@@ -278,19 +356,7 @@
       });
 
       // counter-up
-      slides[n].querySelectorAll('.counter').forEach(el => {
-        const target = parseFloat(el.getAttribute('data-to')||el.textContent);
-        const dur = parseInt(el.getAttribute('data-dur')||'1200',10);
-        const start = performance.now();
-        const from = 0;
-        function tick(now){
-          const t = Math.min(1,(now-start)/dur);
-          const v = from + (target-from)*(1-Math.pow(1-t,3));
-          el.textContent = (target % 1 === 0) ? Math.round(v) : v.toFixed(1);
-          if (t<1) requestAnimationFrame(tick);
-        }
-        requestAnimationFrame(tick);
-      });
+      animateCounters(slides[n]);
 
       // Broadcast to other window (audience ↔ presenter)
       if (!fromRemote && bc) {

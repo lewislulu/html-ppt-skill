@@ -10,6 +10,14 @@
 **License:** MIT
 **中文文档:** [README.zh-CN.md](README.zh-CN.md)
 
+### 🔍 [Live preview → lewislulu.github.io/html-ppt-skill](https://lewislulu.github.io/html-ppt-skill/preview/)
+
+Browse every theme and animation on a real slide, in the browser, with no
+install. Pick any of the **36 themes** and the slide re-skins instantly — no
+reload — because a theme is nothing but a set of `:root` variables. Switch the
+same slide between **中文 / English / Tiếng Việt** to see how a theme handles
+ideographic versus Latin text before you commit to it.
+
 ![html-ppt — cover with live previews](docs/readme/hero.gif)
 
 > One command installs **36 themes × 20 canvas FX × 31 layouts × 15 full decks + presenter mode**. Every preview above is a live iframe of a real template file rendering inside the deck — no screenshots, no mock-ups.

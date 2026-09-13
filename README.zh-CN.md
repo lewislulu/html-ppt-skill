@@ -9,6 +9,13 @@
 **协议：** MIT
 **English docs:** [README.md](README.md)
 
+### 🔍 [在线预览 → lewislulu.github.io/html-ppt-skill](https://lewislulu.github.io/html-ppt-skill/preview/)
+
+不用安装，直接在浏览器里用真实幻灯片浏览全部主题和动效。**36 套主题**任意点选，
+幻灯片**当场换肤、不刷新**——因为一套主题无非就是一组 `:root` 变量。同一页还能在
+**中文 / English / Tiếng Việt** 之间切换，在你决定用哪套主题之前，先看清它在
+表意文字和拉丁文字下分别是什么样。
+
 ![html-ppt 封面 · 实时预览](docs/readme/hero.gif)
 
 > 一行命令装好 **36 主题 × 20 Canvas FX × 31 布局 × 15 完整 deck + 演讲者模式**。

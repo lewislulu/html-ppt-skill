@@ -33,6 +33,13 @@ offline; only the webfonts fall back to the system stack. See
 - **Keyboard runtime** (`assets/runtime.js`) — arrows, T (theme), A (anim), F/O, **S (presenter mode: magnetic-card popup with CURRENT / NEXT / SCRIPT / TIMER cards)**, N (notes drawer), R (reset timer in presenter)
 - **FX runtime** (`assets/animations/fx-runtime.js`) — auto-inits `[data-fx]` on slide enter, cleans up on leave
 - **Showcase decks** for themes / layouts / animations / full-decks gallery
+- **Live preview site** (`preview/`) — every theme and animation on one real
+  slide, switchable without a reload, in 中文 / English / Tiếng Việt. Published
+  at <https://lewislulu.github.io/html-ppt-skill/preview/>. Point users here when
+  they ask "which theme should I use?" instead of describing themes in prose.
+- **Optional i18n layer** (`assets/i18n.js`) — mark text with `data-i18n="key"`,
+  keep the default language inline, and ship other languages as JSON. See
+  `examples/demo-deck/` for a working three-language deck.
 - **Headless Chrome render script** for PNG export
 
 ## When to use
@@ -75,7 +82,11 @@ tasteful default and confirm.
 1. **Content & audience.** What's the deck about, how many slides, who's
    watching (engineers / execs / 小红书读者 / 学生 / VC)?
 2. **Style / theme.** Which of the 36 themes fits? If unsure, recommend 2-3
-   candidates based on tone:
+   candidates based on tone — and link the user to the live preview so they can
+   judge for themselves rather than take your word for it:
+   <https://lewislulu.github.io/html-ppt-skill/preview/>. A direct link can carry
+   the exact theme, slide and language, e.g.
+   `preview/#stage=theme&theme=tokyo-night&lang=en&slide=1`.
    - Business / investor pitch → `pitch-deck-vc`, `corporate-clean`, `swiss-grid`
    - Tech sharing / engineering → `tokyo-night`, `dracula`, `catppuccin-mocha`,
      `terminal-green`, `blueprint`
@@ -188,11 +199,20 @@ Chinese + English deck, and how to export.
 ```
 html-ppt/
 ├── SKILL.md                 (this file)
+├── index.html               (GitHub Pages landing hub)
+├── .nojekyll                (REQUIRED — Jekyll would drop fx/_util.js)
 ├── references/              (detailed catalogs, load as needed)
+├── preview/                 (live theme + animation + language preview site)
+│   ├── index.html           (control panel)
+│   ├── app.js / app.css     (state, URL hash, postMessage bridge)
+│   ├── anim-stage.html      (single-slide rig for all 47 animations)
+│   ├── themes.json          (36-theme catalog + swatch colors)
+│   └── i18n/*.json          (en / vi strings for the anim stage)
 ├── assets/
 │   ├── base.css             (tokens + primitives — do not edit per deck)
 │   ├── fonts.css            (webfont imports)
 │   ├── runtime.js           (keyboard + presenter + overview + theme cycle)
+│   ├── i18n.js              (optional data-i18n multilingual layer)
 │   ├── themes/*.css         (36 token overrides, one per theme)
 │   └── animations/
 │       ├── animations.css   (27 named CSS entry animations)
@@ -209,8 +229,29 @@ html-ppt/
 ├── scripts/
 │   ├── new-deck.sh                (scaffold a deck from deck.html)
 │   └── render.sh                  (headless Chrome → PNG)
-└── examples/demo-deck/            (complete working deck)
+└── examples/demo-deck/            (complete working deck, zh + en + vi)
+    ├── index.html                 (zh-CN inline = the default language)
+    └── i18n/{en,vi}.json          (translations, fetched on demand)
 ```
+
+## Multilingual decks
+
+`assets/i18n.js` is optional and off unless a deck opts in. The default language
+stays as inline HTML — so a deck still reads correctly when opened straight off
+the filesystem, where `fetch()` is blocked — and other languages are JSON files
+loaded only when selected.
+
+```html
+<body data-i18n-default="zh" data-i18n-src="i18n/{lang}.json">
+  <h1 data-i18n="cover.h1">默认语言写在这里</h1>
+  <script src="../../assets/i18n.js"></script>
+```
+
+Then `?lang=en` in the URL, or `HPXI18n.setLang('en')` at runtime. Values are
+inserted as HTML, so a translation may carry `<br>` or `<span>`. Any key a
+dictionary omits falls back to the inline text. Listen for the `hpx:i18n` event
+on `document` to redraw anything JS-painted (a Chart.js canvas won't re-label
+itself — see slide 6 of `examples/demo-deck/`).
 
 ## Rendering to PNG
 
@@ -233,6 +274,7 @@ N                                       quick notes drawer (bottom overlay)
 R                                       reset timer (in presenter window)
 ?preview=N                              URL param — force preview-only mode (single slide, no chrome)
 O                                       slide overview grid
+?lang=xx                                URL param — pick a language (needs i18n.js)
 T                                       cycle themes (reads data-themes attr)
 A                                       cycle demo animation on current slide
 #/N in URL                              deep-link to slide N

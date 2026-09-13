@@ -14,7 +14,7 @@
       trail: []
     }));
     const stop = U.loop((t) => {
-      ctx.fillStyle = 'rgba(0,0,0,0.08)';
+      ctx.fillStyle = U.fade(el, 0.08);
       ctx.fillRect(0,0,k.w,k.h);
       for (const p of parts){
         const x = ((t*80 + p.phase*50) % (k.w+100)) - 50;

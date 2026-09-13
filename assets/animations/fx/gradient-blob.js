@@ -16,7 +16,7 @@
       return m.map(x=>parseInt(x,16));
     };
     const stop = U.loop((t) => {
-      ctx.fillStyle = 'rgba(10,12,22,0.2)';
+      ctx.fillStyle = U.fade(el, 0.2);
       ctx.fillRect(0,0,k.w,k.h);
       ctx.globalCompositeOperation = 'lighter';
       for (const b of blobs){

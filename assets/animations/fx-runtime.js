@@ -46,9 +46,16 @@
       const name = el.getAttribute('data-fx');
       const fn = window.HPX[name];
       if (typeof fn !== 'function') return;
+      /* Snapshot the host's existing children before the module runs. Modules
+       * append their own nodes (a canvas, a number overlay, a text wrapper) and
+       * several never remove them in stop(); on a re-init that debris would
+       * stack up. The host may equally hold the deck author's own markup, which
+       * must survive. Recording what was there first is the only way to tell
+       * the two apart. */
+      const own = new Set(Array.from(el.childNodes));
       try {
         const handle = fn(el, {}) || { stop(){} };
-        window.__hpxActive.set(el, handle);
+        window.__hpxActive.set(el, { handle: handle, own: own });
       } catch(e){ console.warn('[hpx-fx]', name, e); }
     });
   }
@@ -56,9 +63,16 @@
   function stopFxIn(root){
     const els = root.querySelectorAll('[data-fx]');
     els.forEach((el) => {
-      const h = window.__hpxActive.get(el);
-      if (h && typeof h.stop === 'function'){
-        try{ h.stop(); }catch(e){}
+      const rec = window.__hpxActive.get(el);
+      if (!rec) return;
+      if (rec.handle && typeof rec.handle.stop === 'function'){
+        try{ rec.handle.stop(); }catch(e){}
+      }
+      /* Remove only what the module added, never what was already there. */
+      if (rec.own){
+        Array.from(el.childNodes).forEach((n) => {
+          if (!rec.own.has(n)) el.removeChild(n);
+        });
       }
       window.__hpxActive.delete(el);
     });
@@ -68,9 +82,33 @@
     stopFxIn(root);
     initFxIn(root);
   }
+  /* fx-runtime is the single owner of every [data-fx] lifecycle. Anything that
+   * wants to swap an effect should change the attribute and call these, rather
+   * than invoking HPX[name] itself — two creators on one host means two
+   * canvases, of which only the last is tracked and stoppable. */
   window.__hpxReinit = reinitFxIn;
+  window.__hpxStop = stopFxIn;
+  window.__hpxInit = initFxIn;
+
+  /* Canvas FX read their colors out of CSS variables exactly once, at init —
+   * a canvas cannot re-skin itself the way a CSS rule does. So on a theme swap
+   * every running effect keeps painting the previous theme's palette, which is
+   * only ever noticed by whoever presses T on a slide with a [data-fx].
+   *
+   * A <link> fires 'load' every time its href changes, and that is precisely
+   * the moment the new variables become readable — reinitialising any earlier
+   * would just re-sample the outgoing theme. */
+  function watchThemeSwaps(){
+    const link = document.getElementById('theme-link');
+    if (!link) return;
+    link.addEventListener('load', () => {
+      const active = document.querySelector('.slide.is-active') || document.querySelector('.slide');
+      if (active) reinitFxIn(active);
+    });
+  }
 
   function boot(){
+    watchThemeSwaps();
     ready.then(() => {
       const active = document.querySelector('.slide.is-active') || document.querySelector('.slide');
       if (active) initFxIn(active);

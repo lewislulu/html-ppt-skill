@@ -1,0 +1,27 @@
+{
+  "_comment": "English strings for preview/anim-stage.html. The zh-CN baseline lives in the ZH map inside that file; any key omitted here falls back to it.",
+
+  "stage.kicker": "Demo",
+  "stage.h1": "Say the idea clearly",
+  "stage.lede": "One class, one motion. All of it driven by tokens.",
+  "stage.type": "typing this line out…",
+  "stage.hover": "hover the card",
+  "stage.thanks": "Thanks",
+  "stage.pill1": "tokens",
+  "stage.pill2": "keyboard first",
+  "stage.pill3": "PNG export",
+  "stage.pill4": "zero build",
+
+  "stage.card1t": "① Structure",
+  "stage.card1d": "Work out what you're saying before you worry about how it looks.",
+  "stage.card2t": "② Layouts",
+  "stage.card2d": "31 layouts, covering nearly every case you'll hit.",
+  "stage.card3t": "③ Themes",
+  "stage.card3d": "36 themes, switched by swapping one variable file.",
+  "stage.card4t": "④ Motion",
+  "stage.card4d": "27 CSS animations plus 20 canvas effects.",
+  "stage.card5t": "⑤ Script",
+  "stage.card5d": "Speaker notes live in .notes — press S to open them.",
+  "stage.card6t": "⑥ Export",
+  "stage.card6d": "One command renders every slide to PNG."
+}

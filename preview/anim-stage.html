@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="aurora">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>html-ppt · Animation stage</title>
+<link rel="stylesheet" href="../assets/fonts.css">
+<link rel="stylesheet" href="../assets/base.css">
+<link rel="stylesheet" id="theme-link" href="../assets/themes/aurora.css">
+<link rel="stylesheet" href="../assets/animations/animations.css">
+<style>
+  /* This page is a rig, not a deck: one slide, always visible, driven entirely by
+     the parent preview panel over postMessage. It deliberately does NOT load
+     runtime.js — there is no navigation, no chrome, and no keyboard to own. */
+  html, body { height: 100%; overflow: hidden; }
+  .slide { opacity: 1; pointer-events: auto; transform: none; }
+
+  /* Full-bleed host for canvas FX. Sits behind the content so a data-fx effect
+     reads as a slide background, which is how decks actually use them. */
+  #fx-host { position: absolute; inset: 0; z-index: 0; }
+  #stage { position: relative; z-index: 1; width: 100%; }
+
+  .stage-label {
+    position: absolute; top: 26px; left: 0; right: 0; z-index: 2;
+    text-align: center; pointer-events: none;
+  }
+  .stage-label code {
+    font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--text-3); background: var(--surface-2);
+    padding: 5px 12px; border-radius: 999px; border: 1px solid var(--border);
+  }
+
+  /* --- subject-specific demo furniture --- */
+  .kb-frame { width: 520px; height: 300px; border-radius: var(--radius); overflow: hidden; margin: 0 auto; }
+  .kb-img { width: 100%; height: 100%; background: var(--grad); }
+  .marquee-mask { overflow: hidden; width: 100%; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+  .demo-svg { width: 420px; height: 240px; margin: 0 auto; }
+  .demo-svg path, .demo-svg circle, .demo-svg line { fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; }
+  .hint { font-size: 13px; color: var(--text-3); margin-top: 18px; }
+</style>
+</head>
+<body class="single" data-i18n-default="zh" data-i18n-src="i18n/{lang}.json">
+
+<div class="deck">
+  <section class="slide is-active center tc">
+    <div id="fx-host"></div>
+    <div class="stage-label"><code id="label">—</code></div>
+    <div id="stage"></div>
+  </section>
+</div>
+
+<script src="../assets/animations/fx-runtime.js"></script>
+<script src="../assets/i18n.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---------------------------------------------------------------------------
+   * Every animation needs a subject that actually shows it off. A generic text
+   * block is wrong for most of them: .anim-typewriter requires a single nowrap
+   * line, .anim-stagger-list animates its *children*, .anim-path-draw needs SVG
+   * strokes, .anim-kenburns needs something with a visible texture. So each CSS
+   * animation is mapped to the subject it was written for.
+   * ------------------------------------------------------------------------- */
+  const SUBJECTS = {
+    block:    ['fade-up','fade-down','fade-left','fade-right','rise-in','drop-in',
+               'zoom-pop','blur-in','glitch-in','perspective-zoom','ripple-reveal','spotlight'],
+    line:     ['typewriter'],
+    head:     ['neon-glow','shimmer-sweep','gradient-flow'],
+    list:     ['stagger-list'],
+    svg:      ['path-draw','morph-shape'],
+    marquee:  ['marquee-scroll'],
+    image:    ['kenburns'],
+    card:     ['parallax-tilt','card-flip-3d','cube-rotate-3d','page-turn-3d'],
+    confetti: ['confetti-burst'],
+    counter:  ['counter-up']
+  };
+
+  const subjectOf = (anim) => {
+    for (const kind in SUBJECTS) if (SUBJECTS[kind].indexOf(anim) > -1) return kind;
+    return 'block';
+  };
+
+  /* zh-CN baseline. Unlike a deck — where the default language is the inline
+   * markup that i18n.js snapshots — this stage builds its DOM in JS, so its
+   * default language has to live somewhere. Here. en/vi override via JSON. */
+  const ZH = {
+    'stage.kicker': '演示',
+    'stage.h1':     '把想法讲清楚',
+    'stage.lede':   '一个 class，一段动效。全部由 tokens 驱动。',
+    'stage.type':   '正在输入这一行……',
+    'stage.hover':  '把鼠标移到卡片上试试',
+    'stage.thanks': '谢谢',
+    'stage.pill1':  'tokens',
+    'stage.pill2':  '键盘优先',
+    'stage.pill3':  '导出 PNG',
+    'stage.pill4':  '零构建',
+    'stage.card1t': '① 结构', 'stage.card1d': '先想清楚要讲什么，再想怎么好看。',
+    'stage.card2t': '② 版式', 'stage.card2d': '31 个版式，覆盖绝大多数场景。',
+    'stage.card3t': '③ 主题', 'stage.card3d': '36 套主题，一个变量文件切换。',
+    'stage.card4t': '④ 动效', 'stage.card4d': '27 个 CSS 动效 + 20 个画布特效。',
+    'stage.card5t': '⑤ 讲稿', 'stage.card5d': '逐字稿写在 notes 里，按 S 打开。',
+    'stage.card6t': '⑥ 导出', 'stage.card6d': '一条命令导出全部 PNG。'
+  };
+
+  /* i18n keys are resolved at render time, so re-rendering is all a language
+   * switch needs. Text lives in the dictionaries, not in the markup builders. */
+  const T = (key) => {
+    const v = window.HPXI18n && window.HPXI18n.t(key);
+    return (typeof v === 'string' && v) ? v : (ZH[key] || key);
+  };
+
+  function subjectHTML(kind, anim) {
+    const cls = 'anim-' + anim;
+    const h1 = T('stage.h1');
+    const lede = T('stage.lede');
+
+    switch (kind) {
+      case 'line':
+        return '<h1 class="h1 ' + cls + '" style="font-size:60px">' + T('stage.type') + '</h1>';
+
+      case 'head':
+        return '<h1 class="h1 ' + cls + '" style="font-size:82px">' + h1 + '</h1>' +
+               '<p class="lede" style="margin:16px auto 0">' + lede + '</p>';
+
+      case 'list':
+        return '<p class="kicker">' + T('stage.kicker') + '</p>' +
+               '<h2 class="h2">' + h1 + '</h2>' +
+               '<div class="grid g3 mt-l ' + cls + '">' +
+                 card(1) + card(2) + card(3) + card(4) + card(5) + card(6) +
+               '</div>';
+
+      case 'svg':
+        return '<div class="demo-svg ' + cls + '">' +
+               '<svg viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg">' +
+               '<path d="M60,120 Q120,20 180,120 T300,120"/>' +
+               '<circle cx="360" cy="120" r="34"/>' +
+               '<line x1="40" y1="200" x2="380" y2="200"/>' +
+               '</svg></div>' +
+               '<p class="lede" style="margin:22px auto 0">' + lede + '</p>';
+
+      case 'marquee':
+        /* The keyframe translates by -50%, so the pill run must be duplicated
+           for the loop to be seamless. */
+        const run = pills() + pills();
+        return '<div class="marquee-mask"><div class="' + cls + '">' + run + '</div></div>' +
+               '<p class="lede" style="margin:26px auto 0">' + lede + '</p>';
+
+      case 'image':
+        return '<div class="kb-frame"><div class="kb-img ' + cls + '"></div></div>' +
+               '<p class="lede" style="margin:22px auto 0">' + lede + '</p>';
+
+      case 'card':
+        return '<div class="card ' + cls + '" style="max-width:520px;margin:0 auto;padding:34px">' +
+               '<h3>' + h1 + '</h3><p class="dim">' + lede + '</p></div>' +
+               (anim === 'parallax-tilt'
+                 ? '<p class="hint">' + T('stage.hover') + '</p>' : '');
+
+      case 'confetti':
+        return '<div class="' + cls + '" style="display:inline-block;padding:60px"></div>' +
+               '<h1 class="h1" style="font-size:96px"><span class="gradient-text">' +
+               T('stage.thanks') + '</span></h1>';
+
+      case 'counter':
+        return '<p class="kicker">' + T('stage.kicker') + '</p>' +
+               '<div style="font-size:180px;line-height:1;font-weight:900">' +
+               '<span class="counter gradient-text" id="ctr" data-to="92">0</span>' +
+               '<span class="gradient-text">%</span></div>' +
+               '<p class="lede" style="margin:10px auto 0">' + lede + '</p>';
+
+      default: /* block */
+        return '<div class="' + cls + '">' +
+               '<p class="kicker">' + T('stage.kicker') + '</p>' +
+               '<h1 class="h1" style="font-size:78px">' + h1 + '</h1>' +
+               '<p class="lede" style="margin:14px auto 0">' + lede + '</p>' +
+               '<div class="row wrap mt-l" style="gap:8px;justify-content:center">' + pills() + '</div>' +
+               '</div>';
+    }
+  }
+
+  function card(n) {
+    return '<div class="card card-accent"><h4>' + T('stage.card' + n + 't') +
+           '</h4><p class="dim">' + T('stage.card' + n + 'd') + '</p></div>';
+  }
+
+  function pills() {
+    return ['stage.pill1','stage.pill2','stage.pill3','stage.pill4']
+      .map((k, i) => '<span class="pill' + (i === 0 ? ' pill-accent' : '') + '">' +
+        T(k) + '</span>').join('');
+  }
+
+  /* counter-up is JS-driven; animations.css only ships the .counter marker.
+   *
+   * This is a deliberate ~10-line twin of animateCounters() in runtime.js, kept
+   * because this rig does not load runtime.js at all (no navigation, no
+   * keyboard, no chrome to own) and pulling it in just for this would put a
+   * second owner on the one slide — the exact shape of bug that made canvas FX
+   * paint stale themes. It mirrors runtime's contract on purpose: same 1200ms
+   * default, same data-dur override, same ease-out cubic. If that contract
+   * changes, change it here too. */
+  function runCounter() {
+    const el = document.getElementById('ctr');
+    if (!el) return;
+    const to = parseFloat(el.getAttribute('data-to')) || 0;
+    const dur = parseInt(el.getAttribute('data-dur') || '1200', 10);
+    const t0 = performance.now();
+    (function tick(t) {
+      const p = Math.min(1, (t - t0) / dur);
+      const v = to * (1 - Math.pow(1 - p, 3));   /* ease-out cubic */
+      el.textContent = (to % 1 === 0) ? Math.round(v) : v.toFixed(1);
+      if (p < 1) requestAnimationFrame(tick);
+    })(t0);
+  }
+
+  /* --- FX ------------------------------------------------------------------ */
+  const fxHost = document.getElementById('fx-host');
+
+  function waitForFx(name, tries) {
+    /* fx-runtime.js injects the 20 modules asynchronously, so HPX[name] may not
+     * exist yet on a cold load. Poll briefly rather than dropping the request. */
+    if (window.HPX && typeof window.HPX[name] === 'function') return Promise.resolve(true);
+    if ((tries || 0) > 40) return Promise.resolve(false);
+    return new Promise(r => setTimeout(r, 50)).then(() => waitForFx(name, (tries || 0) + 1));
+  }
+
+  const slideEl = document.querySelector('.slide');
+
+  /* Swap the effect by changing the attribute and letting fx-runtime do the
+   * work. This page must NOT call HPX[name] itself: fx-runtime already owns
+   * every [data-fx] host — it inits them on slide activation and re-inits them
+   * on a theme swap — so a second creator here would leave an untracked canvas
+   * behind on every change, and the stale one paints the previous theme.
+   *
+   * Tearing an effect down and reseeding it from frame zero is only correct
+   * when the effect actually changed. render() also runs on a language switch
+   * (and twice on a cold load, since i18n announces at DOMContentLoaded), and
+   * restarting a running firework because someone pressed L is just a glitch —
+   * no fx module reads i18n. `force` is for an explicit replay. */
+  let mountedFx = null;
+
+  function setFx(name, force) {
+    if (name === mountedFx && !force) return;
+    mountedFx = name;
+    if (window.__hpxStop) window.__hpxStop(slideEl);   /* attribute still set, so it's found */
+    if (!name) { fxHost.removeAttribute('data-fx'); return; }
+    fxHost.setAttribute('data-fx', name);
+    waitForFx(name).then((ok) => {
+      if (!ok) { console.warn('[anim-stage] fx module never loaded:', name); return; }
+      if (fxHost.getAttribute('data-fx') !== name) return; /* superseded while waiting */
+      if (window.__hpxInit) window.__hpxInit(slideEl);
+    });
+  }
+
+  /* --- state --------------------------------------------------------------- */
+  const state = { anim: 'fade-up', fx: null };
+  const stage = document.getElementById('stage');
+  const label = document.getElementById('label');
+
+  /* `force` restarts a canvas effect even if it is already the mounted one —
+     only an explicit replay wants that. A CSS animation needs no such flag:
+     rebuilding the subject markup below hands it fresh elements either way. */
+  function render(force) {
+    if (state.fx) {
+      /* In FX mode the canvas IS the subject; keep a neutral caption over it. */
+      stage.innerHTML = '<h1 class="h1" style="font-size:72px">' + T('stage.h1') + '</h1>';
+      label.textContent = 'data-fx="' + state.fx + '"';
+      setFx(state.fx, force);
+      return;
+    }
+    setFx(null);
+    stage.innerHTML = subjectHTML(subjectOf(state.anim), state.anim);
+    label.textContent = 'data-anim="' + state.anim + '"';
+    if (state.anim === 'counter-up') runCounter();
+  }
+
+  function setTheme(name) {
+    const link = document.getElementById('theme-link');
+    link.href = '../assets/themes/' + name + '.css';
+    document.documentElement.setAttribute('data-theme', name);
+  }
+
+  /* --- URL bootstrap ------------------------------------------------------- */
+  const q = new URLSearchParams(location.search);
+  if (q.get('theme')) setTheme(q.get('theme'));
+  if (q.get('fx')) state.fx = q.get('fx');
+  else if (q.get('anim')) state.anim = q.get('anim');
+
+  /* --- parent control ------------------------------------------------------ */
+  window.addEventListener('message', function (e) {
+    const d = e.data;
+    if (!d) return;
+    if (d.type === 'preview-theme' && d.name) setTheme(d.name);
+    else if (d.type === 'preview-anim') { state.fx = null; state.anim = d.name; render(); }
+    else if (d.type === 'preview-fx')   { state.fx = d.name; render(); }
+    else if (d.type === 'preview-replay') render(true);
+  });
+
+  /* A language change replaces every string on the stage, so just rebuild.
+     Wrapped, not passed by reference: as a listener, render would receive the
+     Event as its `force` argument, and an Event is truthy — which would restart
+     the running canvas effect on every language switch, the exact thing `force`
+     exists to prevent. */
+  document.addEventListener('hpx:i18n', () => render());
+
+  render();
+  try { parent.postMessage({ type: 'preview-ready' }, '*'); } catch (e) {}
+})();
+</script>
+</body></html>
