@@ -4,6 +4,7 @@
   --border:#111111;--border-strong:#111111;
   --text-1:#111111;--text-2:#444444;--text-3:#888888;
   --accent:#d6001c;--accent-2:#111111;--accent-3:#888888;
+  --accent-ink:#ffffff;  /* text on --accent — 5.4:1 */
   --good:#0f8a2f;--warn:#d38a00;--bad:#d6001c;
   --grad:linear-gradient(135deg,#d6001c,#111);
   --grad-soft:linear-gradient(135deg,#f4f4f4,#fff);

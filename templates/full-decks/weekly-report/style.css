@@ -4,6 +4,7 @@
   --border:rgba(22,30,55,.09);--border-strong:rgba(22,30,55,.2);
   --text-1:#161e37;--text-2:#50586b;--text-3:#8b92a5;
   --accent:#2e63eb;--accent-2:#0ea5b5;--accent-3:#f59e0b;
+  --accent-ink:#ffffff;  /* text on --accent — 5.1:1 */
   --good:#10b981;--warn:#f59e0b;--bad:#ef4444;
   --grad:linear-gradient(120deg,#2e63eb,#0ea5b5);
   --radius:14px;--radius-lg:18px;

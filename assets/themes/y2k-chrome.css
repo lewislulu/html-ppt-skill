@@ -4,6 +4,7 @@
   --border:rgba(120,135,170,.32);--border-strong:rgba(80,100,140,.55);
   --text-1:#1a1f2e;--text-2:#4a536a;--text-3:#8590a6;
   --accent:#8a5cff;--accent-2:#3ccfd8;--accent-3:#ff84c4;
+  --accent-ink:#0b1024;  /* text on --accent — 4.5:1 */
   --grad:linear-gradient(135deg,#b8c4d8 0%,#f5f7fb 30%,#8a9ab8 55%,#e8ecf4 80%,#6b7a95 100%);
   --grad-soft:linear-gradient(135deg,#c9e4ff,#f5d6ff 50%,#d6fffa);
   --radius:26px;--radius-sm:16px;--radius-lg:36px;

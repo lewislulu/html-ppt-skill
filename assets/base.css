@@ -11,6 +11,14 @@
   --text-2: #55596a;
   --text-3: #8a8f9e;
   --accent: #3b6cff;
+  /* Text drawn on top of an --accent fill. Every theme in assets/themes/
+   * and every full-deck style.css overrides this with whichever of white /
+   * near-black clears WCAG AA against its own accent — a hardcoded ink
+   * cannot, because accents here range from #ffffff to #000000.
+   * This default is black rather than white on purpose: against the default
+   * --accent #3b6cff, white measures 4.40:1 and black 4.77:1, so only black
+   * clears AA for normal text. Reached by any deck that links no theme. */
+  --accent-ink: #000000;
   --accent-2: #7a5cff;
   --accent-3: #ff5c8a;
   --good: #1aaf6c;

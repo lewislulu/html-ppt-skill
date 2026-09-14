@@ -4,6 +4,7 @@
   --border:rgba(60,45,20,.12);--border-strong:rgba(60,45,20,.24);
   --text-1:#2a2418;--text-2:#5a5140;--text-3:#8a7f68;
   --accent:#2d7d6e;--accent-2:#d88a3a;--accent-3:#c4593f;
+  --accent-ink:#ffffff;  /* text on --accent — 4.9:1 */
   --grad:linear-gradient(135deg,#2d7d6e,#4ea893);
   --radius:14px;--radius-lg:20px;
   --shadow:0 12px 30px rgba(60,45,20,.07);
@@ -40,7 +41,7 @@
 .tpl-course-module .mcq{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;cursor:pointer}
 .tpl-course-module .mcq .letter{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--text-3);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--text-2)}
 .tpl-course-module .mcq.correct{border-color:var(--accent);background:rgba(45,125,110,.06)}
-.tpl-course-module .mcq.correct .letter{border-color:var(--accent);background:var(--accent);color:#fff}
+.tpl-course-module .mcq.correct .letter{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
 .tpl-course-module .pill-academic{display:inline-block;padding:4px 12px;border-radius:4px;background:var(--surface-2);border:1px solid var(--border);font-size:12px;color:var(--text-2);font-family:'JetBrains Mono',monospace}
 .tpl-course-module .slide.full .h1{font-size:88px}
 .tpl-course-module .deck-footer{color:var(--text-3)}

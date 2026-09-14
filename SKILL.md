@@ -143,6 +143,9 @@ Only after those are clear, scaffold the deck and start writing.
 - **Use tokens, not literal colors.** Every color, radius, shadow should come
   from CSS variables defined in `assets/base.css` and overridden by a theme.
   Good: `color: var(--text-1)`. Bad: `color: #111`.
+  Text on top of an `--accent` fill is the one people get wrong: it needs
+  `color: var(--accent-ink)`, because accents here run from `#ffffff` to
+  `#000000` and no literal ink is readable on all of them.
 - **Don't invent new layout files.** Prefer composing existing ones. Only add
   a new `templates/single-page/*.html` if none of the 36 fit.
 - **Putting images on a slide?** Start from one of the five `image-*` layouts and

@@ -6,9 +6,30 @@ defined in `assets/base.css`. Switch themes by changing the `href` of
 `data-themes="a,b,c"` attribute on `<body>` or `<html>`.
 
 All themes define the same variables: `--bg`, `--bg-soft`, `--surface`,
-`--surface-2`, `--border`, `--text-1/2/3`, `--accent`, `--accent-2/3`,
+`--surface-2`, `--border`, `--text-1/2/3`, `--accent`, `--accent-ink`, `--accent-2/3`,
 `--good`, `--warn`, `--bad`, `--grad`, `--grad-soft`, `--radius*`, `--shadow*`,
 `--font-sans`, `--font-display`.
+
+### `--accent-ink` — the text colour on an accent fill
+
+Anything that paints text *on top of* `--accent` (a filled button, a numbered
+badge, a highlighted tag) must use `--accent-ink` for its `color`, never a
+hardcoded `#fff` or `#000`. Accents across these 36 themes run from `#ffffff`
+(`blueprint`) to `#000000` (`sharp-mono`), so no single literal is readable
+against all of them: `#0b1024` on `minimal-white`'s near-black accent measured
+**1.01:1** — invisible, and the layout still looked fine at a glance.
+
+Each theme sets `--accent-ink` to whichever of white / near-black clears WCAG
+AA against its own accent. The tightest in the set is `y2k-chrome` at 4.54:1;
+every other theme is higher. The `:root` fallback in `base.css` — what you get
+with no theme linked — is `#000000`, which measures 4.77:1 against the default
+`--accent` (white would be 4.40:1, below AA).
+
+```css
+.my-badge{background:var(--accent);color:var(--accent-ink)}
+```
+
+If you add a theme, add `--accent-ink` with it.
 
 ## Light & calm
 
