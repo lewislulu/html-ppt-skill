@@ -44,6 +44,36 @@ full authoring guide, or copy the ready-made template at
 `templates/full-decks/presenter-mode-reveal/` which ships with full 150-300
 word speaker scripts on every slide.
 
+## ✏️ Edit Mode (new!)
+
+Edit any deck **in the browser** and save straight back to the html file —
+no build step, no local server, works on plain `file://` double-click.
+
+```html
+<!-- last script tag in <body>, after runtime.js -->
+<script src="../../assets/edit-mode.js"></script>
+```
+
+Open the deck with `?edit` appended (`index.html?edit`). Without `?edit`
+the script is completely inert — playback, keyboard nav and presenter mode
+are untouched.
+
+- **Text** — double-click any text to edit in place; Esc / click away commits
+- **✨ Animations** — pick an element, choose one of the 26 CSS entry
+  animations (hover to live-preview, click to apply)
+- **🎇 Canvas FX** — pick one of the 20 `data-fx` effects for the current slide
+- **🧩 Components** — click a card / list item / pill to hide/show it,
+  duplicate it (placeholder text), or delete it; 选父级 widens the selection
+- **💾 Save** — File System Access API writes the file directly (Chrome; you
+  pick this html file once, later saves are silent). Falls back to a download
+  if FSA is unavailable.
+
+Under the hood the script snapshots the pristine DOM before the runtime
+injects its chrome (progress bar, overview clones, counter rewrites) and
+serializes that clean copy — runtime state never leaks into the saved file,
+and a second save is always a zero diff. Note the first save normalizes the
+HTML through one DOM parse/serialize round-trip; commit once after it.
+
 ## Install (one command)
 
 ```bash

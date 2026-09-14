@@ -31,6 +31,7 @@
       const s = document.createElement('script');
       s.src = base + name + '.js';
       s.async = false;
+      s.setAttribute('data-runtime-injected', ''); /* stripped by edit-mode.js on save */
       s.onload = s.onerror = () => { if (++loaded >= total) resolve(); };
       document.head.appendChild(s);
     });
