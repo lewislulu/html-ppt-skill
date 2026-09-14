@@ -209,9 +209,21 @@ h4,.h4{font-size:22px;line-height:1.3;font-weight:600;margin:0 0 8px}
 
 /* ================= PRINT ================= */
 @media print{
-  body{display:block;width:auto;height:auto;overflow:visible}
-  .deck{transform:none;width:100%;height:auto}
-  .slide{position:relative;opacity:1!important;transform:none!important;page-break-after:always;height:100vh}
+  /* Every declaration here is !important on purpose. A template stylesheet
+   * scopes its rules as `.tpl-name .slide`, which is specificity (0,2,0) and
+   * beats a bare `.slide` at (0,1,0) — so without !important a template
+   * silently keeps its screen layout in print. That is how dir-key-nav-minimal
+   * (position:absolute) printed 8 slides onto 1 page and xhs-post printed 9
+   * onto 2: only the opacity/transform declarations on this rule carried
+   * !important, and the ones that decide pagination did not. */
+  body{display:block!important;width:auto!important;height:auto!important;overflow:visible!important}
+  .deck{transform:none!important;width:100%!important;height:auto!important;
+        min-height:0!important;display:block!important}
+  .slide{position:relative!important;inset:auto!important;
+         opacity:1!important;transform:none!important;
+         page-break-after:always;break-after:page;
+         width:100%!important;height:100vh!important;max-height:100vh!important}
+  .slide:last-child{page-break-after:auto;break-after:auto}
   .deck-header,.deck-footer,.progress-bar,.notes-overlay,.overview{display:none!important}
 
   /* Logo in print. The .deck-logo element is position:absolute inside .deck,
