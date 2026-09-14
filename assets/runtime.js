@@ -23,6 +23,10 @@
     'card-flip-3d','cube-rotate-3d','page-turn-3d','perspective-zoom',
     'marquee-scroll','kenburns','confetti-burst','spotlight','morph-shape','ripple-reveal'];
 
+  /* Every class the runtime treats as speaker notes. base.css hides the same
+   * set from the audience — if you add one here, add it there too. */
+  const NOTE_SEL = '.notes, aside.notes, .speaker-notes';
+
   function ready(fn){ if(document.readyState!='loading')fn(); else document.addEventListener('DOMContentLoaded',fn);}
 
   /* ========== Parse URL for preview-only mode ==========
@@ -148,7 +152,7 @@
       showSlide(previewOnlyIdx);
       syncLogo(slides[previewOnlyIdx]);
       /* Hide chrome that the presenter shouldn't see in preview */
-      const hideSel = '.progress-bar, .notes-overlay, .overview, .notes, aside.notes, .speaker-notes';
+      const hideSel = '.progress-bar, .notes-overlay, .overview, ' + NOTE_SEL;
       document.querySelectorAll(hideSel).forEach(el => { el.style.display = 'none'; });
       document.documentElement.setAttribute('data-preview', '1');
       document.body.setAttribute('data-preview', '1');
@@ -317,7 +321,7 @@
       if (numEl) { numEl.setAttribute('data-current', n+1); numEl.setAttribute('data-total', total); }
 
       // notes (bottom overlay)
-      const note = slides[n].querySelector('.notes, aside.notes, .speaker-notes');
+      const note = slides[n].querySelector(NOTE_SEL);
       notes.innerHTML = note ? note.innerHTML : '';
 
       // hash
@@ -409,7 +413,7 @@
 
       // Collect slide titles + notes (HTML strings)
       const slideMeta = slides.map((s, i) => {
-        const note = s.querySelector('.notes, aside.notes, .speaker-notes');
+        const note = s.querySelector(NOTE_SEL);
         return {
           title: s.getAttribute('data-title') ||
             (s.querySelector('h1,h2,h3')||{}).textContent || ('Slide '+(i+1)),
