@@ -11,7 +11,15 @@
   font-family:'Inter','Noto Sans SC','PingFang SC',sans-serif;
 }
 .tpl-xhs-post{background:#f0eae2;display:flex;align-items:center;justify-content:center;min-height:100vh}
-.tpl-xhs-post .deck{width:810px;height:1080px;position:relative;background:transparent}
+/* Canvas size lives in one place: these two custom properties feed
+ * base.css (.deck{width:var(--deck-w)}) so the card is 810x1080 even with
+ * JS off, and the matching data-w/data-h on .deck feed runtime.js so the
+ * fit scale is computed against 810x1080 rather than the 1920x1080
+ * default. When only the CSS carried the size, the scale was still
+ * min(vw/1920, vh/1080) and the card rendered at 42% of a portrait
+ * window. Change one, change the other. */
+.tpl-xhs-post{--deck-w:810px;--deck-h:1080px}
+.tpl-xhs-post .deck{position:relative;background:transparent}
 .tpl-xhs-post .slide{
   position:absolute;inset:0;width:810px;height:1080px;aspect-ratio:3/4;
   padding:70px 64px;border-radius:28px;overflow:hidden;
