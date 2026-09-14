@@ -167,21 +167,47 @@ lexjoin() {
   printf '%s' "${out:-/}"
 }
 
-# Self-check: every asset href/src must resolve to a real file. A broken path
+# List every local href / src / url() reference in a file. The previous version
+# of this check only enumerated references containing "assets/", which skipped
+# the one reference every bundled deck has and every move breaks: its own
+# <link rel="stylesheet" href="style.css">. Across the 15 full-decks that was
+# 53 of 68 references actually checked — the 15 it missed were one style.css
+# per deck.
+#
+# Blank lines are dropped by a separate sed stage, not by a '^$' branch inside
+# the protocol grep. A fragment-only reference (url(#arrow), href="#top")
+# collapses to an empty string once the #… is stripped, and under ugrep —
+# which ships as `grep` on some machines — '^$' as one branch of an ERE
+# alternation does not reliably match those empty lines (measured: 4 of 5
+# survived). The empty string then resolves to the deck directory, which
+# exists, so it was silently counted as a verified reference.
+list_refs() {
+  grep -oE "(href|src)=(\"[^\"]*\"|'[^']*')|url\([^)]*\)" "$1" \
+    | sed -E 's/^(href|src)=//; s/^url\(//; s/\)$//' \
+    | tr -d "\"'" \
+    | sed -E 's/[?#].*$//' \
+    | grep -vE '^[a-zA-Z][a-zA-Z0-9+.-]*:|^//' \
+    | sed '/^[[:space:]]*$/d' \
+    | sort -u
+}
+
+# Self-check: every local reference must resolve to a real file. A broken path
 # here is exactly the bug this script used to ship (#19) — fail loudly.
 MISSING=0
+CHECKED=0
 while IFS= read -r ref; do
+  CHECKED=$((CHECKED + 1))
   if [[ ! -e "$(lexjoin "$OUT_DIR" "$ref")" ]]; then
-    echo "error: unresolved asset reference: $ref" >&2
+    echo "error: unresolved reference: $ref" >&2
     MISSING=1
   fi
-done < <(grep -oE "[\"'](\.\./)*[^\"']*assets/[^\"']+" "$OUT_DIR/index.html" \
-           | sed -E "s/^[\"']//" | sort -u)
+done < <(list_refs "$OUT_DIR/index.html")
 [[ $MISSING -eq 0 ]] || exit 1
 
 echo "✔ created $OUT_DIR/index.html"
 echo "  template: $TEMPLATE"
-echo "  assets:   $REL/assets/  (verified)"
+echo "  assets:   $REL/assets/"
+echo "  refs:     $CHECKED local reference(s) verified"
 echo ""
 echo "next steps:"
 echo "  open  $OUT_DIR/index.html"
