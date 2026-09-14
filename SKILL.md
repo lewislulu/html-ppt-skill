@@ -85,7 +85,7 @@ tasteful default and confirm.
    - Academic / report → `academic-paper`, `editorial-serif`, `minimal-white`
    - Edgy / cyber / launch → `cyberpunk-neon`, `vaporwave`, `y2k-chrome`,
      `neo-brutalism`
-3. **Starting point.** One of the 14 full-deck templates, or scratch? Point
+3. **Starting point.** One of the 15 full-deck templates, or scratch? Point
    to the closest `templates/full-decks/<name>/` and ask if it fits. If the
    user's content suggests something obvious (e.g. "我要做产品发布会" →
    `product-launch`), propose it confidently instead of asking blindly.
@@ -185,9 +185,12 @@ images the page has to carry:
 | one image plus an argument | `image-text-split.html` | 50/50; add `flip` to `.split` to move the image right |
 | 3–6 images | `image-gallery.html` | uniform grid; mixed source ratios are normalised by the frame |
 | a before and an after | `image-compare.html` | both sides identical size, conclusion under each |
-| an uneven bento wall | `image-grid.html` | existing gradient-placeholder grid |
 
-All of them are built on one primitive from `assets/base.css`:
+`image-grid.html` and `image-hero.html` are **not** in this list: they are
+gradient-placeholder layouts with no `<img>` at all. Reach for them when you
+want the shape of a bento wall without supplying pictures.
+
+All five are built on one primitive from `assets/base.css`:
 
 ```html
 <figure class="img-frame"><img src="shot.png" alt=""></figure>
@@ -277,8 +280,8 @@ html-ppt/
 │   ├── theme-showcase.html        (36 slides, iframe-isolated per theme)
 │   ├── layout-showcase.html       (iframe tour of all 36 layouts)
 │   ├── animation-showcase.html    (20 FX + 27 CSS animation slides)
-│   ├── full-decks-index.html      (gallery of all 14 full-deck templates)
-│   ├── full-decks/<name>/         (14 scoped multi-slide deck templates)
+│   ├── full-decks-index.html      (gallery of all 15 full-deck templates)
+│   ├── full-decks/<name>/         (15 scoped multi-slide deck templates)
 │   └── single-page/*.html         (36 layout files with demo data)
 ├── scripts/
 │   ├── new-deck.sh                (scaffold a deck from deck.html)

@@ -146,7 +146,7 @@ Each is a pure CSS-tokens file — swap one `<link>` to reskin the entire deck.
 Browse them all in `templates/theme-showcase.html` (each slide rendered in an
 isolated iframe so theme ≠ theme is visually guaranteed).
 
-![14 full-deck templates](docs/readme/templates.png)
+![15 full-deck templates](docs/readme/templates.png)
 
 ### 15 Full-deck templates
 
@@ -221,7 +221,7 @@ module auto-initialised on slide enter via `fx-runtime.js`.
 open templates/theme-showcase.html         # all 36 themes (iframe-isolated)
 open templates/layout-showcase.html        # all 36 layouts
 open templates/animation-showcase.html     # all 47 animations
-open templates/full-decks-index.html       # all 14 full decks
+open templates/full-decks-index.html       # all 15 full decks
 
 # Render any template to PNG via headless Chrome
 ./scripts/render.sh templates/theme-showcase.html
@@ -299,7 +299,7 @@ html-ppt-skill/
 │   ├── themes.md                 36 themes with when-to-use
 │   ├── layouts.md                31 layout types
 │   ├── animations.md             27 CSS + 20 FX catalog
-│   ├── full-decks.md             14 full-deck templates
+│   ├── full-decks.md             15 full-deck templates
 │   └── authoring-guide.md        full workflow
 ├── assets/
 │   ├── base.css                  shared tokens + primitives
@@ -315,8 +315,8 @@ html-ppt-skill/
 │   ├── theme-showcase.html       iframe-isolated theme tour
 │   ├── layout-showcase.html      all 36 layouts
 │   ├── animation-showcase.html   47 animation slides
-│   ├── full-decks-index.html     14-deck gallery
-│   ├── full-decks/<name>/        14 scoped multi-slide decks
+│   ├── full-decks-index.html     15-deck gallery
+│   ├── full-decks/<name>/        15 scoped multi-slide decks
 │   └── single-page/*.html        31 layout files with demo data
 ├── scripts/
 │   ├── new-deck.sh               scaffold
