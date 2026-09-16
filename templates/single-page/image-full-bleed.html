@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>Image Full Bleed</title>
+<link rel="stylesheet" href="../../assets/fonts.css">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" id="theme-link" href="../../assets/themes/minimal-white.css">
+<link rel="stylesheet" href="../../assets/animations/animations.css">
+<style>
+.bleed{position:absolute;inset:0}
+.bleed .img-frame{border-radius:0;box-shadow:none;height:100%;aspect-ratio:auto}
+.bleed .cap{position:absolute;left:96px;right:96px;bottom:88px;color:#fff;z-index:2}
+.bleed .cap h1{font-size:84px;line-height:1.02;font-weight:800;letter-spacing:-.03em;margin:0}
+.bleed .cap p{font-size:21px;opacity:.88;margin:16px 0 0;max-width:62ch}
+.bleed .pill{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.24)}
+</style>
+</head><body class="single">
+<div class="deck"><section class="slide is-active" data-title="Image Full Bleed" style="padding:0">
+  <div class="bleed">
+    <figure class="img-frame">
+      <img src="../../assets/demo-images/photo-landscape.svg" alt="发布会现场">
+      <div class="img-scrim"></div>
+    </figure>
+    <div class="cap">
+      <span class="pill">Keynote · 2026</span>
+      <h1 class="mt-s anim-rise-in" data-anim="rise-in">让画面先说话</h1>
+      <p>整页一张图 + 底部渐变压暗，文字永远读得清 —— 换成你自己的照片，版式不用改。</p>
+    </div>
+  </div>
+  <div class="notes">整页图：<code>.img-frame</code> 不设比例、高度撑满，配 <code>.img-scrim</code> 压暗底部保证白字可读。图片主体偏上时加 <code>style="--img-pos:top"</code>。</div>
+</section></div>
+<script src="../../assets/runtime.js"></script>
+</body></html>

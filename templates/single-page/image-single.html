@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>Image Single</title>
+<link rel="stylesheet" href="../../assets/fonts.css">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" id="theme-link" href="../../assets/themes/minimal-white.css">
+<link rel="stylesheet" href="../../assets/animations/animations.css">
+<style>
+/* The figure takes whatever height is left after the title — so the slide
+   holds together at any window height instead of only at 16:9. */
+.fig{display:flex;flex-direction:column;align-items:center;margin-top:22px;flex:1;min-height:0}
+.fig .img-frame{aspect-ratio:auto;flex:1;min-height:0;width:min(1040px,100%)}
+.fig .img-cap{text-align:center;max-width:70ch}
+</style>
+</head><body class="single">
+<div class="deck"><section class="slide is-active" data-title="Image Single">
+  <p class="kicker">Figure · 01</p>
+  <h2 class="h2">一张图讲清楚一件事</h2>
+  <div class="fig anim-fade-up" data-anim="fade-up">
+    <figure class="img-frame contain">
+      <img src="../../assets/demo-images/shot-ui.svg" alt="产品主界面截图">
+    </figure>
+    <p class="img-cap">图 1 · 新版工作台。左侧是任务流，右侧是实时指标 —— 截图、图表、架构图都用这个版式。</p>
+  </div>
+  <div class="notes">单图版式用 <code>.img-frame.contain</code>：不裁剪，整张图完整可见。截图 / 示意图 / 图表一律用这个，不要用 cover。</div>
+</section></div>
+<script src="../../assets/runtime.js"></script>
+</body></html>

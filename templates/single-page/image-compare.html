@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>Image Compare</title>
+<link rel="stylesheet" href="../../assets/fonts.css">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" id="theme-link" href="../../assets/themes/minimal-white.css">
+<link rel="stylesheet" href="../../assets/animations/animations.css">
+<style>
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:26px;flex:1;min-height:0}
+.cmp > div{display:flex;flex-direction:column;min-height:0}
+/* Both sides share the leftover height, so the two shots stay exactly the same
+   size — a size difference would read as part of the before/after story. */
+.cmp .img-frame{aspect-ratio:auto;flex:1;min-height:0}
+.cmp .lbl{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:15px;font-weight:600;letter-spacing:.02em}
+.cmp .dot{width:10px;height:10px;border-radius:50%}
+.cmp .before .dot{background:var(--text-3)}
+.cmp .after  .dot{background:var(--good)}
+.cmp .after .img-frame{box-shadow:var(--shadow-lg)}
+</style>
+</head><body class="single">
+<div class="deck"><section class="slide is-active" data-title="Image Compare">
+  <p class="kicker">Before / After · 07</p>
+  <h2 class="h2">改版前后，一眼看见差别</h2>
+  <div class="cmp anim-stagger-list" data-anim-target>
+    <div class="before">
+      <p class="lbl"><span class="dot"></span>改版前 · v2.4</p>
+      <figure class="img-frame"><img src="../../assets/demo-images/shot-before.svg" alt="改版前界面"></figure>
+      <p class="img-cap">信息密度高，重点不突出，首屏要滚动两屏才看到指标。</p>
+    </div>
+    <div class="after">
+      <p class="lbl"><span class="dot"></span>改版后 · v3.0</p>
+      <figure class="img-frame"><img src="../../assets/demo-images/shot-after.svg" alt="改版后界面"></figure>
+      <p class="img-cap">指标提到首屏，次要信息折叠，平均完成时长下降 38%。</p>
+    </div>
+  </div>
+  <div class="notes">两图对照。两侧务必用同一比例、同一拍摄/截图尺寸，否则观众看到的差别里混进了版式差别。结论写在图下一行，不要留给观众猜。</div>
+</section></div>
+<script src="../../assets/runtime.js"></script>
+</body></html>

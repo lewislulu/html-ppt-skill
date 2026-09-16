@@ -11,6 +11,14 @@
   --text-2: #55596a;
   --text-3: #8a8f9e;
   --accent: #3b6cff;
+  /* Text drawn on top of an --accent fill. Every theme in assets/themes/
+   * and every full-deck style.css overrides this with whichever of white /
+   * near-black clears WCAG AA against its own accent — a hardcoded ink
+   * cannot, because accents here range from #ffffff to #000000.
+   * This default is black rather than white on purpose: against the default
+   * --accent #3b6cff, white measures 4.40:1 and black 4.77:1, so only black
+   * clears AA for normal text. Reached by any deck that links no theme. */
+  --accent-ink: #000000;
   --accent-2: #7a5cff;
   --accent-3: #ff5c8a;
   --good: #1aaf6c;
@@ -37,13 +45,36 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text-1);
   font-family:var(--font-sans);font-weight:400;line-height:1.6;
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
   letter-spacing:var(--letter-normal)}
+
+/* Viewport host: centres the fixed-size design canvas and letterboxes the rest.
+   Every px in a slide therefore means the same thing in the browser, in the
+   presenter preview, in the overview thumbnail and in a headless render. */
+body{width:100vw;height:100vh;overflow:hidden;
+  display:flex;align-items:center;justify-content:center}
 img,svg,video{max-width:100%;display:block}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 code,kbd,pre,samp{font-family:var(--font-mono)}
 
 /* ================= SLIDE SYSTEM ================= */
-.deck{position:relative;width:100vw;height:100vh;overflow:hidden;background:var(--bg)}
+/* ================= DESIGN CANVAS =================
+   Slides are authored against a FIXED 1920x1080 canvas and scaled to fit the
+   viewport by runtime.js (--deck-scale). Before this, .deck was 100vw/100vh
+   while type and spacing stayed in absolute px, so a 1512x850 laptop window
+   and a 1920x1080 render produced visibly different pages (issue #20).
+
+   Escape hatches:
+     <body data-fit="fluid">      -> old behaviour, canvas follows the viewport
+     <div class="deck" data-w=".." data-h="..">  -> custom canvas (e.g. 1080x1440 for 3:4)
+*/
+.deck{position:relative;flex:none;
+  width:var(--deck-w,1920px);height:var(--deck-h,1080px);
+  overflow:hidden;background:var(--bg);
+  transform:scale(var(--deck-scale,1));transform-origin:center center}
+
+/* Opt out: fluid canvas, exactly what the deck did before. */
+body[data-fit="fluid"]{display:block}
+body[data-fit="fluid"] .deck{width:100vw;height:100vh;transform:none}
 .slide{
   position:absolute;inset:0;
   display:flex;flex-direction:column;justify-content:center;
@@ -58,7 +89,8 @@ code,kbd,pre,samp{font-family:var(--font-mono)}
 .slide.is-prev{transform:translateX(-30px)}
 
 /* single-page standalone (used when a layout file is opened directly) */
-body.single .slide{position:relative;width:100vw;height:100vh;opacity:1;transform:none;pointer-events:auto}
+body.single .slide{position:relative;width:100%;height:100%;opacity:1;transform:none;pointer-events:auto}
+body[data-fit="fluid"].single .slide{width:100vw;height:100vh}
 
 /* ================= TYPOGRAPHY ================= */
 .eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--text-3)}
@@ -105,6 +137,30 @@ h4,.h4{font-size:22px;line-height:1.3;font-weight:600;margin:0 0 8px}
 .divider{height:1px;background:var(--border);width:100%}
 .divider-accent{height:3px;width:72px;background:var(--accent);border-radius:2px}
 
+/* ================= IMAGES (issue #17) =================
+ * Framing primitives shared by every image-* layout. The frame owns the
+ * aspect ratio and the crop; the <img> just fills it. That's what lets you
+ * swap in a photo of any shape without touching the layout.
+ *   <figure class="img-frame"><img src="…" alt=""></figure>
+ *   .img-frame.contain  -> letterbox instead of crop (screenshots, diagrams,
+ *                          logos — anything where cropping loses information)
+ *   --img-ratio         -> aspect ratio of the frame (default 16/10)
+ *   --img-pos           -> object-position, e.g. "top" to protect a headline
+ */
+.img-frame{position:relative;margin:0;overflow:hidden;
+  border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface-2);
+  aspect-ratio:var(--img-ratio,16/10)}
+.img-frame > img{width:100%;height:100%;object-fit:cover;object-position:var(--img-pos,center)}
+.img-frame.contain{background:var(--bg-soft);box-shadow:none;border:1px solid var(--border)}
+.img-frame.contain > img{object-fit:contain}
+.img-frame.fill{height:100%;aspect-ratio:auto}
+.img-scrim{position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 42%,rgba(8,10,20,.72))}
+.img-cap{margin:10px 2px 0;font-size:14px;line-height:1.5;color:var(--text-3)}
+.img-tag{position:absolute;top:14px;left:14px;padding:5px 12px;border-radius:999px;
+  background:rgba(10,12,20,.55);color:#fff;font-size:12px;letter-spacing:.06em;
+  text-transform:uppercase;backdrop-filter:blur(6px)}
+
 /* ================= CHROME (header/footer/progress) ================= */
 .deck-header{position:absolute;top:24px;left:40px;right:40px;display:flex;align-items:center;justify-content:space-between;
   font-size:12px;color:var(--text-3);letter-spacing:.12em;text-transform:uppercase;z-index:10;pointer-events:none}
@@ -115,8 +171,27 @@ h4,.h4{font-size:22px;line-height:1.3;font-weight:600;margin:0 0 8px}
 .progress-bar{position:fixed;left:0;right:0;bottom:0;height:3px;background:transparent;z-index:20}
 .progress-bar > span{display:block;height:100%;width:0;background:var(--accent);transition:width .3s var(--ease)}
 
+/* ---- custom logo (issue #11) ----
+ * One logo per deck, drawn over the slide area. Two ways in, same CSS:
+ *   1. hand-author it  -> <img class="deck-logo" data-pos="bottom-right" src="…">
+ *   2. declare it once -> <body data-logo="…" data-logo-position="bottom-right">
+ * (1) needs no JS at all; (2) is created by runtime.js. It lives inside .deck
+ * so it scales with the deck. On an exported PDF it is painted per page by the
+ * @media print block below, not by this element — see the note there. */
+.deck-logo{position:absolute;z-index:11;pointer-events:none;
+  height:var(--logo-size,44px);width:auto;max-width:30%;object-fit:contain;
+  opacity:var(--logo-opacity,.9)}
+.deck-logo[data-pos="top-left"]     {top:var(--logo-inset-y,28px);left:var(--logo-inset-x,40px)}
+.deck-logo[data-pos="top-right"]    {top:var(--logo-inset-y,28px);right:var(--logo-inset-x,40px)}
+.deck-logo[data-pos="bottom-left"]  {bottom:var(--logo-inset-y,28px);left:var(--logo-inset-x,40px)}
+.deck-logo[data-pos="bottom-right"] {bottom:var(--logo-inset-y,28px);right:var(--logo-inset-x,40px)}
+.deck-logo:not([data-pos])          {top:28px;right:40px}
+
 /* ================= PRESENTER / OVERVIEW ================= */
-.notes{display:none!important}
+/* Keep this list in sync with NOTE_SEL in assets/runtime.js — the runtime
+ * reads speaker notes from all of these, so all of them must be hidden
+ * from the audience. */
+.notes,.speaker-notes{display:none!important}
 .notes-overlay{position:fixed;inset:auto 0 0 0;max-height:42vh;background:rgba(20,22,30,.95);color:#e8ebf4;
   padding:20px 32px;font-size:16px;line-height:1.6;border-top:1px solid rgba(255,255,255,.1);transform:translateY(100%);
   transition:transform .3s var(--ease);z-index:40;overflow:auto;font-family:var(--font-sans)}
@@ -145,6 +220,38 @@ h4,.h4{font-size:22px;line-height:1.3;font-weight:600;margin:0 0 8px}
 
 /* ================= PRINT ================= */
 @media print{
-  .slide{position:relative;opacity:1!important;transform:none!important;page-break-after:always;height:100vh}
+  /* Every declaration here is !important on purpose. A template stylesheet
+   * scopes its rules as `.tpl-name .slide`, which is specificity (0,2,0) and
+   * beats a bare `.slide` at (0,1,0) — so without !important a template
+   * silently keeps its screen layout in print. That is how dir-key-nav-minimal
+   * (position:absolute) printed 8 slides onto 1 page and xhs-post printed 9
+   * onto 2: only the opacity/transform declarations on this rule carried
+   * !important, and the ones that decide pagination did not. */
+  body{display:block!important;width:auto!important;height:auto!important;overflow:visible!important}
+  .deck{transform:none!important;width:100%!important;height:auto!important;
+        min-height:0!important;display:block!important}
+  .slide{position:relative!important;inset:auto!important;
+         opacity:1!important;transform:none!important;
+         page-break-after:always;break-after:page;
+         width:100%!important;height:100vh!important;max-height:100vh!important}
+  .slide:last-child{page-break-after:auto;break-after:auto}
   .deck-header,.deck-footer,.progress-bar,.notes-overlay,.overview{display:none!important}
+
+  /* Logo in print. The .deck-logo element is position:absolute inside .deck,
+   * and print collapses .deck to height:auto with every slide stacked — so the
+   * element can only anchor ONCE against the whole document and lands on a
+   * single page (or none). Hide it and paint the logo per slide instead: in
+   * print one .slide is exactly one page. runtime.js mirrors the image URL and
+   * placement onto .deck (--logo-print / data-logo-print), so this only kicks
+   * in when the runtime is present; a JS-less deck keeps the element. */
+  .deck[data-logo-print] > .deck-logo{display:none!important}
+  .deck[data-logo-print] .slide:not([data-no-logo])::after{
+    content:"";position:absolute;z-index:11;pointer-events:none;
+    width:30%;height:var(--logo-size,44px);
+    background-image:var(--logo-print);background-repeat:no-repeat;
+    background-size:contain;opacity:var(--logo-opacity,.9)}
+  .deck[data-logo-print="top-left"]     .slide:not([data-no-logo])::after{top:var(--logo-inset-y,28px);left:var(--logo-inset-x,40px);background-position:left top}
+  .deck[data-logo-print="top-right"]    .slide:not([data-no-logo])::after{top:var(--logo-inset-y,28px);right:var(--logo-inset-x,40px);background-position:right top}
+  .deck[data-logo-print="bottom-left"]  .slide:not([data-no-logo])::after{bottom:var(--logo-inset-y,28px);left:var(--logo-inset-x,40px);background-position:left bottom}
+  .deck[data-logo-print="bottom-right"] .slide:not([data-no-logo])::after{bottom:var(--logo-inset-y,28px);right:var(--logo-inset-x,40px);background-position:right bottom}
 }

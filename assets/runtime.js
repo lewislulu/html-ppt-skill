@@ -23,6 +23,10 @@
     'card-flip-3d','cube-rotate-3d','page-turn-3d','perspective-zoom',
     'marquee-scroll','kenburns','confetti-burst','spotlight','morph-shape','ripple-reveal'];
 
+  /* Every class the runtime treats as speaker notes. base.css hides the same
+   * set from the audience — if you add one here, add it there too. */
+  const NOTE_SEL = '.notes, aside.notes, .speaker-notes';
+
   function ready(fn){ if(document.readyState!='loading')fn(); else document.addEventListener('DOMContentLoaded',fn);}
 
   /* ========== Parse URL for preview-only mode ==========
@@ -37,11 +41,96 @@
     return m ? parseInt(m[1], 10) - 1 : -1;
   }
 
+  /* ========== Design-canvas fit (issue #20) ==========
+   * Slides are authored against a fixed canvas (1920x1080 by default). The
+   * canvas is scaled — never reflowed — to fit whatever viewport it lands in,
+   * so the browser view, the presenter preview, the overview thumbnail and a
+   * headless PNG render are all the same picture.
+   *
+   * Opt out with <body data-fit="fluid">. Override the canvas per deck with
+   * <div class="deck" data-w="1080" data-h="1440"> (e.g. a 3:4 小红书 post).
+   */
+  function initCanvasFit(deck) {
+    if (document.body.getAttribute('data-fit') === 'fluid') return;
+
+    const w = parseInt(deck.getAttribute('data-w'), 10) || 1920;
+    const h = parseInt(deck.getAttribute('data-h'), 10) || 1080;
+    deck.style.setProperty('--deck-w', w + 'px');
+    deck.style.setProperty('--deck-h', h + 'px');
+
+    function fit() {
+      const scale = Math.min(window.innerWidth / w, window.innerHeight / h);
+      deck.style.setProperty('--deck-scale', String(scale));
+    }
+    fit();
+    window.addEventListener('resize', fit);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', fit);
+    /* Webfonts can land after first paint; re-fit once they do. */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit).catch(function(){});
+  }
+
   ready(function () {
     const deck = document.querySelector('.deck');
     if (!deck) return;
     const slides = Array.from(deck.querySelectorAll('.slide'));
     if (!slides.length) return;
+
+    initCanvasFit(deck);
+
+    /* ===== custom logo (issue #11) =====
+     * Deliberately initialised BEFORE the preview-mode branch below: the
+     * presenter's "pixel-perfect" preview is the audience view, so it has to
+     * carry the logo too. A hand-authored <img class="deck-logo"> is left
+     * exactly where it is — base.css styles both paths identically, so a deck
+     * can have a logo with runtime.js absent entirely.
+     */
+    const logoEl = (function initLogo(){
+      const attr = (n) => document.body.getAttribute(n) || document.documentElement.getAttribute(n);
+      let el = deck.querySelector(':scope > .deck-logo');
+      if (!el) {
+        const src = attr('data-logo');
+        if (!src) return null;
+        el = document.createElement('img');
+        el.className = 'deck-logo';
+        el.src = src;
+        el.alt = attr('data-logo-alt') || '';
+        deck.appendChild(el);
+      }
+      if (!el.hasAttribute('data-pos')) {
+        el.setAttribute('data-pos', attr('data-logo-position') || 'top-right');
+      }
+      /* Custom props go on .deck, not on the element: the element inherits
+         them, and the print rules (which paint the logo per page on
+         .slide::after) can read them too. An inline --logo-* on a
+         hand-authored element wins for the element, so mirror it up. */
+      const mirror = (attrName, prop) => {
+        const v = (attrName && attr(attrName)) || el.style.getPropertyValue(prop);
+        if (v) deck.style.setProperty(prop, v.trim());
+      };
+      mirror('data-logo-size', '--logo-size');
+      mirror('data-logo-opacity', '--logo-opacity');
+      mirror(null, '--logo-inset-x');
+      mirror(null, '--logo-inset-y');
+
+      /* Print can't use the element itself — see the @media print note in
+         base.css. Hand the URL and the corner to the per-page painter.
+         Use el.src, not getAttribute('src'): a relative url() inside a custom
+         property is resolved against the stylesheet that *uses* the var()
+         (assets/base.css), not against the deck, so it must be absolute. */
+      const src = el.src;
+      if (src) {
+        deck.style.setProperty('--logo-print', 'url("' + src.replace(/["\\]/g, '\\$&') + '")');
+        deck.setAttribute('data-logo-print', el.getAttribute('data-pos'));
+      }
+      return el;
+    })();
+
+    /* Per-slide opt-out: <section class="slide" data-no-logo> — covers and
+       full-bleed image slides usually carry their own branding. */
+    function syncLogo(slide){
+      if (!logoEl) return;
+      logoEl.style.display = (slide && slide.hasAttribute('data-no-logo')) ? 'none' : '';
+    }
 
     const previewOnlyIdx = getPreviewIdx();
     const isPreviewMode = previewOnlyIdx >= 0 && previewOnlyIdx < slides.length;
@@ -83,9 +172,10 @@
         });
       }
       showSlide(previewOnlyIdx);
+      syncLogo(slides[previewOnlyIdx]);
       animateCounters(slides[previewOnlyIdx]);
       /* Hide chrome that the presenter shouldn't see in preview */
-      const hideSel = '.progress-bar, .notes-overlay, .overview, .notes, aside.notes, .speaker-notes';
+      const hideSel = '.progress-bar, .notes-overlay, .overview, ' + NOTE_SEL;
       document.querySelectorAll(hideSel).forEach(el => { el.style.display = 'none'; });
       document.documentElement.setAttribute('data-preview', '1');
       document.body.setAttribute('data-preview', '1');
@@ -170,6 +260,7 @@
           const n = parseInt(e.data.idx, 10);
           if (n >= 0 && n < slides.length) {
             showSlide(n);
+            syncLogo(slides[n]);
             replayAnims(slides[n]);
           }
         } else if (e.data.type === 'preview-replay') {
@@ -303,12 +394,13 @@
         s.classList.toggle('is-prev', i<n);
       });
       idx = n;
+      syncLogo(slides[n]);
       barFill.style.width = ((n+1)/total*100)+'%';
       const numEl = document.querySelector('.slide-number');
       if (numEl) { numEl.setAttribute('data-current', n+1); numEl.setAttribute('data-total', total); }
 
       // notes (bottom overlay)
-      const note = slides[n].querySelector('.notes, aside.notes, .speaker-notes');
+      const note = slides[n].querySelector(NOTE_SEL);
       notes.innerHTML = note ? note.innerHTML : '';
 
       // hash
@@ -388,7 +480,7 @@
 
       // Collect slide titles + notes (HTML strings)
       const slideMeta = slides.map((s, i) => {
-        const note = s.querySelector('.notes, aside.notes, .speaker-notes');
+        const note = s.querySelector(NOTE_SEL);
         return {
           title: s.getAttribute('data-title') ||
             (s.querySelector('h1,h2,h3')||{}).textContent || ('Slide '+(i+1)),
@@ -411,10 +503,14 @@
     }
 
     function buildPresenterHTML(deckUrl, slideMeta, total, startIdx, channelName, currentTheme) {
-      const metaJSON = JSON.stringify(slideMeta);
-      const deckUrlJSON = JSON.stringify(deckUrl);
-      const channelJSON = JSON.stringify(channelName);
-      const themeJSON = JSON.stringify(currentTheme || '');
+      /* Notes are authored HTML. Escaping "<" keeps a literal </script> in a
+         slide's notes from closing the inline script that carries this JSON —
+         which would kill the whole presenter init. */
+      const embed = (v) => JSON.stringify(v).replace(/</g, '\\u003c');
+      const metaJSON = embed(slideMeta);
+      const deckUrlJSON = embed(deckUrl);
+      const channelJSON = embed(channelName);
+      const themeJSON = embed(currentTheme || '');
       const storageKey = 'html-ppt-presenter:' + location.pathname;
 
       // Build the document as a single template string for clarity
@@ -449,6 +545,22 @@
     min-width: 180px; min-height: 100px;
     transition: box-shadow .2s, border-color .2s;
   }
+
+  /* Default geometry. The cards used to get position and size ONLY from
+     applyLayout(), which runs at the very end of the init — so anything that
+     stopped that script (a blocked inline script under CSP, a stale layout in
+     localStorage, any throw in the wiring above it) left four cards collapsed
+     on top of each other and just the hint bar visible (#14). These rules make
+     the presenter usable with zero JS; applyLayout() overrides them with px. */
+  #card-cur   { left: 16px; top: 16px;
+                width: calc(55% - 24px);  height: calc((100% - 36px) * 0.62 - 16px); }
+  #card-nxt   { left: calc(55% + 8px); top: 16px;
+                width: calc(45% - 24px);  height: calc((100% - 36px) * 0.42 - 16px); }
+  #card-notes { left: calc(55% + 8px); top: calc((100% - 36px) * 0.42 + 8px);
+                width: calc(45% - 24px);  height: calc((100% - 36px) * 0.58 - 16px); }
+  #card-timer { left: 16px; top: calc((100% - 36px) * 0.62 + 8px);
+                width: calc(55% - 24px);  height: calc((100% - 36px) * 0.38 - 16px); }
+
   .pcard.dragging { box-shadow: 0 16px 48px rgba(0,0,0,.6), 0 0 0 2px rgba(88,166,255,.5); border-color: #58a6ff; transition: none; z-index: 9999; }
   .pcard.resizing { box-shadow: 0 16px 48px rgba(0,0,0,.6), 0 0 0 2px rgba(63,185,80,.5); border-color: #3fb950; transition: none; z-index: 9999; }
   .pcard:hover { border-color: rgba(88,166,255,.3); }
@@ -646,7 +758,7 @@
   var total = ${total};
   var idx = ${startIdx};
   var deckUrl = ${deckUrlJSON};
-  var STORAGE_KEY = ${JSON.stringify(storageKey)};
+  var STORAGE_KEY = ${embed(storageKey)};
   var bc;
   try { bc = new BroadcastChannel(${channelJSON}); } catch(e) {}
 
@@ -658,10 +770,21 @@
   var timerDisplay = document.getElementById('timer-display');
   var timerCount = document.getElementById('timer-count');
 
+  /* Lay the cards out before anything else. This used to be the LAST statement
+     of the init, so every line below it was a single point of failure for the
+     whole presenter's visibility (#14). Function declarations hoist, so this is
+     safe here. */
+  applyLayout(readLayout());
+
   /* ===== Default card layout ===== */
+  var CARD_IDS = ['card-cur','card-nxt','card-notes','card-timer'];
+  var MIN_W = 180, MIN_H = 100;
+
   function defaultLayout() {
-    var w = window.innerWidth;
-    var h = window.innerHeight - 36; /* leave room for hint bar */
+    /* A popup that opened minimised or in a background tab can report 0 here;
+       the old code turned that into negative widths, which CSS discards. */
+    var w = Math.max(640, window.innerWidth || 0);
+    var h = Math.max(400, (window.innerHeight || 0) - 36); /* room for hint bar */
     return {
       'card-cur':   { x: 16,        y: 16,            w: Math.round(w*0.55) - 24, h: Math.round(h*0.62) - 16 },
       'card-nxt':   { x: Math.round(w*0.55) + 8, y: 16, w: w - Math.round(w*0.55) - 24, h: Math.round(h*0.42) - 16 },
@@ -684,16 +807,35 @@
     });
     rescaleAll();
   }
+  /* A layout restored from localStorage was written against whatever window
+     size the deck was last presented at. Replayed in a smaller window it puts
+     every card off-screen, and there is no way back because the layout is
+     sticky — so clamp it into view and reject anything malformed. */
+  function sanitizeLayout(layout) {
+    if (!layout || typeof layout !== 'object') return null;
+    var vw = Math.max(MIN_W, window.innerWidth || 0);
+    var vh = Math.max(MIN_H, window.innerHeight || 0);
+    var out = {};
+    for (var i = 0; i < CARD_IDS.length; i++) {
+      var l = layout[CARD_IDS[i]];
+      if (!l) return null;
+      var cw = Math.min(Math.max(+l.w || 0, MIN_W), vw);
+      var ch = Math.min(Math.max(+l.h || 0, MIN_H), vh);
+      var cx = Math.min(Math.max(+l.x || 0, 0), Math.max(0, vw - MIN_W));
+      var cy = Math.min(Math.max(+l.y || 0, 0), Math.max(0, vh - 40));
+      if (!isFinite(cw) || !isFinite(ch) || !isFinite(cx) || !isFinite(cy)) return null;
+      out[CARD_IDS[i]] = { x: cx, y: cy, w: cw, h: ch };
+    }
+    return out;
+  }
   function readLayout() {
-    try {
-      var saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
-    } catch(e) {}
-    return defaultLayout();
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) {}
+    return sanitizeLayout(saved) || defaultLayout();
   }
   function saveLayout() {
     var layout = {};
-    ['card-cur','card-nxt','card-notes','card-timer'].forEach(function(id){
+    CARD_IDS.forEach(function(id){
       var el = document.getElementById(id);
       if (el) {
         layout[id] = {
@@ -923,14 +1065,19 @@
    * 'preview-ready', all subsequent navigation is via postMessage
    * (smooth, no reload, no flicker).
    */
-  applyLayout(readLayout());
-  iframeCur.src = deckUrl + '?preview=' + (idx + 1);
-  if (idx + 1 < total) iframeNxt.src = deckUrl + '?preview=' + (idx + 2);
-  /* Initialize notes/timer/count without touching iframes */
-  notesBody.innerHTML = slideMeta[idx].notes || '<span class="empty">（这一页还没有逐字稿）</span>';
-  curMeta.textContent = (idx + 1) + '/' + total;
-  nxtMeta.textContent = (idx + 2) + '/' + total;
-  timerCount.textContent = (idx + 1) + ' / ' + total;
+  try {
+    iframeCur.src = deckUrl + '?preview=' + (idx + 1);
+    if (idx + 1 < total) iframeNxt.src = deckUrl + '?preview=' + (idx + 2);
+    /* Initialize notes/timer/count without touching iframes */
+    var m = slideMeta[idx] || {};
+    notesBody.innerHTML = m.notes || '<span class="empty">（这一页还没有逐字稿）</span>';
+    curMeta.textContent = (idx + 1) + '/' + total;
+    nxtMeta.textContent = (idx + 2) + '/' + total;
+    timerCount.textContent = (idx + 1) + ' / ' + total;
+  } catch (e) {
+    /* Report it, but never let it blank the cards. */
+    if (window.console && console.error) console.error('[html-ppt] presenter init:', e);
+  }
 })();
 </` + `script>
 </body></html>`;
@@ -1013,6 +1160,62 @@
         case 'Escape': toggleOverview(false); toggleNotes(false); break;
       }
     });
+
+    /* ===== Touch navigation =====
+     * Phones have no arrow keys (#15). Swipe left for next, right for prev.
+     *
+     * Deliberately passive: we never call preventDefault, so pinch-zoom and
+     * any native scrolling keep working and the browser is free to scroll
+     * while we are still deciding. A gesture only counts as a swipe if it is
+     * single-finger, clearly horizontal, long enough and quick enough —
+     * otherwise it falls through untouched.
+     */
+    (function initTouchNav(){
+      /* No capability sniffing on purpose. Touch listeners cost nothing on a
+         device that never fires them, and `ontouchstart in window` /
+         maxTouchPoints both misreport on touchscreen laptops and some
+         tablets — a guard here would silently remove the feature on exactly
+         the devices that need it. */
+      var SWIPE_MIN_PX = 50;    // shorter than this is a tap or a wobble
+      var SWIPE_RATIO  = 1.5;   // must be this much more horizontal than vertical
+      var SWIPE_MAX_MS = 800;   // slower than this is a drag, not a swipe
+
+      var x0 = 0, y0 = 0, t0 = 0, tracking = false;
+
+      function interactive(target) {
+        if (!target || !target.closest) return false;
+        /* Don't steal the gesture from the overview grid, the notes drawer,
+           or anything the author made scrollable or tappable. */
+        return !!target.closest('.overview, .notes-overlay, a, button, input, textarea, select, [data-no-swipe]');
+      }
+
+      document.addEventListener('touchstart', function(e){
+        if (e.touches.length !== 1 || interactive(e.target)) { tracking = false; return; }
+        x0 = e.touches[0].clientX;
+        y0 = e.touches[0].clientY;
+        t0 = Date.now();
+        tracking = true;
+      }, { passive: true });
+
+      document.addEventListener('touchmove', function(e){
+        /* A second finger means pinch-zoom — abandon the swipe. */
+        if (e.touches.length > 1) tracking = false;
+      }, { passive: true });
+
+      document.addEventListener('touchend', function(e){
+        if (!tracking) return;
+        tracking = false;
+        var t = e.changedTouches && e.changedTouches[0];
+        if (!t) return;
+        if (Date.now() - t0 > SWIPE_MAX_MS) return;
+        var dx = t.clientX - x0, dy = t.clientY - y0;
+        if (Math.abs(dx) < SWIPE_MIN_PX) return;
+        if (Math.abs(dx) < Math.abs(dy) * SWIPE_RATIO) return;
+        go(dx < 0 ? idx + 1 : idx - 1);
+      }, { passive: true });
+
+      document.addEventListener('touchcancel', function(){ tracking = false; }, { passive: true });
+    })();
 
     // hash deep-link
     function fromHash(){

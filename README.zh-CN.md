@@ -1,7 +1,7 @@
 # html-ppt · HTML PPT 工作室
 
 > 一款专业级的 AgentSkill，让 AI 做出真正能打的 HTML 演示文稿。
-> **36 套主题**、**15 套完整 deck 模板**、**31 种页面布局**、**47 个动效**
+> **36 套主题**、**15 套完整 deck 模板**、**36 种页面布局**、**47 个动效**
 > (27 个 CSS + 20 个 Canvas FX)，加上全新的 **演讲者模式** —— 像素级
 > 完美预览 + 逐字稿提词器 + 计时器。纯静态 HTML/CSS/JS，无需构建。
 
@@ -18,7 +18,7 @@
 
 ![html-ppt 封面 · 实时预览](docs/readme/hero.gif)
 
-> 一行命令装好 **36 主题 × 20 Canvas FX × 31 布局 × 15 完整 deck + 演讲者模式**。
+> 一行命令装好 **36 主题 × 20 Canvas FX × 36 布局 × 15 完整 deck + 演讲者模式**。
 > 上图里的每一个预览都是真实的 iframe 加载真实模板文件 —— 不是截图，不是色卡。
 
 ## 🎤 演讲者模式（全新）
@@ -61,6 +61,60 @@ npx skills add https://github.com/lewislulu/html-ppt-skill
 > "做一个小红书图文，9 张，白底柔和风"
 > "做一份带演讲者模式的产品分享，我想要有逐字稿"
 
+## 离线 / 手动安装
+
+`npx skills add <url>` 需要目标机器能联网。下面三种方式，对网络的依赖依次递减。
+
+**1. 从本地副本安装。** 在任意能联网的机器上取到仓库，把整个目录搬过去（git、zip、U 盘都行），
+然后把 CLI 指向本地目录而不是 URL：
+
+```bash
+git clone https://github.com/lewislulu/html-ppt-skill
+npx skills add ./html-ppt-skill
+```
+
+`npx` 本身仍需下载一次 `skills` 包。完全隔离的机器请先在联网机器上
+`npm i -g skills`，或者直接用方式 2。
+
+**2. 纯手工拷贝 —— 不需要 Node，也不需要 CLI。** 一个 skill 就是一个根目录下放着
+`SKILL.md` 的文件夹。放进你的 agent 会扫描的目录即可：
+
+| Agent | 项目级 | 全局 |
+|---|---|---|
+| Claude Code | `.claude/skills/html-ppt/` | `~/.claude/skills/html-ppt/` |
+| Codex | `.agents/skills/html-ppt/` | `~/.codex/skills/html-ppt/` |
+| Cursor | `.agents/skills/html-ppt/` | `~/.cursor/skills/html-ppt/` |
+| OpenCode | `.agents/skills/html-ppt/` | `~/.config/opencode/skills/html-ppt/` |
+| Gemini CLI | `.agents/skills/html-ppt/` | `~/.gemini/skills/html-ppt/` |
+| Windsurf | `.windsurf/skills/html-ppt/` | `~/.codeium/windsurf/skills/html-ppt/` |
+
+```bash
+mkdir -p ~/.claude/skills
+cp -R html-ppt-skill ~/.claude/skills/html-ppt
+ls ~/.claude/skills/html-ppt/SKILL.md      # 必须存在
+```
+
+运行时只需要 `SKILL.md`、`assets/`、`templates/`、`references/`、`scripts/`。
+`docs/` 是约 4.6 MB 的 README 配图，离线拷贝时可以删掉。
+
+**3. 完全不用 agent。** 模板就是普通静态文件，可以直接用：
+
+```bash
+./scripts/new-deck.sh my-talk
+open examples/my-talk/index.html
+```
+
+### 断网能用吗？
+
+能，只有一个前提要说清楚。主题、布局、动效、演讲者模式、PNG 导出全部是本地静态
+HTML/CSS/JS，零构建、运行时不发请求。唯一的远程依赖是 `assets/fonts.css`，
+它 `@import` 了 Google Fonts。
+
+断网时这些 import 直接失败，浏览器回落到 `assets/base.css` 里已经声明好的系统字体栈
+（`-apple-system` / Helvetica / Georgia / Menlo），所以 deck 照常渲染，只是字体不同。
+如果要在离线环境下锁定字体，把 `assets/fonts.css` 换成指向自带字体文件的 `@font-face`
+规则，或者删掉这些 import、接受系统字体。
+
 ## Skill 内容一览
 
 | | 数量 | 位置 |
@@ -68,7 +122,7 @@ npx skills add https://github.com/lewislulu/html-ppt-skill
 | 🎤 **演讲者模式** | **新增** | `S` 键 / `?preview=N` |
 | 🎨 **主题** | **36** | `assets/themes/*.css` |
 | 📑 **完整 deck 模板** | **15** | `templates/full-decks/<name>/` |
-| 🧩 **单页布局** | **31** | `templates/single-page/*.html` |
+| 🧩 **单页布局** | **36** | `templates/single-page/*.html` |
 | ✨ **CSS 动画** | **27** | `assets/animations/animations.css` |
 | 💥 **Canvas FX 动画** | **20** | `assets/animations/fx/*.js` |
 | 🖼️ **Showcase deck** | 4 | `templates/*-showcase.html` |
@@ -122,7 +176,7 @@ npx skills add https://github.com/lewislulu/html-ppt-skill
 
 ![31 种单页布局](docs/readme/layouts.png)
 
-### 31 种单页布局
+### 36 种单页布局
 
 cover · toc · section-divider · bullets · two-column · three-column ·
 big-quote · stat-highlight · kpi-grid · table · code · diff · terminal ·
@@ -164,9 +218,13 @@ chart-pie · chart-radar · arch-diagram · process-steps · cta · thanks
 # 从 base 模板新建一个 deck
 ./scripts/new-deck.sh my-talk
 
+# 也可以指定完整 deck 模板和任意输出目录。
+# assets 路径会按 deck 的实际位置算出来，并逐条校验能否解析。
+./scripts/new-deck.sh my-talk ~/decks -t pitch-deck
+
 # 浏览所有内容
 open templates/theme-showcase.html         # 全部 36 主题（iframe 隔离）
-open templates/layout-showcase.html        # 全部 31 布局
+open templates/layout-showcase.html        # 全部 36 布局
 open templates/animation-showcase.html     # 全部 47 动效
 open templates/full-decks-index.html       # 全部 15 个完整 deck
 
@@ -175,10 +233,55 @@ open templates/full-decks-index.html       # 全部 15 个完整 deck
 ./scripts/render.sh examples/my-talk/index.html 12
 ```
 
+## 放图片的版式
+
+五个版式用的是真实 `<img>`，按「这一页要放几张图」挑：
+
+| 我有… | 版式 |
+|---|---|
+| 一张截图 / 示意图 / 图表 | `image-single.html` —— 完整显示，**不裁剪** |
+| 一张想撑满整页的照片 | `image-full-bleed.html` —— 整页铺满，底部压暗保证标题可读 |
+| 一张图 + 一段论述 | `image-text-split.html` —— 各占一半，加 `flip` 左右互换 |
+| 3～6 张图 | `image-gallery.html` —— 等大网格，每张一句话 |
+| 改版前 / 改版后 | `image-compare.html` —— 两侧严格同尺寸 |
+
+它们共用 `assets/base.css` 里的同一个原语：
+
+```html
+<figure class="img-frame"><img src="shot.png" alt=""></figure>            <!-- 裁剪填满 -->
+<figure class="img-frame contain"><img src="diagram.svg" alt=""></figure> <!-- 完整显示 -->
+```
+
+比例和裁剪由**框**决定（`--img-ratio`），不由图片决定 —— 竖图、方图、超宽图
+直接换 `src` 就行，版式不用改。示例图放在 `assets/demo-images/`，是手写的
+SVG（每个约 1KB），所以这些版式**离线也能正常渲染**。
+
+## 自定义 LOGO
+
+一个属性给整份 deck 加上公司 / 产品 LOGO，不用每页粘一个 `<img>`：
+
+```html
+<body data-logo="logo.svg" data-logo-position="bottom-right" data-logo-size="40px">
+```
+
+`data-logo-position` 可选 `top-left` / `top-right` / `bottom-left` /
+`bottom-right`（默认 `top-right`）；`data-logo-size` 设置高度，宽度按比例。
+某一页不想要（通常是封面）就写 `<section class="slide" data-no-logo>`。
+演讲者模式的预览里带 LOGO；导出 PDF 时**每一页都带**（写了 `data-no-logo`
+的那页除外）。
+
+想自己摆位置：在 `.deck` 里直接写
+`<img class="deck-logo" data-pos="top-left" src="logo.svg">`，
+样式在 `base.css` 里，**完全不依赖 JS**。
+
 ## 键盘快捷键
+
+手机 / 平板上**向左划到下一页，向右划回上一页**，不需要键盘。
+双指缩放、纵向滚动、总览网格和 notes 抽屉都不受影响。
 
 ```
 ← → Space PgUp PgDn Home End   翻页
+左划 / 右划（触摸）              翻页
 F                               全屏
 S                               打开演讲者窗口（磁吸卡片模式）
 N                               底部 notes 抽屉
@@ -199,7 +302,7 @@ html-ppt-skill/
 ├── README.zh-CN.md               本文件
 ├── references/                   详细文档
 │   ├── themes.md                 36 主题 + 使用场景
-│   ├── layouts.md                31 布局
+│   ├── layouts.md                36 布局
 │   ├── animations.md             27 CSS + 20 FX 目录
 │   ├── full-decks.md             15 完整 deck 模板
 │   ├── presenter-mode.md         🎤 演讲者模式 + 逐字稿指南
@@ -216,11 +319,11 @@ html-ppt-skill/
 ├── templates/
 │   ├── deck.html                 最小起步模板
 │   ├── theme-showcase.html       iframe 隔离的主题 tour
-│   ├── layout-showcase.html      全部 31 布局
+│   ├── layout-showcase.html      全部 36 布局
 │   ├── animation-showcase.html   47 动画 slide
 │   ├── full-decks-index.html     15 deck gallery
 │   ├── full-decks/<name>/        15 个 scoped 多页 deck 模板
-│   └── single-page/*.html        31 个布局文件（带示例数据）
+│   └── single-page/*.html        36 个布局文件（带示例数据）
 ├── scripts/
 │   ├── new-deck.sh               脚手架
 │   ├── render.sh                 headless Chrome → PNG

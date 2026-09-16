@@ -17,14 +17,21 @@ npx skills add https://github.com/lewislulu/html-ppt-skill
 
 One command, no build. Pure static HTML/CSS/JS with only CDN webfonts.
 
+No network on the target machine? Point the CLI at a local copy
+(`npx skills add ./html-ppt-skill`), or just copy this folder into your agent's
+skills directory — `~/.claude/skills/html-ppt/` for Claude Code. Decks render
+offline; only the webfonts fall back to the system stack. See
+[README.md](README.md#offline--manual-install).
+
 ## What the skill gives you
 
 - **36 themes** (`assets/themes/*.css`) — minimal-white, editorial-serif, soft-pastel, sharp-mono, arctic-cool, sunset-warm, catppuccin-latte/mocha, dracula, tokyo-night, nord, solarized-light, gruvbox-dark, rose-pine, neo-brutalism, glassmorphism, bauhaus, swiss-grid, terminal-green, xiaohongshu-white, rainbow-gradient, aurora, blueprint, memphis-pop, cyberpunk-neon, y2k-chrome, retro-tv, japanese-minimal, vaporwave, midcentury, corporate-clean, academic-paper, news-broadcast, pitch-deck-vc, magazine-bold, engineering-whiteprint
 - **15 full-deck templates** (`templates/full-decks/<name>/`) — complete multi-slide decks with scoped `.tpl-<name>` CSS. 8 extracted from real-world decks (xhs-white-editorial, graphify-dark-graph, knowledge-arch-blueprint, hermes-cyber-terminal, obsidian-claude-gradient, testing-safety-alert, xhs-pastel-card, dir-key-nav-minimal), 7 scenario scaffolds (pitch-deck, product-launch, tech-sharing, weekly-report, xhs-post 3:4, course-module, **presenter-mode-reveal** — 演讲者模式专用)
-- **31 layouts** (`templates/single-page/*.html`) with realistic demo data
+- **36 layouts** (`templates/single-page/*.html`) with realistic demo data, including **5 real-image layouts** (single / full-bleed / image+text / gallery / before-after)
 - **27 CSS animations** (`assets/animations/animations.css`) via `data-anim`
 - **20 canvas FX animations** (`assets/animations/fx/*.js`) via `data-fx` — particle-burst, confetti-cannon, firework, starfield, matrix-rain, knowledge-graph (force-directed), neural-net (pulses), constellation, orbit-ring, galaxy-swirl, word-cascade, letter-explode, chain-react, magnetic-field, data-stream, gradient-blob, sparkle-trail, shockwave, typewriter-multi, counter-explosion
 - **Keyboard runtime** (`assets/runtime.js`) — arrows, T (theme), A (anim), F/O, **S (presenter mode: magnetic-card popup with CURRENT / NEXT / SCRIPT / TIMER cards)**, N (notes drawer), R (reset timer in presenter)
+- **Touch navigation** — swipe left/right to change slides on phones and tablets
 - **FX runtime** (`assets/animations/fx-runtime.js`) — auto-inits `[data-fx]` on slide enter, cleans up on leave
 - **Showcase decks** for themes / layouts / animations / full-decks gallery
 - **Live preview site** (`preview/`) — every theme and animation on one real
@@ -89,7 +96,7 @@ tasteful default and confirm.
    - Academic / report → `academic-paper`, `editorial-serif`, `minimal-white`
    - Edgy / cyber / launch → `cyberpunk-neon`, `vaporwave`, `y2k-chrome`,
      `neo-brutalism`
-3. **Starting point.** One of the 14 full-deck templates, or scratch? Point
+3. **Starting point.** One of the 15 full-deck templates, or scratch? Point
    to the closest `templates/full-decks/<name>/` and ask if it fits. If the
    user's content suggests something obvious (e.g. "我要做产品发布会" →
    `product-launch`), propose it confidently instead of asking blindly.
@@ -110,7 +117,9 @@ Only after those are clear, scaffold the deck and start writing.
    ./scripts/new-deck.sh my-talk
    open examples/my-talk/index.html
    ```
-2. **Pick a theme.** Open the deck and press `T` to cycle. Or hard-code it:
+2. **Pick a theme.** Open the deck and press `T` to cycle. Or hard-code it
+   (`../assets/` here is a placeholder — use whatever prefix the rest of the
+   file already uses; `new-deck.sh` has set it to the right depth):
    ```html
    <link rel="stylesheet" id="theme-link" href="../assets/themes/aurora.css">
    ```
@@ -123,10 +132,15 @@ Only after those are clear, scaffold the deck and start writing.
    For canvas FX, use `<div data-fx="knowledge-graph">...</div>` and include
    `<script src="../assets/animations/fx-runtime.js"></script>`.
    Catalog in [references/animations.md](references/animations.md).
-5. **Use a full-deck template.** Copy `templates/full-decks/<name>/` into
-   `examples/my-talk/` as a starting point. Each folder is self-contained with
-   scoped CSS. Catalog in [references/full-decks.md](references/full-decks.md)
-   and gallery at `templates/full-decks-index.html`.
+5. **Use a full-deck template.** Scaffold from it, don't copy it by hand —
+   the template's `../../../assets/` is relative to *its own* location, so a
+   manual copy lands the paths at the wrong depth:
+   ```bash
+   ./scripts/new-deck.sh my-talk -t pitch-deck
+   ```
+   Each folder is self-contained with scoped CSS. Catalog in
+   [references/full-decks.md](references/full-decks.md) and gallery at
+   `templates/full-decks-index.html`.
 6. **Render to PNG.**
    ```bash
    ./scripts/render.sh templates/theme-showcase.html       # one shot
@@ -140,12 +154,28 @@ Only after those are clear, scaffold the deck and start writing.
 - **Use tokens, not literal colors.** Every color, radius, shadow should come
   from CSS variables defined in `assets/base.css` and overridden by a theme.
   Good: `color: var(--text-1)`. Bad: `color: #111`.
+  Text on top of an `--accent` fill is the one people get wrong: it needs
+  `color: var(--accent-ink)`, because accents here run from `#ffffff` to
+  `#000000` and no literal ink is readable on all of them.
 - **Don't invent new layout files.** Prefer composing existing ones. Only add
-  a new `templates/single-page/*.html` if none of the 30 fit.
+  a new `templates/single-page/*.html` if none of the 36 fit.
+- **Putting images on a slide?** Start from one of the five `image-*` layouts and
+  use `.img-frame` — see *Images* below. Never drop a bare `<img>` into a slide:
+  an unframed image ignores the slide's height and pushes the rest off the page.
 - **Respect chrome slots.** `.deck-header`, `.deck-footer`, `.slide-number`
   and the progress bar are provided by `assets/base.css` + `runtime.js`.
-- **Keyboard-first.** Always include `<script src="../assets/runtime.js"></script>`
-  so the deck supports ← → / T / A / F / S / O / hash deep-links.
+- **Add a logo declaratively, once.** Put `data-logo` on `<body>` — don't paste
+  an `<img>` into every slide. See *Custom logo* below.
+- **Keyboard-first.** Always include the runtime, e.g.
+  `<script src="../assets/runtime.js"></script>`, so the deck supports
+  ← → / T / A / F / S / O / hash deep-links.
+- **Never hand-edit the `../` depth in asset paths.** Every `assets/` reference
+  is relative to the file that holds it: `templates/deck.html` uses
+  `../assets/`, `templates/single-page/*.html` use `../../assets/`, and
+  `templates/full-decks/*/index.html` use `../../../assets/`. Copying a file to
+  a new depth silently breaks all of them. Scaffold with
+  `./scripts/new-deck.sh <name> [parent] [-t <template>]`, which computes the
+  prefix for wherever the deck lands and verifies every reference resolves.
 - **One `.slide` per logical page.** `runtime.js` makes `.slide.is-active`
   visible; all others are hidden.
 - **Supply notes.** Wrap speaker notes in `<div class="notes">…</div>` inside
@@ -157,6 +187,76 @@ Only after those are clear, scaffold the deck and start writing.
   by default — it only appears in the S overlay. Slides should contain ONLY
   audience-facing content (titles, bullet points, data, charts, images).
 
+## Images
+
+Five layouts in `templates/single-page/` take real images. Pick by how many
+images the page has to carry:
+
+| I have… | Use | Why |
+|---|---|---|
+| one screenshot / diagram / chart | `image-single.html` | `.img-frame.contain` — letterboxed, **never cropped** |
+| one photo that should carry the page | `image-full-bleed.html` | fills the slide, gradient scrim keeps the title readable |
+| one image plus an argument | `image-text-split.html` | 50/50; add `flip` to `.split` to move the image right |
+| 3–6 images | `image-gallery.html` | uniform grid; mixed source ratios are normalised by the frame |
+| a before and an after | `image-compare.html` | both sides identical size, conclusion under each |
+
+`image-grid.html` and `image-hero.html` are **not** in this list: they are
+gradient-placeholder layouts with no `<img>` at all. Reach for them when you
+want the shape of a bento wall without supplying pictures.
+
+All five are built on one primitive from `assets/base.css`:
+
+```html
+<figure class="img-frame"><img src="shot.png" alt=""></figure>
+<figure class="img-frame contain" style="--img-ratio:4/3"><img src="diagram.svg" alt=""></figure>
+```
+
+- `.img-frame` owns the **aspect ratio and the crop**; the `<img>` fills it with
+  `object-fit: cover`. That's what lets a user swap in a photo of any shape
+  without the layout breaking.
+- `.img-frame.contain` letterboxes instead of cropping — **always use it for
+  screenshots, diagrams and logos.**
+- `--img-ratio` (default `16/10`) and `--img-pos` (`object-position`) tune it.
+- `.img-scrim` / `.img-cap` / `.img-tag` are the scrim, caption and corner pill.
+- Images referenced from a deck are resolved relative to the deck's own
+  `index.html` — keep them in the deck folder, e.g. `examples/my-talk/shot.png`.
+- `assets/demo-images/` holds the placeholder artwork used by these layouts:
+  hand-written SVG, ~1 KB each, **no network needed**.
+
+## Custom logo
+
+To brand a deck with a company / product logo, declare it once on `<body>`:
+
+```html
+<body data-logo="logo.svg"
+      data-logo-position="bottom-right"
+      data-logo-size="40px">
+```
+
+| Attribute | Default | Notes |
+|---|---|---|
+| `data-logo` | — | Image URL, relative to the deck's own HTML file. Required. |
+| `data-logo-position` | `top-right` | `top-left` / `top-right` / `bottom-left` / `bottom-right` |
+| `data-logo-size` | `44px` | Any CSS length; sets the logo's **height**, width follows the aspect ratio |
+| `data-logo-opacity` | `.9` | `1` for full strength |
+| `data-logo-alt` | `""` | Alt text |
+
+- **Skip it on one slide** with `<section class="slide" data-no-logo>` — usually
+  the cover and any full-bleed image slide that carries its own branding.
+- **Fine-tune the inset** with `--logo-inset-x` / `--logo-inset-y` on `.deck-logo`.
+- **Place it by hand** instead, if you want it inside the chrome slots or in a
+  spot the four presets don't cover:
+  ```html
+  <div class="deck">
+    <img class="deck-logo" data-pos="bottom-left" src="logo.svg" alt="">
+  ```
+  This path needs no JS at all — `base.css` styles both the same way.
+- The logo shows in the **presenter preview**, and on **every page of a
+  print/PDF export** (unlike the header/footer/progress chrome, which print
+  hides). `data-no-logo` slides are skipped there too. Per-page printing is
+  painted by `runtime.js` + `@media print`; a deck that omits the runtime still
+  gets the logo on screen, but only on one page of a PDF.
+
 ## Writing guide
 
 See [references/authoring-guide.md](references/authoring-guide.md) for a
@@ -167,7 +267,7 @@ Chinese + English deck, and how to export.
 ## Catalogs (load when needed)
 
 - [references/themes.md](references/themes.md) — all 36 themes with when-to-use.
-- [references/layouts.md](references/layouts.md) — all 31 layout types.
+- [references/layouts.md](references/layouts.md) — all 36 layout types.
 - [references/animations.md](references/animations.md) — 27 CSS + 20 canvas FX animations.
 - [references/full-decks.md](references/full-decks.md) — all 15 full-deck templates.
 - [references/presenter-mode.md](references/presenter-mode.md) — **演讲者模式 + 逐字稿编写指南（技术分享/演讲必看）**.
@@ -189,6 +289,7 @@ html-ppt/
 │   └── i18n/*.json          (en / vi strings for the anim stage)
 ├── assets/
 │   ├── base.css             (tokens + primitives — do not edit per deck)
+│   ├── demo-images/*.svg    (tiny offline placeholders for the image-* layouts)
 │   ├── fonts.css            (webfont imports)
 │   ├── runtime.js           (keyboard + presenter + overview + theme cycle)
 │   ├── i18n.js              (optional data-i18n multilingual layer)
@@ -200,11 +301,11 @@ html-ppt/
 ├── templates/
 │   ├── deck.html                  (minimal 6-slide starter)
 │   ├── theme-showcase.html        (36 slides, iframe-isolated per theme)
-│   ├── layout-showcase.html       (iframe tour of all 31 layouts)
+│   ├── layout-showcase.html       (iframe tour of all 36 layouts)
 │   ├── animation-showcase.html    (20 FX + 27 CSS animation slides)
-│   ├── full-decks-index.html      (gallery of all 14 full-deck templates)
-│   ├── full-decks/<name>/         (14 scoped multi-slide deck templates)
-│   └── single-page/*.html         (31 layout files with demo data)
+│   ├── full-decks-index.html      (gallery of all 15 full-deck templates)
+│   ├── full-decks/<name>/         (15 scoped multi-slide deck templates)
+│   └── single-page/*.html         (36 layout files with demo data)
 ├── scripts/
 │   ├── new-deck.sh                (scaffold a deck from deck.html)
 │   └── render.sh                  (headless Chrome → PNG)
@@ -247,6 +348,7 @@ capture, runtime.js exposes `#/N` deep-links, and render.sh iterates 1..N.
 
 ```
 ←  →  Space  PgUp  PgDn  Home  End    navigate
+swipe left / right (touch)              navigate — phones and tablets, no keyboard needed
 F                                       fullscreen
 S                                       open presenter window (magnetic cards: current/next/script/timer)
 N                                       quick notes drawer (bottom overlay)

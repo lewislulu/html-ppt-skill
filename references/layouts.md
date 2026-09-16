@@ -8,6 +8,26 @@ To compose a new deck: open the file, copy the `<section class="slide">…</sect
 block (or multiple blocks) into your deck HTML, and replace the demo data.
 Shared CSS (base, theme, animations) is already wired by `deck.html`.
 
+## Working with images
+
+The `image-*` layouts use real `<img>` elements. Framing is done by
+`.img-frame` in `assets/base.css`, not by the image, so swapping in your own
+photo needs nothing but a new `src`:
+
+| | |
+|---|---|
+| `.img-frame` | the frame. Owns the aspect ratio and the crop; `<img>` inside it fills it with `object-fit: cover`. |
+| `.img-frame.contain` | letterbox instead of crop. **Use this for screenshots, diagrams and logos** — cropping those loses information. |
+| `--img-ratio` | frame aspect ratio, default `16/10`. |
+| `--img-pos` | `object-position`, e.g. `top` to keep a headline in frame. |
+| `.img-scrim` | bottom gradient so white text stays readable over a photo. |
+| `.img-cap` | caption line under the frame. |
+| `.img-tag` | small pill in the frame's top-left corner. |
+
+Demo artwork lives in `assets/demo-images/` — hand-written SVG, ~1 KB each, so
+the layouts render offline. Put your own images next to the deck's
+`index.html` and reference them relatively (`src="shot.png"`).
+
 ## Openers & transitions
 
 | file | purpose |
@@ -69,8 +89,13 @@ Shared CSS (base, theme, animations) is already wired by `deck.html`.
 
 | file | purpose |
 |---|---|
-| `image-hero.html` | Full-bleed hero with Ken Burns gradient background. |
-| `image-grid.html` | 7-cell bento grid with gradient placeholders. |
+| `image-single.html` | **One image, uncropped** (`.img-frame.contain`) + caption. Screenshots, diagrams, charts. |
+| `image-full-bleed.html` | **One image filling the slide**, gradient scrim, title over it. Photos. |
+| `image-text-split.html` | **One image + text**, 50/50. Add `flip` to `.split` to put the image on the right. |
+| `image-gallery.html` | **3–6 images**, uniform grid, one caption each. Mixed source ratios are normalised by the frame. |
+| `image-compare.html` | **Two images side by side**, before/after, with labels and a conclusion line. |
+| `image-hero.html` | Full-bleed hero with Ken Burns gradient background (no real image). |
+| `image-grid.html` | 7-cell bento grid with gradient placeholders (no real image). |
 
 ## Closers
 
@@ -88,6 +113,12 @@ Shared CSS (base, theme, animations) is already wired by `deck.html`.
 - **Show plot**: `chart-bar.html` / `chart-line.html` / `chart-pie.html` / `chart-radar.html`.
 - **Show a diff or change**: `comparison.html`, `diff.html`, `pros-cons.html`.
 - **Show a plan**: `timeline.html`, `roadmap.html`, `gantt.html`, `process-steps.html`.
+- **Show one image**: `image-single.html` for a screenshot/diagram (never cropped),
+  `image-full-bleed.html` for a photo that should carry the whole slide.
+- **Show an image plus an argument**: `image-text-split.html`.
+- **Show several images**: `image-gallery.html` (uniform, 3–6), or `image-grid.html`
+  for an uneven bento arrangement.
+- **Show a change**: `image-compare.html` (two shots), `comparison.html` (text).
 - **Show architecture**: `arch-diagram.html`, `flow-diagram.html`, `mindmap.html`.
 - **Code / demo**: `code.html`, `terminal.html`.
 - **Closer**: `cta.html` → `thanks.html`.

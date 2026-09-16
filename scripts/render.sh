@@ -33,14 +33,37 @@ OUT="${3:-}"
 ABS="$(cd "$(dirname "$FILE")" && pwd)/$(basename "$FILE")"
 STEM="$(basename "${FILE%.*}")"
 
+# Count <section> elements whose class attribute carries "slide" as a whole
+# token. A plain `class="slide"` match misses every slide with an extra class
+# (slide is-active, slide dark, slide t-violet …), and a loose \bslide\b would
+# also match class="slide-number".
+count_slides() {
+  grep -Eco '<section[^>]*class="([^"]*[[:space:]])?slide([[:space:]][^"]*)?"' "$1" || true
+}
+
 if [[ "$COUNT" == "all" ]]; then
-  COUNT="$(grep -c 'class="slide"' "$FILE" || true)"
-  [[ -z "$COUNT" || "$COUNT" -lt 1 ]] && COUNT=1
+  COUNT="$(count_slides "$FILE")"
+  if [[ -z "$COUNT" || "$COUNT" -lt 1 ]]; then
+    echo "warning: no <section class=\"slide\"> found in $FILE — rendering 1 page" >&2
+    COUNT=1
+  fi
 fi
 
-if [[ -z "$OUT" ]]; then
-  if [[ "$COUNT" -gt 1 ]]; then
-    OUT="$(dirname "$FILE")/${STEM}-png"
+if ! [[ "$COUNT" =~ ^[0-9]+$ ]] || [[ "$COUNT" -lt 1 ]]; then
+  echo "error: slide count must be a positive integer or 'all' (got: $COUNT)" >&2
+  exit 1
+fi
+
+if [[ -z "$OUT" && "$COUNT" -gt 1 ]]; then
+  OUT="$(dirname "$FILE")/${STEM}-png"
+fi
+
+# Chrome does not create the target directory; without this it exits 0 having
+# written nothing.
+if [[ -n "$OUT" ]]; then
+  if [[ "$OUT" == *.png ]]; then
+    mkdir -p "$(dirname "$OUT")"
+  else
     mkdir -p "$OUT"
   fi
 fi
@@ -55,17 +78,37 @@ render_one() {
     --virtual-time-budget=4000 \
     --window-size=1920,1080 \
     --screenshot="$target" \
-    "$url" >/dev/null 2>&1
+    "$url" >/dev/null 2>&1 || true
+  # Chrome reports success even when it could not write the file, so the only
+  # trustworthy signal is the file itself.
+  if [[ ! -s "$target" ]]; then
+    echo "  ✗ $target — not written" >&2
+    return 1
+  fi
   echo "  ✔ $target"
 }
 
+FAILED=0
+
 if [[ "$COUNT" == "1" ]]; then
-  OUT_FILE="${OUT:-$(dirname "$FILE")/${STEM}.png}"
-  render_one "file://$ABS" "$OUT_FILE"
+  if [[ -z "$OUT" ]]; then
+    OUT_FILE="$(dirname "$FILE")/${STEM}.png"
+  elif [[ "$OUT" == *.png ]]; then
+    OUT_FILE="$OUT"
+  else
+    OUT_FILE="$OUT/${STEM}.png"
+  fi
+  render_one "file://$ABS" "$OUT_FILE" || FAILED=$((FAILED + 1))
 else
   for i in $(seq 1 "$COUNT"); do
-    render_one "file://$ABS#/$i" "$OUT/${STEM}_$(printf '%02d' "$i").png"
+    render_one "file://$ABS#/$i" "$OUT/${STEM}_$(printf '%02d' "$i").png" \
+      || FAILED=$((FAILED + 1))
   done
+fi
+
+if [[ "$FAILED" -gt 0 ]]; then
+  echo "error: $FAILED of $COUNT slide(s) were not written from $FILE" >&2
+  exit 1
 fi
 
 echo "done: rendered $COUNT slide(s) from $FILE"

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>Image + Text</title>
+<link rel="stylesheet" href="../../assets/fonts.css">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" id="theme-link" href="../../assets/themes/minimal-white.css">
+<link rel="stylesheet" href="../../assets/animations/animations.css">
+<style>
+.split{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:18px;flex:1;min-height:0}
+.split.flip > .col-img{order:2}
+.split > div{display:flex;flex-direction:column;justify-content:center;min-height:0}
+/* Height first, width follows the ratio. A tall image can then never push past
+   the slide's padding box, whatever its natural aspect ratio is. */
+.split .img-frame{--img-ratio:4/5;height:100%;width:auto;max-width:100%;align-self:center}
+.split ul{margin:18px 0 0;padding-left:20px}
+.split li{margin:10px 0;color:var(--text-2);font-size:19px}
+</style>
+</head><body class="single">
+<div class="deck"><section class="slide is-active" data-title="Image + Text">
+  <div class="split">
+    <div class="col-img anim-fade-right" data-anim="fade-right">
+      <figure class="img-frame">
+        <img src="../../assets/demo-images/photo-portrait.svg" alt="产品实拍">
+        <span class="img-tag">Product</span>
+      </figure>
+    </div>
+    <div class="col-text">
+      <p class="kicker">Product · 03</p>
+      <h2 class="h2">左图右文，最常用的一页</h2>
+      <ul class="anim-stagger-list" data-anim-target>
+        <li>图占一半，说明占一半 —— 视觉与论述各不抢戏</li>
+        <li>竖图、方图、横图都能放：框决定比例，图自己 <code>cover</code></li>
+        <li>想把图放右边：给 <code>.split</code> 加 <code>flip</code></li>
+      </ul>
+    </div>
+  </div>
+  <div class="notes">图文各半。框比例由 <code>--img-ratio</code> 控制，这里用 4/5 竖构图；图片换成横图也不会破版。</div>
+</section></div>
+<script src="../../assets/runtime.js"></script>
+</body></html>

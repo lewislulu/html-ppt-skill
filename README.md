@@ -1,7 +1,7 @@
 # html-ppt — HTML PPT Studio
 
 > A world-class AgentSkill for producing professional HTML presentations in
-> **36 themes**, **15 full-deck templates**, **31 page layouts**,
+> **36 themes**, **15 full-deck templates**, **36 page layouts**,
 > **47 animations** (27 CSS + 20 canvas FX), and a **true presenter mode**
 > with pixel-perfect previews + speaker script + timer — all pure static
 > HTML/CSS/JS, no build step.
@@ -20,7 +20,7 @@ ideographic versus Latin text before you commit to it.
 
 ![html-ppt — cover with live previews](docs/readme/hero.gif)
 
-> One command installs **36 themes × 20 canvas FX × 31 layouts × 15 full decks + presenter mode**. Every preview above is a live iframe of a real template file rendering inside the deck — no screenshots, no mock-ups.
+> One command installs **36 themes × 20 canvas FX × 36 layouts × 15 full decks + presenter mode**. Every preview above is a live iframe of a real template file rendering inside the deck — no screenshots, no mock-ups.
 
 ## 🎤 Presenter Mode (new!)
 
@@ -65,6 +65,65 @@ that supports AgentSkills can author presentations by asking things like:
 > "turn this outline into a pitch deck"
 > "做一个小红书图文，9 张，白底柔和风"
 
+## Offline / manual install
+
+`npx skills add <url>` needs network on the target machine. Three alternatives,
+in decreasing order of how much network they need.
+
+**1. Install from a local copy.** Fetch the repo anywhere, move the folder over
+(git, zip, USB), then point the CLI at the directory instead of the URL:
+
+```bash
+git clone https://github.com/lewislulu/html-ppt-skill
+npx skills add ./html-ppt-skill
+```
+
+`npx` still downloads the `skills` package itself once. For a fully air-gapped
+machine, run `npm i -g skills` on a connected one first, or use method 2.
+
+**2. Copy it in by hand — no Node, no CLI.** A skill is just a folder with
+`SKILL.md` at its root. Drop it in the directory your agent scans:
+
+| Agent | Project scope | Global scope |
+|---|---|---|
+| Claude Code | `.claude/skills/html-ppt/` | `~/.claude/skills/html-ppt/` |
+| Codex | `.agents/skills/html-ppt/` | `~/.codex/skills/html-ppt/` |
+| Cursor | `.agents/skills/html-ppt/` | `~/.cursor/skills/html-ppt/` |
+| OpenCode | `.agents/skills/html-ppt/` | `~/.config/opencode/skills/html-ppt/` |
+| Gemini CLI | `.agents/skills/html-ppt/` | `~/.gemini/skills/html-ppt/` |
+| Windsurf | `.windsurf/skills/html-ppt/` | `~/.codeium/windsurf/skills/html-ppt/` |
+
+```bash
+mkdir -p ~/.claude/skills
+cp -R html-ppt-skill ~/.claude/skills/html-ppt
+ls ~/.claude/skills/html-ppt/SKILL.md      # must exist
+```
+
+Only `SKILL.md`, `assets/`, `templates/`, `references/` and `scripts/` are
+needed at runtime. `docs/` is ~4.6 MB of README artwork and can be dropped from
+an offline copy.
+
+**3. No agent at all.** The templates are plain static files — usable directly:
+
+```bash
+./scripts/new-deck.sh my-talk
+open examples/my-talk/index.html
+```
+
+### Does it run without a network?
+
+Yes, with one caveat. Themes, layouts, animations, presenter mode and PNG
+rendering are all local static HTML/CSS/JS with no build step and no runtime
+fetches. The single remote dependency is `assets/fonts.css`, which `@import`s
+Google Fonts.
+
+Offline, those imports simply fail and the browser falls back to the system
+stack already declared in `assets/base.css` (`-apple-system` / Helvetica /
+Georgia / Menlo), so decks render correctly — just in different typefaces. To
+pin typography offline, replace `assets/fonts.css` with `@font-face` rules
+pointing at font files you ship yourself, or delete the imports and accept the
+system stack.
+
 ## What's in the box
 
 | | Count | Where |
@@ -72,7 +131,7 @@ that supports AgentSkills can author presentations by asking things like:
 | 🎤 **Presenter mode** | **NEW** | `S` key / `?preview=N` |
 | 🎨 **Themes** | **36** | `assets/themes/*.css` |
 | 📑 **Full-deck templates** | **15** | `templates/full-decks/<name>/` |
-| 🧩 **Single-page layouts** | **31** | `templates/single-page/*.html` |
+| 🧩 **Single-page layouts** | **36** | `templates/single-page/*.html` |
 | ✨ **CSS animations** | **27** | `assets/animations/animations.css` |
 | 💥 **Canvas FX animations** | **20** | `assets/animations/fx/*.js` |
 | 🖼️ **Showcase decks** | 4 | `templates/*-showcase.html` |
@@ -95,7 +154,7 @@ Each is a pure CSS-tokens file — swap one `<link>` to reskin the entire deck.
 Browse them all in `templates/theme-showcase.html` (each slide rendered in an
 isolated iframe so theme ≠ theme is visually guaranteed).
 
-![14 full-deck templates](docs/readme/templates.png)
+![15 full-deck templates](docs/readme/templates.png)
 
 ### 15 Full-deck templates
 
@@ -123,7 +182,7 @@ gallery in `templates/full-decks-index.html`.
 
 ![31 single-page layouts](docs/readme/layouts.png)
 
-### 31 Single-page layouts
+### 36 Single-page layouts
 
 cover · toc · section-divider · bullets · two-column · three-column ·
 big-quote · stat-highlight · kpi-grid · table · code · diff · terminal ·
@@ -134,9 +193,9 @@ chart-pie · chart-radar · arch-diagram · process-steps · cta · thanks
 Every layout ships with realistic demo data so you can drop it into a deck
 and immediately see it render.
 
-![31 layouts auto-cycling through real template files](docs/readme/layouts-live.gif)
+![36 layouts auto-cycling through real template files](docs/readme/layouts-live.gif)
 
-*The big iframe is loading `templates/single-page/<name>.html` directly and cycling through all 31 layouts every 2.8 seconds.*
+*The big iframe is loading `templates/single-page/<name>.html` directly and cycling through all 36 layouts every 2.8 seconds.*
 
 ![47 animations — 27 CSS + 20 canvas FX](docs/readme/animations.png)
 
@@ -162,21 +221,71 @@ module auto-initialised on slide enter via `fx-runtime.js`.
 # Scaffold a new deck from the base template
 ./scripts/new-deck.sh my-talk
 
+# ...or from a full-deck template, into any directory you like.
+# Asset paths are computed for wherever the deck lands, then verified.
+./scripts/new-deck.sh my-talk ~/decks -t pitch-deck
+
 # Browse everything
 open templates/theme-showcase.html         # all 36 themes (iframe-isolated)
-open templates/layout-showcase.html        # all 31 layouts
+open templates/layout-showcase.html        # all 36 layouts
 open templates/animation-showcase.html     # all 47 animations
-open templates/full-decks-index.html       # all 14 full decks
+open templates/full-decks-index.html       # all 15 full decks
 
 # Render any template to PNG via headless Chrome
 ./scripts/render.sh templates/theme-showcase.html
 ./scripts/render.sh examples/my-talk/index.html 12
 ```
 
+## Images on a slide
+
+Five layouts take real images — pick by how many the page has to carry:
+
+| I have… | Layout |
+|---|---|
+| one screenshot / diagram / chart | `image-single.html` — letterboxed, never cropped |
+| one photo that should carry the page | `image-full-bleed.html` — fills the slide, scrim keeps the title readable |
+| one image plus an argument | `image-text-split.html` — 50/50, `flip` to swap sides |
+| 3–6 images | `image-gallery.html` — uniform grid, one caption each |
+| a before and an after | `image-compare.html` — both sides identical size |
+
+They share one primitive from `assets/base.css`:
+
+```html
+<figure class="img-frame"><img src="shot.png" alt=""></figure>          <!-- crops to fill -->
+<figure class="img-frame contain"><img src="diagram.svg" alt=""></figure> <!-- letterboxed -->
+```
+
+The frame owns the aspect ratio (`--img-ratio`) and the crop, so you can drop in
+a portrait, square or ultrawide image without touching the layout. Placeholder
+artwork in `assets/demo-images/` is hand-written SVG (~1 KB each) so every
+layout renders **offline**.
+
+## Custom logo
+
+Brand a deck with one attribute — no per-slide `<img>` copy-paste:
+
+```html
+<body data-logo="logo.svg" data-logo-position="bottom-right" data-logo-size="40px">
+```
+
+`data-logo-position` takes `top-left` / `top-right` / `bottom-left` /
+`bottom-right` (default `top-right`); `data-logo-size` sets the height.
+Skip it on a single slide with `<section class="slide" data-no-logo>` — handy
+for the cover. The logo also shows in the presenter preview, and on **every
+page** of a PDF export (skipping the `data-no-logo` ones).
+
+Prefer to place it yourself? `<img class="deck-logo" data-pos="top-left" src="logo.svg">`
+inside `.deck` works with no JS at all.
+
 ## Keyboard cheat sheet
+
+On a phone or tablet, **swipe left for the next slide, right for the previous
+one** — no keyboard needed. Pinch-zoom, vertical scrolling, the overview grid
+and the notes drawer are left alone.
 
 ```
 ← → Space PgUp PgDn Home End   navigate
+swipe ← / →  (touch)           navigate
 F                               fullscreen
 S                               open presenter window (magnetic cards)
 N                               quick notes drawer (bottom)
@@ -198,7 +307,7 @@ html-ppt-skill/
 │   ├── themes.md                 36 themes with when-to-use
 │   ├── layouts.md                31 layout types
 │   ├── animations.md             27 CSS + 20 FX catalog
-│   ├── full-decks.md             14 full-deck templates
+│   ├── full-decks.md             15 full-deck templates
 │   └── authoring-guide.md        full workflow
 ├── assets/
 │   ├── base.css                  shared tokens + primitives
@@ -212,10 +321,10 @@ html-ppt-skill/
 ├── templates/
 │   ├── deck.html                 minimal starter
 │   ├── theme-showcase.html       iframe-isolated theme tour
-│   ├── layout-showcase.html      all 31 layouts
+│   ├── layout-showcase.html      all 36 layouts
 │   ├── animation-showcase.html   47 animation slides
-│   ├── full-decks-index.html     14-deck gallery
-│   ├── full-decks/<name>/        14 scoped multi-slide decks
+│   ├── full-decks-index.html     15-deck gallery
+│   ├── full-decks/<name>/        15 scoped multi-slide decks
 │   └── single-page/*.html        31 layout files with demo data
 ├── scripts/
 │   ├── new-deck.sh               scaffold

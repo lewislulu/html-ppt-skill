@@ -48,12 +48,15 @@ layout twice in a row.
 ## 4. Scaffold the deck
 
 ```bash
-./scripts/new-deck.sh my-talk
+./scripts/new-deck.sh my-talk                    # base template -> examples/my-talk/
+./scripts/new-deck.sh my-talk . -t pitch-deck    # full-deck template, into ./my-talk/
+./scripts/new-deck.sh my-talk ~/decks            # anywhere, inside the skill or not
 ```
 
-This copies `templates/deck.html` into `examples/my-talk/index.html` with
-paths rewritten. Add/remove `<section class="slide">` blocks to match your
-outline.
+This copies the chosen template into `<parent>/my-talk/index.html` and rewrites
+every `assets/` reference to the prefix that is correct for **that** location,
+then verifies each one resolves before reporting success. Add/remove
+`<section class="slide">` blocks to match your outline.
 
 ## 5. Author each slide
 
@@ -65,6 +68,27 @@ For each outline item:
 4. Replace demo data with real data. Keep the class structure intact.
 5. Set `data-title="..."` (used by the Overview grid).
 6. Add `<div class="notes">…</div>` with speaker notes.
+
+### Branding the deck with a logo
+
+Declare it **once** on `<body>`, not per slide:
+
+```html
+<body data-logo="logo.svg" data-logo-position="bottom-right" data-logo-size="40px">
+```
+
+Position is one of `top-left` / `top-right` / `bottom-left` / `bottom-right`
+(default `top-right`); `data-logo-size` sets the height. Drop the logo from an
+individual slide with `<section class="slide" data-no-logo>` — the cover usually
+already shows the brand at full size.
+
+The image path is resolved relative to the deck's own HTML file, so keep the
+file next to `index.html` (`examples/my-talk/logo.svg` → `data-logo="logo.svg"`).
+Never hand-edit the `../` depth in asset paths — see the rule in section 10.
+
+If the four presets don't fit, write the element yourself inside `.deck`:
+`<img class="deck-logo" data-pos="top-left" src="logo.svg" alt="">`. That works
+with `runtime.js` absent entirely, since the styling lives in `base.css`.
 
 ## 6. Add animations sparingly
 

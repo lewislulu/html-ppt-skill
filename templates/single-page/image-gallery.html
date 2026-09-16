@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>Image Gallery</title>
+<link rel="stylesheet" href="../../assets/fonts.css">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" id="theme-link" href="../../assets/themes/minimal-white.css">
+<link rel="stylesheet" href="../../assets/animations/animations.css">
+<style>
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:22px}
+/* The grid takes the space left over from the title and splits it between two
+   equal rows. A fixed ratio (4:3, 16:9…) pushes the bottom row's captions off
+   the slide as soon as the window is shorter than 16:9. */
+.gal{flex:1;min-height:0;grid-template-rows:1fr 1fr}
+.gal > div{display:flex;flex-direction:column;min-height:0}
+.gal .img-frame{aspect-ratio:auto;flex:1;min-height:0}
+.gal figcaption{margin:10px 2px 0;font-size:14px;color:var(--text-3)}
+</style>
+</head><body class="single">
+<div class="deck"><section class="slide is-active" data-title="Image Gallery">
+  <p class="kicker">Gallery · 06</p>
+  <h2 class="h2">多张图并列，每张一句话</h2>
+  <div class="gal anim-stagger-list" data-anim-target>
+    <div><figure class="img-frame"><img src="../../assets/demo-images/photo-landscape.svg" alt="场景一"></figure><figcaption>01 · 现场</figcaption></div>
+    <div><figure class="img-frame"><img src="../../assets/demo-images/photo-square.svg" alt="场景二"></figure><figcaption>02 · 细节</figcaption></div>
+    <div><figure class="img-frame"><img src="../../assets/demo-images/photo-portrait.svg" alt="场景三"></figure><figcaption>03 · 人物</figcaption></div>
+    <div><figure class="img-frame"><img src="../../assets/demo-images/photo-wide.svg" alt="场景四"></figure><figcaption>04 · 远景</figcaption></div>
+    <div><figure class="img-frame"><img src="../../assets/demo-images/shot-ui.svg" alt="场景五"></figure><figcaption>05 · 界面</figcaption></div>
+    <div><figure class="img-frame"><img src="../../assets/demo-images/shot-after.svg" alt="场景六"></figure><figcaption>06 · 数据</figcaption></div>
+  </div>
+  <div class="notes">2–6 张等大并列。六张原始比例各不相同（16:10 / 1:1 / 3:4 / 21:9），靠 <code>.img-frame</code> 统一成 4:3 —— 这正是网格版式最容易翻车的地方。少于 6 张就删格子，列数改 <code>repeat(2,1fr)</code>。</div>
+</section></div>
+<script src="../../assets/runtime.js"></script>
+</body></html>

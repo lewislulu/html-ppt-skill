@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<rect width="1600" height="1000" fill="#0c1024"/>
+<rect x="90" y="90" width="1420" height="820" rx="24" fill="#151a33"/>
+<circle cx="140" cy="140" r="12" fill="#ff5f57"/><circle cx="180" cy="140" r="12" fill="#febc2e"/><circle cx="220" cy="140" r="12" fill="#28c840"/>
+<rect x="150" y="190" width="420" height="34" rx="8" fill="#5ef2c6" opacity=".9"/>
+<rect x="150" y="250" width="700" height="26" rx="13" fill="#5ef2c6" opacity="0.42"/><rect x="150" y="308" width="560" height="26" rx="13" fill="#5ef2c6" opacity="0.32"/><rect x="150" y="366" width="640" height="26" rx="13" fill="#5ef2c6" opacity="0.36"/><rect x="150" y="424" width="420" height="26" rx="13" fill="#5ef2c6" opacity="0.28"/><rect x="150" y="482" width="600" height="26" rx="13" fill="#5ef2c6" opacity="0.34"/>
+<rect x="1010" y="250" width="440" height="560" rx="18" fill="#5ef2c6" opacity=".16"/>
+<path d="M1050 700 L1170 560 L1270 640 L1410 460 L1410 770 L1050 770Z" fill="#5ef2c6" opacity=".55"/>
+</svg>
