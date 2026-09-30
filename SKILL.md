@@ -64,7 +64,7 @@ Each card is **draggable by its header** and **resizable by the bottom-right cor
 
 Only `presenter-mode-reveal` is designed from the ground up around the feature with proper example 逐字稿 on every slide.
 
-Keyboard in presenter window: `← →` navigate (syncs audience) · `R` reset timer · `Esc` close popup.
+Keyboard in presenter window: `← →` navigate (syncs audience) · `O` slide grid (click a thumbnail to jump) · `R` reset timer · `Esc` close popup.
 Keyboard in audience window: `S` open presenter · `T` cycle theme · `← →` navigate (syncs presenter) · `F` fullscreen · `O` overview.
 
 ## Before you author anything — ALWAYS ask or recommend

@@ -282,7 +282,7 @@ F                               fullscreen
 S                               open presenter window (magnetic cards)
 N                               quick notes drawer (bottom)
 R                               reset timer (in presenter window)
-O                               slide overview grid
+O                               slide overview grid (also in presenter window: click a thumbnail to jump)
 T                               cycle themes (syncs to presenter)
 A                               cycle a demo animation on current slide
 #/N (URL)                       deep-link to slide N

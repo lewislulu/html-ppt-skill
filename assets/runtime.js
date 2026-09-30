@@ -5,6 +5,7 @@
  *   ← → / space / PgUp PgDn / Home End  navigation
  *   F  fullscreen
  *   S  presenter mode (opens a NEW WINDOW with current/next slide preview + notes + timer)
+ *       In the presenter window, O opens a clickable thumbnail grid to jump to any slide.
  *       The original window stays as audience view, synced via BroadcastChannel.
  *       Slide previews use CSS transform:scale() at design resolution for pixel-perfect layout.
  *   N  quick notes overlay (bottom drawer)
@@ -620,6 +621,28 @@
   }
   .hint-bar .reset-layout:hover { background: rgba(248,81,73,.15); border-color: #f85149; color: #f85149; }
 
+  /* ===== Slide grid overlay (visual jump) ===== */
+  #grid-ov { position: fixed; inset: 0; z-index: 2000; background: rgba(13,17,23,.96); display: none;
+    flex-direction: column; }
+  #grid-ov.open { display: flex; }
+  #grid-ov .grid-head { display:flex; align-items:center; gap:16px; padding: 14px 22px; color:#e6edf3;
+    font-size: 14px; letter-spacing:.12em; font-weight:700; border-bottom:1px solid rgba(255,255,255,.08); }
+  #grid-ov .grid-head span { color:#8b949e; font-weight:400; letter-spacing:0; }
+  #grid-ov .grid-head button { margin-left:auto; background:transparent; color:#e6edf3; border:1px solid rgba(255,255,255,.2);
+    border-radius:6px; padding:5px 12px; cursor:pointer; font-family:inherit; }
+  #grid { flex:1; overflow:auto; padding: 20px 22px 40px; display:grid;
+    grid-template-columns: repeat(auto-fill, 280px); gap: 18px; justify-content: center; align-content: start; }
+  .gthumb { position:relative; width:280px; cursor:pointer; }
+  .gthumb .gframe { position:relative; width:280px; height:157.5px; overflow:hidden; border-radius:8px;
+    background:#fff; border:3px solid transparent; }
+  .gthumb iframe { position:absolute; left:0; top:0; width:1920px; height:1080px; border:0;
+    transform: scale(0.14583); transform-origin: 0 0; pointer-events:none; }
+  .gthumb .gcap { display:flex; gap:8px; margin-top:6px; font-size:13px; color:#c9d1d9; line-height:1.3; }
+  .gthumb .gcap b { color:#8b949e; font-variant-numeric: tabular-nums; }
+  .gthumb:hover .gframe { border-color:#58a6ff; }
+  .gthumb.cur .gframe { border-color:#f0883e; }
+  .gthumb.cur .gcap { color:#f0883e; }
+
   body.is-dragging-card * { user-select: none !important; }
   body.is-dragging-card iframe { pointer-events: none !important; }
 </style>
@@ -671,6 +694,7 @@
         <button class="timer-btn" id="btn-prev">← Prev</button>
         <button class="timer-btn" id="btn-next">Next →</button>
         <button class="timer-btn" id="btn-reset">⏱ Reset</button>
+        <button class="timer-btn" id="btn-grid">▦ Slides (O)</button>
       </div>
     </div>
     <div class="pcard-resize" data-resize></div>
@@ -680,9 +704,15 @@
 <div class="hint-bar">
   <span><kbd>← →</kbd> 翻页</span>
   <span><kbd>R</kbd> 重置计时</span>
+  <span><kbd>O</kbd> 总览</span>
   <span><kbd>Esc</kbd> 关闭</span>
   <span style="color:#6e7681">拖动卡片头部移动 · 拖动右下角调整大小</span>
   <button class="reset-layout" id="reset-layout">重置布局</button>
+</div>
+
+<div id="grid-ov">
+  <div class="grid-head">SLIDES <span>Click a slide to jump · Esc / O to close</span><button id="grid-close">✕ Close</button></div>
+  <div id="grid"></div>
 </div>
 
 <script>
@@ -976,10 +1006,60 @@
     }
   });
 
+  /* ===== Slide grid overlay (visual jump) ===== */
+  var gridOv = document.getElementById('grid-ov');
+  var gridEl = document.getElementById('grid');
+  var gridBuilt = false;
+  function buildGrid() {
+    for (var i = 0; i < total; i++) {
+      (function(i){
+        var t = document.createElement('div');
+        t.className = 'gthumb';
+        t.setAttribute('data-i', i);
+        var fr = document.createElement('div');
+        fr.className = 'gframe';
+        var ifr = document.createElement('iframe');
+        ifr.src = deckUrl + '?preview=' + (i + 1);
+        ifr.setAttribute('tabindex', '-1');
+        fr.appendChild(ifr);
+        var cap = document.createElement('div');
+        cap.className = 'gcap';
+        var num = document.createElement('b');
+        num.textContent = (i + 1);
+        var ttl = document.createElement('span');
+        ttl.textContent = (slideMeta[i] && slideMeta[i].title) || '';
+        cap.appendChild(num); cap.appendChild(ttl);
+        t.appendChild(fr); t.appendChild(cap);
+        t.addEventListener('click', function(){ go(i); toggleGrid(false); });
+        gridEl.appendChild(t);
+      })(i);
+    }
+    gridBuilt = true;
+  }
+  function markGridCurrent() {
+    var list = gridEl.querySelectorAll('.gthumb');
+    for (var k = 0; k < list.length; k++) list[k].classList.toggle('cur', k === idx);
+    var c = list[idx];
+    if (c && c.scrollIntoView) c.scrollIntoView({ block: 'center' });
+  }
+  function toggleGrid(force) {
+    var open = (typeof force === 'boolean') ? force : !gridOv.classList.contains('open');
+    if (open && !gridBuilt) buildGrid();
+    gridOv.classList.toggle('open', open);
+    if (open) markGridCurrent();
+  }
+  document.getElementById('btn-grid').addEventListener('click', function(){ toggleGrid(true); });
+  document.getElementById('grid-close').addEventListener('click', function(){ toggleGrid(false); });
+
   /* ===== Keyboard ===== */
   document.addEventListener('keydown', function(e){
     if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (gridOv.classList.contains('open')) {
+      if (e.key === 'Escape' || e.key === 'o' || e.key === 'O') { toggleGrid(false); e.preventDefault(); }
+      return;
+    }
     switch(e.key) {
+      case 'o': case 'O': toggleGrid(true); e.preventDefault(); break;
       case 'ArrowRight': case ' ': case 'PageDown': go(idx + 1); e.preventDefault(); break;
       case 'ArrowLeft':  case 'PageUp':   go(idx - 1); e.preventDefault(); break;
       case 'Home': go(0); break;
