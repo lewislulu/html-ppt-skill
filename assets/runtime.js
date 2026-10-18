@@ -402,6 +402,19 @@
      */
     let presenterWin = null;
 
+    /* Presenter chrome follows the presenter's browser language: Chinese for
+     * zh-*, English everywhere else. Deck content is never translated. */
+    const PRESENTER_TEXT = {
+      en: { lang: 'en', popupBlocked: 'Allow pop-ups to use the presenter view', script: 'SPEAKER SCRIPT', turnPage: 'Change slide', resetTimer: 'Reset timer', close: 'Close', dragHint: 'Drag a card header to move it · drag the bottom-right corner to resize', resetLayout: 'Reset layout', noNotes: '(No speaker script for this slide yet)', confirmReset: 'Restore the default card layout?' },
+      'zh-CN': { lang: 'zh-CN', popupBlocked: '请允许弹出窗口以使用演讲者视图', script: 'SPEAKER SCRIPT · 逐字稿', turnPage: '翻页', resetTimer: '重置计时', close: '关闭', dragHint: '拖动卡片头部移动 · 拖动右下角调整大小', resetLayout: '重置布局', noNotes: '（这一页还没有逐字稿）', confirmReset: '恢复默认卡片布局？' },
+      'zh-TW': { lang: 'zh-TW', popupBlocked: '請允許彈出視窗以使用演講者檢視', script: 'SPEAKER SCRIPT · 逐字稿', turnPage: '翻頁', resetTimer: '重設計時', close: '關閉', dragHint: '拖曳卡片標題移動 · 拖曳右下角調整大小', resetLayout: '重設版面', noNotes: '（這一頁還沒有逐字稿）', confirmReset: '恢復預設卡片版面？' }
+    };
+    function presenterText() {
+      const tag = String((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
+      if (tag !== 'zh' && tag.indexOf('zh-') !== 0) return PRESENTER_TEXT.en;
+      return /^zh-(tw|hk|mo|hant)(-|$)/.test(tag) ? PRESENTER_TEXT['zh-TW'] : PRESENTER_TEXT['zh-CN'];
+    }
+
     function openPresenterWindow() {
       if (presenterWin && !presenterWin.closed) {
         presenterWin.focus();
@@ -427,7 +440,7 @@
 
       presenterWin = window.open('', 'html-ppt-presenter', 'width=1280,height=820,menubar=no,toolbar=no');
       if (!presenterWin) {
-        alert('请允许弹出窗口以使用演讲者视图');
+        alert(presenterText().popupBlocked);
         return;
       }
       presenterWin.document.open();
@@ -445,10 +458,12 @@
       const channelJSON = embed(channelName);
       const themeJSON = embed(currentTheme || '');
       const storageKey = 'html-ppt-presenter:' + location.pathname;
+      const text = presenterText();
+      const esc = (value) => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
       // Build the document as a single template string for clarity
       return `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="${text.lang}">
 <head>
 <meta charset="utf-8">
 <title>Presenter View</title>
@@ -650,7 +665,7 @@
   <div class="pcard pcard-notes" id="card-notes" style="--dot-color:#f0883e">
     <div class="pcard-head" data-drag>
       <span class="pcard-dot"></span>
-      <span class="pcard-title">SPEAKER SCRIPT · 逐字稿</span>
+      <span class="pcard-title">${esc(text.script)}</span>
     </div>
     <div class="pcard-body" id="notes-body"></div>
     <div class="pcard-resize" data-resize></div>
@@ -678,16 +693,17 @@
 </div>
 
 <div class="hint-bar">
-  <span><kbd>← →</kbd> 翻页</span>
-  <span><kbd>R</kbd> 重置计时</span>
-  <span><kbd>Esc</kbd> 关闭</span>
-  <span style="color:#6e7681">拖动卡片头部移动 · 拖动右下角调整大小</span>
-  <button class="reset-layout" id="reset-layout">重置布局</button>
+  <span><kbd>← →</kbd> ${esc(text.turnPage)}</span>
+  <span><kbd>R</kbd> ${esc(text.resetTimer)}</span>
+  <span><kbd>Esc</kbd> ${esc(text.close)}</span>
+  <span style="color:#6e7681">${esc(text.dragHint)}</span>
+  <button class="reset-layout" id="reset-layout">${esc(text.resetLayout)}</button>
 </div>
 
 <script>
 (function(){
   var slideMeta = ${metaJSON};
+  var text = ${JSON.stringify(text).replace(/</g, '\\u003c')};
   var total = ${total};
   var idx = ${startIdx};
   var deckUrl = ${deckUrlJSON};
@@ -928,7 +944,7 @@
 
     /* Notes */
     var note = slideMeta[n].notes;
-    notesBody.innerHTML = note || '<span class="empty">（这一页还没有逐字稿）</span>';
+    notesBody.innerHTML = note || '<span class="empty">' + text.noNotes + '</span>';
 
     /* Timer count */
     timerCount.textContent = (n + 1) + ' / ' + total;
@@ -970,7 +986,7 @@
   document.getElementById('btn-next').addEventListener('click', function(){ go(idx + 1); });
   document.getElementById('btn-reset').addEventListener('click', resetTimer);
   document.getElementById('reset-layout').addEventListener('click', function(){
-    if (confirm('恢复默认卡片布局？')) {
+    if (confirm(text.confirmReset)) {
       try { localStorage.removeItem(STORAGE_KEY); } catch(e){}
       applyLayout(defaultLayout());
     }
@@ -1003,7 +1019,7 @@
     if (idx + 1 < total) iframeNxt.src = deckUrl + '?preview=' + (idx + 2);
     /* Initialize notes/timer/count without touching iframes */
     var m = slideMeta[idx] || {};
-    notesBody.innerHTML = m.notes || '<span class="empty">（这一页还没有逐字稿）</span>';
+    notesBody.innerHTML = m.notes || '<span class="empty">' + text.noNotes + '</span>';
     curMeta.textContent = (idx + 1) + '/' + total;
     nxtMeta.textContent = (idx + 2) + '/' + total;
     timerCount.textContent = (idx + 1) + ' / ' + total;
