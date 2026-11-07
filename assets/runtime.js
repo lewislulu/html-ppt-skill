@@ -138,6 +138,11 @@
     /* ===== Preview-only mode: show one slide, hide everything else ===== */
     if (isPreviewMode) {
       function showSlide(i) {
+        const previewNum = document.querySelector('.slide-number');
+        if (previewNum) {
+          previewNum.setAttribute('data-current', i + 1);
+          previewNum.setAttribute('data-total', slides.length);
+        }
         slides.forEach((s, j) => {
           const active = (j === i);
           s.classList.toggle('is-active', active);
