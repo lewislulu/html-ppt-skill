@@ -707,11 +707,16 @@
      of the init, so every line below it was a single point of failure for the
      whole presenter's visibility (#14). Function declarations hoist, so this is
      safe here. */
+  /* Restore the saved layout only after the validator constants exist:
+     sanitizeLayout() reads CARD_IDS/MIN_W/MIN_H, but var hoists the declaration
+     without the value, so calling this first threw
+     "Cannot read properties of undefined (reading 'length')" and aborted the
+     rest of the presenter init whenever a layout had been saved. */
+  var CARD_IDS = ['card-cur','card-nxt','card-notes','card-timer'];
+  var MIN_W = 180, MIN_H = 100;
   applyLayout(readLayout());
 
   /* ===== Default card layout ===== */
-  var CARD_IDS = ['card-cur','card-nxt','card-notes','card-timer'];
-  var MIN_W = 180, MIN_H = 100;
 
   function defaultLayout() {
     /* A popup that opened minimised or in a background tab can report 0 here;
