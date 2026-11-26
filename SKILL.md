@@ -67,6 +67,13 @@ Only `presenter-mode-reveal` is designed from the ground up around the feature w
 Keyboard in presenter window: `← →` navigate (syncs audience) · `R` reset timer · `Esc` close popup.
 Keyboard in audience window: `S` open presenter · `T` cycle theme · `← →` navigate (syncs presenter) · `F` fullscreen · `O` overview.
 
+The script card includes Edit, Save, Undo/Redo, Cancel, and JSON export/import.
+Save persists to the current browser's localStorage, scoped to the deck path
+and slide identity. Source HTML files stay as authored. Export/import transfers
+scripts between computers or origins. Wrap only the editable script in
+`[data-speaker-script]` when notes also contain timing, actions, or other cues.
+See the editing section in [references/presenter-mode.md](references/presenter-mode.md).
+
 ## Before you author anything — ALWAYS ask or recommend
 
 **Do not start writing slides until you understand three things.** Either ask
