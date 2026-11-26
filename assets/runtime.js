@@ -27,6 +27,55 @@
    * set from the audience — if you add one here, add it there too. */
   const NOTE_SEL = '.notes, aside.notes, .speaker-notes';
 
+  // Shared by the deck and its generated presenter window. No external state.
+  function createNotesStore(deckPath) {
+    var prefix = 'html-ppt-notes:v1:' + deckPath + ':';
+    function scriptElement(html) {
+      var container = document.createElement('div');
+      container.innerHTML = html || '';
+      return { container: container, script: container.querySelector('[data-speaker-script]') || container };
+    }
+    function authoredText(meta) {
+      var element = scriptElement(meta.notes).script;
+      element.querySelectorAll('br').forEach(function(br){ br.replaceWith('\n'); });
+      element.querySelectorAll('p, div, li, blockquote, h1, h2, h3').forEach(function(block){
+        block.appendChild(document.createTextNode('\n\n'));
+      });
+      return element.textContent.trim();
+    }
+    function read(meta) {
+      try {
+        var item = JSON.parse(localStorage.getItem(prefix + meta.key));
+        if (item && item.version === 1 && typeof item.text === 'string' &&
+            item.original === authoredText(meta)) return item;
+      } catch (error) {}
+      return null;
+    }
+    function write(meta, text, previous) {
+      var current = read(meta);
+      if (typeof previous === 'string' && (current ? current.text : authoredText(meta)) !== previous) {
+        throw Error('Notes changed in another window');
+      }
+      var item = { version: 1, original: authoredText(meta), text: text, previous: previous };
+      localStorage.setItem(prefix + meta.key, JSON.stringify(item));
+      return item;
+    }
+    function render(meta) {
+      var saved = read(meta);
+      if (!saved) return meta.notes;
+      var parts = scriptElement(meta.notes);
+      parts.script.replaceChildren();
+      saved.text.split(/\n\n+/).forEach(function(paragraph){
+        var p = document.createElement('p');
+        p.style.whiteSpace = 'pre-wrap';
+        p.textContent = paragraph;
+        parts.script.appendChild(p);
+      });
+      return parts.container.innerHTML;
+    }
+    return { authoredText: authoredText, read: read, write: write, render: render, prefix: prefix };
+  }
+
   function ready(fn){ if(document.readyState!='loading')fn(); else document.addEventListener('DOMContentLoaded',fn);}
 
   /* ========== Parse URL for preview-only mode ==========
@@ -205,6 +254,17 @@
 
     // Are we running inside the presenter popup? (legacy flag, now unused)
     const isPresenterWindow = false;
+    const notesStore = createNotesStore(location.pathname);
+    const keyCounts = new Map();
+    const slideMeta = slides.map(function(slide, i) {
+      const title = slide.getAttribute('data-title') ||
+        (slide.querySelector('h1,h2,h3') || {}).textContent || ('Slide ' + (i + 1));
+      const identity = slide.getAttribute('data-notes-id') || title;
+      const count = (keyCounts.get(identity) || 0) + 1;
+      keyCounts.set(identity, count);
+      const note = slide.querySelector(NOTE_SEL);
+      return { title: title, key: JSON.stringify([identity, count]), notes: note ? note.innerHTML : '' };
+    });
 
     /* ===== progress bar ===== */
     let bar = document.querySelector('.progress-bar');
@@ -321,8 +381,7 @@
       if (numEl) { numEl.setAttribute('data-current', n+1); numEl.setAttribute('data-total', total); }
 
       // notes (bottom overlay)
-      const note = slides[n].querySelector(NOTE_SEL);
-      notes.innerHTML = note ? note.innerHTML : '';
+      notes.innerHTML = notesStore.render(slideMeta[n]);
 
       // hash
       const hashTarget = '#/'+(n+1);
@@ -375,6 +434,11 @@
     }
 
     function toggleNotes(force){ notes.classList.toggle('open', force!==undefined?force:!notes.classList.contains('open')); }
+    window.addEventListener('storage', function(event){
+      if (event.key === null || event.key.indexOf(notesStore.prefix) === 0) {
+        notes.innerHTML = notesStore.render(slideMeta[idx]);
+      }
+    });
     function toggleOverview(force){
       const isOpen = force!==undefined ? force : !overview.classList.contains('open');
       overview.classList.toggle('open', isOpen);
@@ -410,16 +474,6 @@
 
       // Build absolute URL of THIS deck file (without hash/query)
       const deckUrl = location.protocol + '//' + location.host + location.pathname;
-
-      // Collect slide titles + notes (HTML strings)
-      const slideMeta = slides.map((s, i) => {
-        const note = s.querySelector(NOTE_SEL);
-        return {
-          title: s.getAttribute('data-title') ||
-            (s.querySelector('h1,h2,h3')||{}).textContent || ('Slide '+(i+1)),
-          notes: note ? note.innerHTML : ''
-        };
-      });
 
       /* Capture current theme so presenter previews match the audience */
       const currentTheme = root.getAttribute('data-theme') || (themes[themeIdx] || '');
@@ -550,6 +604,13 @@
     background: rgba(255,255,255,.08); padding: 1px 6px; border-radius: 4px;
   }
   .pcard-notes .empty { color: #484f58; font-style: italic; }
+  .notes-toolbar { display:flex; gap:6px; flex-wrap:wrap; padding:8px 12px; border-bottom:1px solid #30363d; }
+  .notes-toolbar button { border:1px solid #484f58; border-radius:4px; padding:5px 9px; background:#161b22; color:#e6edf3; cursor:pointer; font:inherit; font-size:13px; }
+  .notes-toolbar button:disabled { opacity:.4; cursor:default; }
+  .notes-toolbar button:focus-visible { outline:2px solid #58a6ff; outline-offset:2px; }
+  .notes-status { width:100%; font-size:12px; color:#8b949e; overflow-wrap:anywhere; }
+  #notes-editor { width:100%; height:100%; min-height:100px; resize:none; border:1px solid #58a6ff; border-radius:4px; background:#0d1117; color:#e6edf3; padding:10px; font:inherit; line-height:1.7; }
+  #notes-editor[hidden], #notes-view[hidden] { display:none; }
 
   /* Timer card */
   .pcard-timer .pcard-body {
@@ -652,7 +713,18 @@
       <span class="pcard-dot"></span>
       <span class="pcard-title">SPEAKER SCRIPT · 逐字稿</span>
     </div>
-    <div class="pcard-body" id="notes-body"></div>
+    <div class="notes-toolbar" aria-label="逐字稿编辑工具">
+      <button id="notes-edit">编辑</button>
+      <button id="notes-save" disabled>保存</button>
+      <button id="notes-undo" title="撤销" aria-label="撤销" disabled>&#8630;</button>
+      <button id="notes-redo" title="重做" aria-label="重做" disabled>&#8631;</button>
+      <button id="notes-cancel" disabled>取消</button>
+      <button id="notes-export">导出</button>
+      <button id="notes-import">导入</button>
+      <input id="notes-file" type="file" accept="application/json,.json" hidden>
+      <span class="notes-status" id="notes-status" role="status" aria-live="polite"></span>
+    </div>
+    <div class="pcard-body" id="notes-body"><div id="notes-view"></div><textarea id="notes-editor" aria-label="编辑逐字稿" hidden></textarea></div>
     <div class="pcard-resize" data-resize></div>
   </div>
 
@@ -692,12 +764,16 @@
   var idx = ${startIdx};
   var deckUrl = ${deckUrlJSON};
   var STORAGE_KEY = ${embed(storageKey)};
+  var notesStore = (${createNotesStore.toString()})(${embed(location.pathname)});
   var bc;
   try { bc = new BroadcastChannel(${channelJSON}); } catch(e) {}
 
   var iframeCur = document.getElementById('iframe-cur');
   var iframeNxt = document.getElementById('iframe-nxt');
-  var notesBody = document.getElementById('notes-body');
+  var notesView = document.getElementById('notes-view');
+  var notesEditor = document.getElementById('notes-editor');
+  var notesStatus = document.getElementById('notes-status');
+  var editStates = new Map();
   var curMeta = document.getElementById('cur-meta');
   var nxtMeta = document.getElementById('nxt-meta');
   var timerDisplay = document.getElementById('timer-display');
@@ -707,11 +783,11 @@
      of the init, so every line below it was a single point of failure for the
      whole presenter's visibility (#14). Function declarations hoist, so this is
      safe here. */
-  applyLayout(readLayout());
-
   /* ===== Default card layout ===== */
   var CARD_IDS = ['card-cur','card-nxt','card-notes','card-timer'];
   var MIN_W = 180, MIN_H = 100;
+
+  applyLayout(readLayout());
 
   function defaultLayout() {
     /* A popup that opened minimised or in a background tab can report 0 here;
@@ -927,12 +1003,150 @@
     }
 
     /* Notes */
-    var note = slideMeta[n].notes;
-    notesBody.innerHTML = note || '<span class="empty">（这一页还没有逐字稿）</span>';
+    renderNotes();
 
     /* Timer count */
     timerCount.textContent = (n + 1) + ' / ' + total;
   }
+
+  function editState() {
+    var meta = slideMeta[idx];
+    if (!editStates.has(meta.key)) {
+      var saved = notesStore.read(meta);
+      var text = saved ? saved.text : notesStore.authoredText(meta);
+      editStates.set(meta.key, { text: text, saved: text, editing: false,
+        undo: saved && typeof saved.previous === 'string' ? [saved.previous] : [], redo: [] });
+    }
+    return editStates.get(meta.key);
+  }
+
+  function renderNotes(message) {
+    var state = editState();
+    notesView.innerHTML = notesStore.render(slideMeta[idx]) || '<span class="empty">（这一页还没有逐字稿）</span>';
+    notesView.hidden = state.editing;
+    notesEditor.hidden = !state.editing;
+    notesEditor.value = state.text;
+    document.getElementById('notes-edit').disabled = state.editing;
+    document.getElementById('notes-save').disabled = !state.editing;
+    document.getElementById('notes-cancel').disabled = !state.editing;
+    document.getElementById('notes-undo').disabled = !state.editing || !state.undo.length;
+    document.getElementById('notes-redo').disabled = !state.editing || !state.redo.length;
+    notesStatus.textContent = message || (state.text !== state.saved ? '未保存草稿' :
+      notesStore.read(slideMeta[idx]) ? '已保存到此浏览器' : '原始逐字稿');
+  }
+
+  notesEditor.addEventListener('input', function(){
+    var state = editState();
+    if (state.text === notesEditor.value) return;
+    state.undo.push(state.text);
+    if (state.undo.length > 200) state.undo.shift();
+    state.text = notesEditor.value;
+    state.redo = [];
+    document.getElementById('notes-undo').disabled = false;
+    document.getElementById('notes-redo').disabled = true;
+    notesStatus.textContent = state.text === state.saved ? '已保存到此浏览器' : '未保存草稿';
+  });
+
+  document.getElementById('notes-edit').onclick = function(){
+    editState().editing = true;
+    renderNotes();
+    notesEditor.focus();
+  };
+  document.getElementById('notes-save').onclick = function(){
+    var state = editState();
+    try {
+      if (state.text !== state.saved || !notesStore.read(slideMeta[idx])) {
+        notesStore.write(slideMeta[idx], state.text, state.saved);
+      }
+      state.saved = state.text;
+      state.editing = false;
+      renderNotes('已保存到此浏览器，可导出备份');
+    } catch (error) {
+      notesStatus.textContent = error.message === 'Notes changed in another window' ?
+        '其他窗口已更新讲稿，当前草稿已保留，请导出备份后重新打开' :
+        '保存失败，草稿仍在编辑框中，请导出备份';
+    }
+  };
+  document.getElementById('notes-cancel').onclick = function(){
+    var state = editState();
+    state.text = state.saved;
+    state.editing = false;
+    state.undo = [];
+    state.redo = [];
+    renderNotes('已取消未保存修改');
+  };
+  function undoNotes(redo) {
+    var state = editState();
+    var source = redo ? state.redo : state.undo;
+    if (!source.length) return;
+    (redo ? state.undo : state.redo).push(state.text);
+    state.text = source.pop();
+    renderNotes();
+    notesEditor.focus();
+  }
+  document.getElementById('notes-undo').onclick = function(){ undoNotes(false); };
+  document.getElementById('notes-redo').onclick = function(){ undoNotes(true); };
+  document.getElementById('notes-export').onclick = function(){
+    var data = { version: 1, deck: deckUrl, slides: slideMeta.map(function(meta){
+      var state = editStates.get(meta.key), saved = notesStore.read(meta);
+      return { key: meta.key, title: meta.title, original: notesStore.authoredText(meta),
+        text: state ? state.text : saved ? saved.text : notesStore.authoredText(meta) };
+    }) };
+    var url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'speaker-notes.json';
+    link.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    notesStatus.textContent = '已导出讲稿，包含当前草稿';
+  };
+  var notesFile = document.getElementById('notes-file');
+  document.getElementById('notes-import').onclick = function(){ notesFile.click(); };
+  notesFile.onchange = async function(){
+    var file = notesFile.files[0];
+    if (!file) return;
+    try {
+      var data = JSON.parse(await file.text());
+      if (data.version !== 1 || !Array.isArray(data.slides)) throw Error('Invalid file');
+      var matches = [];
+      var keys = new Set();
+      data.slides.forEach(function(item){
+        if (!item || typeof item.key !== 'string' || typeof item.text !== 'string' || keys.has(item.key)) throw Error('Invalid note');
+        keys.add(item.key);
+        var meta = slideMeta.find(function(meta){ return meta.key === item.key; });
+        if (meta && item.original === notesStore.authoredText(meta)) matches.push([meta, item.text]);
+      });
+      if (!matches.length) throw Error('No matching slides');
+      if (!confirm('导入 ' + matches.length + ' 页讲稿？匹配页的已保存内容和草稿将被替换。')) return;
+      matches.forEach(function(pair){
+        var saved = notesStore.read(pair[0]);
+        notesStore.write(pair[0], pair[1], saved ? saved.text : notesStore.authoredText(pair[0]));
+        editStates.delete(pair[0].key);
+      });
+      renderNotes('已导入 ' + matches.length + ' 页讲稿');
+    } catch (error) {
+      notesStatus.textContent = '导入失败，请检查讲稿格式、匹配页面或浏览器存储空间';
+    } finally { notesFile.value = ''; }
+  };
+  window.addEventListener('beforeunload', function(event){
+    if (Array.from(editStates.values()).some(function(state){ return state.text !== state.saved; })) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  });
+  window.addEventListener('storage', function(event){
+    if (event.key !== null && event.key.indexOf(notesStore.prefix) !== 0) return;
+    editStates.forEach(function(state, key){
+      if (!state.editing && state.text === state.saved) editStates.delete(key);
+    });
+    var state = editStates.get(slideMeta[idx].key);
+    if (state && state.editing) {
+      notesStatus.textContent = '其他窗口修改了讲稿，当前草稿已保留';
+      return;
+    }
+    editStates.delete(slideMeta[idx].key);
+    renderNotes();
+  });
 
   /* ===== Timer ===== */
   var tStart = Date.now();
@@ -978,6 +1192,14 @@
 
   /* ===== Keyboard ===== */
   document.addEventListener('keydown', function(e){
+    if (e.target.closest('textarea, input, select, button, [contenteditable="true"]')) {
+      if (e.target === notesEditor && (e.metaKey || e.ctrlKey) && !e.isComposing) {
+        if (e.key.toLowerCase() === 's') { e.preventDefault(); document.getElementById('notes-save').click(); }
+        if (e.key.toLowerCase() === 'z') { e.preventDefault(); undoNotes(e.shiftKey); }
+        if (e.key.toLowerCase() === 'y') { e.preventDefault(); undoNotes(true); }
+      }
+      return;
+    }
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     switch(e.key) {
       case 'ArrowRight': case ' ': case 'PageDown': go(idx + 1); e.preventDefault(); break;
@@ -1002,8 +1224,7 @@
     iframeCur.src = deckUrl + '?preview=' + (idx + 1);
     if (idx + 1 < total) iframeNxt.src = deckUrl + '?preview=' + (idx + 2);
     /* Initialize notes/timer/count without touching iframes */
-    var m = slideMeta[idx] || {};
-    notesBody.innerHTML = m.notes || '<span class="empty">（这一页还没有逐字稿）</span>';
+    renderNotes();
     curMeta.textContent = (idx + 1) + '/' + total;
     nxtMeta.textContent = (idx + 2) + '/' + total;
     timerCount.textContent = (idx + 1) + ' / ' + total;

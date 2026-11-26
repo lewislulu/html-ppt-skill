@@ -21,6 +21,13 @@ draggable, resizable **magnetic cards**: current slide, next slide preview,
 speaker script (逐字稿), and timer. Two windows stay in sync via
 `BroadcastChannel`.
 
+The script card supports editing, Save, Undo/Redo, Cancel, and JSON export/import.
+Saved scripts persist in the current browser and deck address. Export a backup
+to transfer scripts to another browser or computer. Optional
+`data-speaker-script` markup limits editing to spoken text while keeping timing
+and stage directions intact. Details are in the
+[presenter guide](references/presenter-mode.md#编辑保存与撤销).
+
 ![Presenter mode with 4 magnetic cards](docs/readme/presenter-mode.png)
 
 **Why previews are pixel-perfect:** each card is an `<iframe>` that loads the
